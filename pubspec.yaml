@@ -27,7 +27,10 @@ dependencies:
   # Calendar
   table_calendar: ^3.1.2
 
-  # Notifications
+  # Alarm (iOS + Android — plays sound even in silent mode, vibrates)
+  alarm: ^5.0.0
+
+  # Notifications (kept for permission requests)
   flutter_local_notifications: ^17.2.0
   timezone: ^0.9.4
 
@@ -43,12 +46,47 @@ dependencies:
   uuid: ^4.5.1
   flutter_timezone: ^1.0.8
 
+  # CSV Export/Import
+  share_plus: ^10.0.0
+  file_picker: ^8.0.0
+  path_provider: ^2.1.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
   hive_generator: ^2.0.1
   build_runner: ^2.4.8
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/vela_logo.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#4F46E5"
+  adaptive_icon_foreground: "assets/images/vela_icon_fg.png"
+  min_sdk_android: 21
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
+
+flutter_native_splash:
+  color: "#4F46E5"
+  image: assets/images/vela_icon_fg.png
+  color_dark: "#1E1B4B"
+  image_dark: assets/images/vela_icon_fg.png
+  android_12:
+    image: assets/images/vela_icon_fg.png
+    color: "#4F46E5"
+    image_dark: assets/images/vela_icon_fg.png
+    color_dark: "#1E1B4B"
+  ios: true
+  android: true
 
 flutter:
   uses-material-design: true
@@ -56,6 +94,8 @@ flutter:
 
   assets:
     - assets/font/
+    - assets/images/
+    - assets/audio/
 
   fonts:
     - family: Inter

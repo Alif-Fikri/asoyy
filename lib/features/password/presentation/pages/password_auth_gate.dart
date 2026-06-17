@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:local_auth/local_auth.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
@@ -7,6 +8,8 @@ import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../data/auth_config_repository.dart';
 import '../../domain/entities/auth_method.dart';
+import '../bloc/password_bloc.dart';
+import '../bloc/password_event.dart';
 import '../widgets/pattern_lock.dart';
 import '../widgets/pin_input.dart';
 
@@ -42,6 +45,7 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
                 repo: widget.repo,
                 method: widget.repo.currentMethod!,
                 onSuccess: widget.onAuthenticated,
+                onForgot: _onForgot,
               ),
       ),
     );
@@ -73,6 +77,34 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
       },
       onBack: () => setState(() => _setupChoice = null),
     );
+  }
+
+  Future<void> _onForgot() async {
+    final s = context.strings;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.auth_reset_title),
+        content: Text(s.auth_reset_warning),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.cancel),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: AppColors.alarmColor),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.auth_reset_confirm),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await widget.repo.clear();
+    await widget.repo.clearPasswords();
+    if (!mounted) return;
+    context.read<PasswordBloc>().add(LoadPasswords());
+    setState(() => _setupChoice = null);
   }
 }
 
@@ -310,11 +342,13 @@ class _LockScreen extends StatefulWidget {
   final AuthConfigRepository repo;
   final AuthMethod method;
   final VoidCallback onSuccess;
+  final VoidCallback onForgot;
 
   const _LockScreen({
     required this.repo,
     required this.method,
     required this.onSuccess,
+    required this.onForgot,
   });
 
   @override
@@ -400,7 +434,23 @@ class _LockScreenState extends State<_LockScreen> {
             style: TextStyle(color: c.textSecondary, fontSize: 14),
           ),
           const SizedBox(height: 36),
-          Expanded(child: _buildInput()),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(child: _buildInput()),
+                if (widget.method != AuthMethod.biometric) ...[
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: widget.onForgot,
+                    child: Text(
+                      s.auth_forgot_button,
+                      style: TextStyle(color: c.textSecondary, fontSize: 13),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -21,6 +21,7 @@ class PasswordBloc extends Bloc<PasswordBlocEvent, PasswordState> {
     on<SavePasswordRequested>(_onSave);
     on<DeletePasswordRequested>(_onDelete);
     on<SearchPasswords>(_onSearch);
+    on<ImportPasswordsRequested>(_onImport);
   }
 
   Future<void> _onLoad(LoadPasswords event, Emitter<PasswordState> emit) async {
@@ -58,5 +59,14 @@ class PasswordBloc extends Bloc<PasswordBlocEvent, PasswordState> {
     if (state is PasswordLoaded) {
       emit((state as PasswordLoaded).copyWith(query: event.query));
     }
+  }
+
+  Future<void> _onImport(ImportPasswordsRequested event, Emitter<PasswordState> emit) async {
+    if (state is! PasswordLoaded) return;
+    final current = state as PasswordLoaded;
+    for (final p in event.passwords) {
+      await savePassword(p);
+    }
+    emit(current.copyWith(all: [...current.all, ...event.passwords]));
   }
 }

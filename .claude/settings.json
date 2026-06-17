@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import cairosvg\")",
+      "Bash(npx --yes sharp-cli --version)",
+      "Bash(npx --yes svgexport --version)",
+      "Bash(npx --yes @resvg/resvg-wasm --version)",
+      "Bash(node -e ' *)",
+      "Bash(npx sharp-cli *)",
+      "Bash(export FLUTTER=/Users/suitenmac/Downloads/flutter/bin/flutter)",
+      "Bash(export FLUTTER=/Users/suitenmac/Downloads/flutter/bin)",
+      "Bash(/Users/suitenmac/Downloads/flutter/bin/dart run *)",
+      "Bash(/Users/suitenmac/Downloads/flutter/bin/dart analyze *)",
+      "Bash(afconvert -f caff -d LEI16@44100 /Users/suitenmac/Downloads/asoy/asoyy/assets/audio/alarm.wav /Users/suitenmac/Downloads/asoy/asoyy/ios/Runner/alarm.caf)",
+      "Bash(dart analyze *)",
+      "Bash(/Users/suitenmac/fvm/default/bin/flutter analyze *)"
+    ]
+  }
+}

@@ -28,3 +28,10 @@ class SearchPasswords extends PasswordBlocEvent {
   @override
   List<Object?> get props => [query];
 }
+
+class ImportPasswordsRequested extends PasswordBlocEvent {
+  final List<PasswordEntity> passwords;
+  ImportPasswordsRequested(this.passwords);
+  @override
+  List<Object?> get props => [passwords.length];
+}

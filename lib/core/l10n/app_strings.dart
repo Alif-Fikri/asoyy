@@ -82,6 +82,8 @@ abstract class AppStrings {
   String get alarm_sat;
   String get alarm_sun;
   String get alarm_notification_title;
+  String get alarm_stop;
+  String get alarm_disabled;
 
 
   String get calc_title;
@@ -109,6 +111,12 @@ abstract class AppStrings {
   String get pass_auth_subtitle;
   String get pass_auth_unlock;
   String get pass_auth_failed;
+  String get pass_export;
+  String get pass_import;
+  String get pass_export_warning;
+  String get pass_import_title;
+  String get pass_import_empty;
+  String get pass_import_error;
 
 
   String get auth_setup_title;
@@ -134,6 +142,10 @@ abstract class AppStrings {
   String get auth_use_pattern;
   String get auth_use_biometric;
   String get auth_biometric_unavailable;
+  String get auth_forgot_button;
+  String get auth_reset_title;
+  String get auth_reset_warning;
+  String get auth_reset_confirm;
 
 
   String get fin_title;
@@ -152,6 +164,10 @@ abstract class AppStrings {
   String get fin_notes;
   String get fin_period;
   String get fin_period_all;
+  String get fin_export;
+  String get fin_export_from;
+  String get fin_export_to;
+  String get fin_export_empty;
 
 
   String get cat_salary;

@@ -1,7 +1,5 @@
-import 'package:flutter/services.dart';
+import 'package:alarm/alarm.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/timezone.dart' as tz;
-import '../../../core/constants/app_constants.dart';
 import '../domain/entities/alarm_entity.dart';
 
 class NotificationService {
@@ -9,101 +7,37 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._();
 
-  final FlutterLocalNotificationsPlugin _plugin =
-      FlutterLocalNotificationsPlugin();
-
-  static const _batteryChannel = MethodChannel('com.example.asoyy/battery');
-
   Future<void> init() async {
+    final fln = FlutterLocalNotificationsPlugin();
+    await fln.initialize(const InitializationSettings(
+      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+      iOS: DarwinInitializationSettings(),
+    ));
+    await fln.cancelAll();
 
-    const android = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const ios = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const settings = InitializationSettings(android: android, iOS: ios);
-    await _plugin.initialize(settings);
-
-    await _requestPermissions();
+    await Alarm.init();
   }
 
-  Future<void> _requestPermissions() async {
-    final androidPlugin = _plugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
-
-    if (androidPlugin != null) {
-      await androidPlugin.requestNotificationsPermission();
-      await androidPlugin.requestExactAlarmsPermission();
-    }
-
-    try {
-      await _batteryChannel.invokeMethod('requestIgnoreBatteryOptimizations');
-    } catch (_) {
-    }
-  }
-
-  Future<void> scheduleAlarm(AlarmEntity alarm) async {
+  Future<void> scheduleAlarm(AlarmEntity alarm, {String stopButtonText = 'Stop'}) async {
     await cancelAlarm(alarm.id);
     if (!alarm.isEnabled) return;
 
-    final now = tz.TZDateTime.now(tz.local);
-    var scheduled = tz.TZDateTime(
-      tz.local,
-      now.year,
-      now.month,
-      now.day,
-      alarm.hour,
-      alarm.minute,
+    final baseId = alarm.id.hashCode.abs() % 100000;
+    final settings = _buildSettings(
+      id: baseId,
+      alarm: alarm,
+      stopButtonText: stopButtonText,
     );
-    if (scheduled.isBefore(now)) {
-      scheduled = scheduled.add(const Duration(days: 1));
-    }
-
-    final androidDetails = AndroidNotificationDetails(
-      AppConstants.notificationChannelId,
-      AppConstants.notificationChannelName,
-      channelDescription: AppConstants.notificationChannelDesc,
-      importance: Importance.max,
-      priority: Priority.max,
-      fullScreenIntent: true,
-      category: AndroidNotificationCategory.alarm,
-      sound: const RawResourceAndroidNotificationSound('notification'),
-      enableVibration: true,
-      playSound: true,
-    );
-
-    final details = NotificationDetails(android: androidDetails);
-    final id = alarm.id.hashCode.abs() % 100000;
 
     if (alarm.days.isEmpty) {
-      await _plugin.zonedSchedule(
-        id,
-        '${AppConstants.appName} — ${alarm.label}',
-        alarm.timeString,
-        scheduled,
-        details,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-      );
+      await Alarm.set(alarmSettings: settings);
     } else {
       for (final day in alarm.days) {
-        var dayScheduled = scheduled;
-        while (dayScheduled.weekday != day) {
-          dayScheduled = dayScheduled.add(const Duration(days: 1));
-        }
-        await _plugin.zonedSchedule(
-          (id + day) % 100000,
-          '${AppConstants.appName} — ${alarm.label}',
-          alarm.timeString,
-          dayScheduled,
-          details,
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-          matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+        await Alarm.set(
+          alarmSettings: settings.copyWith(
+            id: (baseId + day) % 100000,
+            dateTime: _nextOccurrence(alarm.hour, alarm.minute, day),
+          ),
         );
       }
     }
@@ -111,9 +45,51 @@ class NotificationService {
 
   Future<void> cancelAlarm(String alarmId) async {
     final id = alarmId.hashCode.abs() % 100000;
-    await _plugin.cancel(id);
+    await Alarm.stop(id);
     for (int day = 1; day <= 7; day++) {
-      await _plugin.cancel((id + day) % 100000);
+      await Alarm.stop((id + day) % 100000);
     }
   }
+
+  AlarmSettings _buildSettings({
+    required int id,
+    required AlarmEntity alarm,
+    required String stopButtonText,
+  }) {
+    return AlarmSettings(
+      id: id,
+      dateTime: _nextOccurrence(alarm.hour, alarm.minute, null),
+      assetAudioPath: 'assets/audio/alarm.wav',
+      loopAudio: true,
+      vibrate: true,
+      androidFullScreenIntent: true,
+      warningNotificationOnKill: true,
+      volumeSettings: VolumeSettings.fade(
+        fadeDuration: const Duration(seconds: 5),
+        volume: 1.0,
+        volumeEnforced: false,
+        showSystemUI: false,
+      ),
+      notificationSettings: NotificationSettings(
+        title: alarm.label,
+        body: _formatTime(alarm.hour, alarm.minute),
+        stopButton: stopButtonText,
+      ),
+    );
+  }
+
+  DateTime _nextOccurrence(int hour, int minute, int? weekday) {
+    final now = DateTime.now();
+    var date = DateTime(now.year, now.month, now.day, hour, minute);
+    if (!date.isAfter(now)) date = date.add(const Duration(days: 1));
+    if (weekday != null) {
+      while (date.weekday != weekday) {
+        date = date.add(const Duration(days: 1));
+      }
+    }
+    return date;
+  }
+
+  String _formatTime(int hour, int minute) =>
+      '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
 }

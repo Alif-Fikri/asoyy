@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4F46E5"/>
+      <stop offset="100%" stop-color="#7C3AED"/>
+    </linearGradient>
+    <radialGradient id="shine" cx="30%" cy="20%" r="65%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="230" fill="url(#bg)"/>
+  <rect width="1024" height="1024" rx="230" fill="url(#shine)"/>
+
+  <!-- V shape (two sail arms) -->
+  <polyline
+    points="210,268 512,722 814,268"
+    fill="none"
+    stroke="white"
+    stroke-width="86"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+
+  <!-- 4-pointed star above V -->
+  <path d="M512,76 L526,118 L568,132 L526,146 L512,188 L498,146 L456,132 L498,118 Z" fill="white"/>
+</svg>

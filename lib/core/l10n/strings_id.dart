@@ -78,6 +78,8 @@ class StringsId extends AppStrings {
   @override String get alarm_sat => 'Sab';
   @override String get alarm_sun => 'Min';
   @override String get alarm_notification_title => 'Alarm';
+  @override String get alarm_stop => 'Matikan';
+  @override String get alarm_disabled => 'Nonaktif';
 
   @override String get calc_title => 'Kalkulator';
 
@@ -103,6 +105,12 @@ class StringsId extends AppStrings {
   @override String get pass_auth_subtitle => 'Verifikasi identitas untuk melanjutkan';
   @override String get pass_auth_unlock => 'Buka Kunci';
   @override String get pass_auth_failed => 'Autentikasi gagal. Coba lagi.';
+  @override String get pass_export => 'Export CSV';
+  @override String get pass_import => 'Import CSV';
+  @override String get pass_export_warning => 'Password akan diekspor sebagai teks biasa. Simpan file di tempat yang aman.';
+  @override String get pass_import_title => 'Import Password';
+  @override String get pass_import_empty => 'Tidak ada password valid di file';
+  @override String get pass_import_error => 'Gagal membaca file. Pastikan formatnya CSV yang valid.';
 
   @override String get auth_setup_title => 'Amankan Password Manager';
   @override String get auth_setup_subtitle => 'Pilih metode untuk membuka fitur ini';
@@ -127,6 +135,10 @@ class StringsId extends AppStrings {
   @override String get auth_use_pattern => 'Gunakan Pola';
   @override String get auth_use_biometric => 'Gunakan Biometrik';
   @override String get auth_biometric_unavailable => 'Biometrik tidak tersedia di perangkat ini';
+  @override String get auth_forgot_button => 'Lupa?';
+  @override String get auth_reset_title => 'Reset Vault';
+  @override String get auth_reset_warning => 'Ini akan menghapus SEMUA password tersimpan dan mereset metode kunci. Tindakan ini tidak dapat dibatalkan.';
+  @override String get auth_reset_confirm => 'Reset & Hapus';
 
   @override String get fin_title => 'Keuangan';
   @override String get fin_add => 'Tambah Transaksi';
@@ -144,6 +156,10 @@ class StringsId extends AppStrings {
   @override String get fin_notes => 'Catatan (Opsional)';
   @override String get fin_period => 'Periode';
   @override String get fin_period_all => 'Semua Waktu';
+  @override String get fin_export => 'Export CSV';
+  @override String get fin_export_from => 'Dari';
+  @override String get fin_export_to => 'Sampai';
+  @override String get fin_export_empty => 'Tidak ada transaksi di rentang ini';
 
   @override String get cat_salary => 'Gaji';
   @override String get cat_freelance => 'Freelance';

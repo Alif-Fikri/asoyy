@@ -22,8 +22,9 @@ class AlarmPage extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => AlarmFormDialog(
-        onSave: (alarm) =>
-            context.read<AlarmBloc>().add(AddAlarmRequested(alarm)),
+        onSave: (alarm) => context.read<AlarmBloc>().add(
+              AddAlarmRequested(alarm, stopButtonText: context.strings.alarm_stop),
+            ),
       ),
     );
   }
@@ -94,7 +95,10 @@ class AlarmPage extends StatelessWidget {
                     (a) => AlarmCard(
                       alarm: a,
                       onToggle: (enabled) => context.read<AlarmBloc>().add(
-                        ToggleAlarmRequested(a.copyWith(isEnabled: enabled)),
+                        ToggleAlarmRequested(
+                          a.copyWith(isEnabled: enabled),
+                          stopButtonText: context.strings.alarm_stop,
+                        ),
                       ),
                       onDelete: () => context
                           .read<AlarmBloc>()
@@ -105,15 +109,16 @@ class AlarmPage extends StatelessWidget {
             ),
           if (disabled.isNotEmpty)
             IosSection(
-              header: Localizations.localeOf(context).languageCode == 'id'
-                  ? 'Nonaktif'
-                  : 'Disabled',
+              header: s.alarm_disabled,
               children: disabled
                   .map(
                     (a) => AlarmCard(
                       alarm: a,
                       onToggle: (enabled) => context.read<AlarmBloc>().add(
-                        ToggleAlarmRequested(a.copyWith(isEnabled: enabled)),
+                        ToggleAlarmRequested(
+                          a.copyWith(isEnabled: enabled),
+                          stopButtonText: context.strings.alarm_stop,
+                        ),
                       ),
                       onDelete: () => context
                           .read<AlarmBloc>()

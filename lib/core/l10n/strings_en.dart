@@ -78,6 +78,8 @@ class StringsEn extends AppStrings {
   @override String get alarm_sat => 'Sat';
   @override String get alarm_sun => 'Sun';
   @override String get alarm_notification_title => 'Alarm';
+  @override String get alarm_stop => 'Stop';
+  @override String get alarm_disabled => 'Disabled';
 
   @override String get calc_title => 'Calculator';
 
@@ -103,6 +105,12 @@ class StringsEn extends AppStrings {
   @override String get pass_auth_subtitle => 'Verify your identity to continue';
   @override String get pass_auth_unlock => 'Unlock';
   @override String get pass_auth_failed => 'Authentication failed. Try again.';
+  @override String get pass_export => 'Export CSV';
+  @override String get pass_import => 'Import CSV';
+  @override String get pass_export_warning => 'Passwords will be exported as plain text. Keep the file in a secure location.';
+  @override String get pass_import_title => 'Import Passwords';
+  @override String get pass_import_empty => 'No valid passwords found in file';
+  @override String get pass_import_error => 'Could not read file. Make sure it is a valid CSV.';
 
   @override String get auth_setup_title => 'Secure Password Manager';
   @override String get auth_setup_subtitle => 'Choose a method to unlock this feature';
@@ -127,6 +135,10 @@ class StringsEn extends AppStrings {
   @override String get auth_use_pattern => 'Use Pattern';
   @override String get auth_use_biometric => 'Use Biometrics';
   @override String get auth_biometric_unavailable => 'Biometrics not available on this device';
+  @override String get auth_forgot_button => 'Forgot?';
+  @override String get auth_reset_title => 'Reset Vault';
+  @override String get auth_reset_warning => 'This will permanently delete ALL saved passwords and reset your lock method. This cannot be undone.';
+  @override String get auth_reset_confirm => 'Reset & Delete';
 
   @override String get fin_title => 'Finance';
   @override String get fin_add => 'Add Transaction';
@@ -144,6 +156,10 @@ class StringsEn extends AppStrings {
   @override String get fin_notes => 'Notes (Optional)';
   @override String get fin_period => 'Period';
   @override String get fin_period_all => 'All Time';
+  @override String get fin_export => 'Export CSV';
+  @override String get fin_export_from => 'From';
+  @override String get fin_export_to => 'To';
+  @override String get fin_export_empty => 'No transactions in selected range';
 
   @override String get cat_salary => 'Salary';
   @override String get cat_freelance => 'Freelance';

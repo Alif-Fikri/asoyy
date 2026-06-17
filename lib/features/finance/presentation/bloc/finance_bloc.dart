@@ -28,7 +28,8 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
     try {
       final txs = await getTransactions(const NoParams());
       txs.sort((a, b) => b.date.compareTo(a.date));
-      emit(FinanceLoaded(all: txs));
+      final now = DateTime.now();
+      emit(FinanceLoaded(all: txs, filterYear: now.year, filterMonth: now.month));
     } catch (e) {
       emit(FinanceError(e.toString()));
     }

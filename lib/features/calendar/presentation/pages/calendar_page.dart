@@ -28,11 +28,13 @@ class CalendarPage extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => EventFormDialog(
-        initialDate: date,
-        onSave: (event) =>
-            context.read<CalendarBloc>().add(AddEventRequested(event)),
-      ),
+      builder:
+          (_) => EventFormDialog(
+            initialDate: date,
+            onSave:
+                (event) =>
+                    context.read<CalendarBloc>().add(AddEventRequested(event)),
+          ),
     );
   }
 
@@ -47,106 +49,108 @@ class CalendarPage extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          16,
-          16,
-          MediaQuery.of(ctx).viewInsets.bottom + 16,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                s.cal_payday_settings,
-                style: TextStyle(
-                  color: c.textPrimary,
-                  fontSize: 17,
-                  fontWeight: FontWeight.w700,
-                ),
+      builder:
+          (ctx) => Padding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              16,
+              16,
+              MediaQuery.of(ctx).viewInsets.bottom + 16,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: c.surface,
+                borderRadius: BorderRadius.circular(20),
               ),
-              const SizedBox(height: 6),
-              Text(
-                s.cal_payday_day_label,
-                style: TextStyle(color: c.textSecondary, fontSize: 13),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: ctrl,
-                autofocus: true,
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(2),
-                ],
-                style: TextStyle(color: c.textPrimary),
-                decoration: InputDecoration(
-                  hintText: s.cal_payday_hint,
-                  prefixIcon: Icon(
-                    CupertinoIcons.money_dollar_circle,
-                    color: c.textSecondary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (currentDay != null) ...[
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () {
-                          context.read<CalendarBloc>().add(SetPayday(null));
-                          Navigator.pop(ctx);
-                        },
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: AppColors.alarmColor,
-                          side: BorderSide(
-                            color:
-                                AppColors.alarmColor.withValues(alpha: 0.5),
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(s.cal_payday_clear),
+                  Text(
+                    s.cal_payday_settings,
+                    style: TextStyle(
+                      color: c.textPrimary,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    s.cal_payday_day_label,
+                    style: TextStyle(color: c.textSecondary, fontSize: 13),
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    controller: ctrl,
+                    autofocus: true,
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(2),
+                    ],
+                    style: TextStyle(color: c.textPrimary),
+                    decoration: InputDecoration(
+                      hintText: s.cal_payday_hint,
+                      prefixIcon: Icon(
+                        CupertinoIcons.money_dollar_circle,
+                        color: c.textSecondary,
                       ),
                     ),
-                    const SizedBox(width: 10),
-                  ],
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final val = int.tryParse(ctrl.text);
-                        if (val != null && val >= 1 && val <= 31) {
-                          context.read<CalendarBloc>().add(SetPayday(val));
-                          Navigator.pop(ctx);
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.income,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      if (currentDay != null) ...[
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () {
+                              context.read<CalendarBloc>().add(SetPayday(null));
+                              Navigator.pop(ctx);
+                            },
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: AppColors.alarmColor,
+                              side: BorderSide(
+                                color: AppColors.alarmColor.withValues(
+                                  alpha: 0.5,
+                                ),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text(s.cal_payday_clear),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                      ],
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            final val = int.tryParse(ctrl.text);
+                            if (val != null && val >= 1 && val <= 31) {
+                              context.read<CalendarBloc>().add(SetPayday(val));
+                              Navigator.pop(ctx);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.income,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(s.save),
                         ),
                       ),
-                      child: Text(s.save),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
     );
   }
 
@@ -188,13 +192,13 @@ class CalendarPage extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   CupertinoIcons.money_dollar_circle,
-                  color: state.paydayDay != null
-                      ? AppColors.income
-                      : c.textSecondary,
+                  color:
+                      state.paydayDay != null
+                          ? AppColors.income
+                          : c.textSecondary,
                   size: 22,
                 ),
-                onPressed: () =>
-                    _showPaydaySettings(context, state.paydayDay),
+                onPressed: () => _showPaydaySettings(context, state.paydayDay),
                 tooltip: s.cal_payday_settings,
               ),
               IconButton(
@@ -212,18 +216,15 @@ class CalendarPage extends StatelessWidget {
               MediaQuery.of(context).padding.bottom + 80,
             ),
             children: [
-
               IosSection(
                 margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                 children: [_buildCalendar(context, state)],
               ),
 
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
                 child: _buildLegend(context, s),
               ),
-
 
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
@@ -248,9 +249,10 @@ class CalendarPage extends StatelessWidget {
                     ...events.map(
                       (e) => EventListItem(
                         event: e,
-                        onDelete: () => context
-                            .read<CalendarBloc>()
-                            .add(DeleteEventRequested(e.id)),
+                        onDelete:
+                            () => context.read<CalendarBloc>().add(
+                              DeleteEventRequested(e.id),
+                            ),
                       ),
                     ),
                   ],
@@ -287,15 +289,15 @@ class CalendarPage extends StatelessWidget {
           }
           return result;
         },
-        onDaySelected: (selected, focused) =>
-            context.read<CalendarBloc>().add(SelectDay(selected)),
+        onDaySelected:
+            (selected, focused) =>
+                context.read<CalendarBloc>().add(SelectDay(selected)),
         calendarBuilders: CalendarBuilders(
           markerBuilder:
               (ctx, day, events) => _buildMarkers(ctx, day, events, c),
         ),
         calendarStyle: CalendarStyle(
           outsideDaysVisible: false,
-
 
           defaultDecoration: const BoxDecoration(shape: BoxShape.circle),
           weekendDecoration: const BoxDecoration(shape: BoxShape.circle),
@@ -334,9 +336,16 @@ class CalendarPage extends StatelessWidget {
             fontSize: 16,
             fontWeight: FontWeight.w600,
           ),
-          leftChevronIcon: Icon(CupertinoIcons.chevron_left, color: c.textSecondary, size: 20),
-          rightChevronIcon:
-              Icon(CupertinoIcons.chevron_right, color: c.textSecondary, size: 20),
+          leftChevronIcon: Icon(
+            CupertinoIcons.chevron_left,
+            color: c.textSecondary,
+            size: 20,
+          ),
+          rightChevronIcon: Icon(
+            CupertinoIcons.chevron_right,
+            color: c.textSecondary,
+            size: 20,
+          ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(
           weekdayStyle: TextStyle(
@@ -365,9 +374,7 @@ class CalendarPage extends StatelessWidget {
     final dots = <Color>{};
     for (final e in events) {
       if (e is HolidayEntity) {
-        dots.add(
-          e.isNational ? AppColors.alarmColor : AppColors.calendarColor,
-        );
+        dots.add(e.isNational ? AppColors.alarmColor : AppColors.calendarColor);
       } else if (e is EventEntity) {
         dots.add(AppColors.primary);
       } else if (e is PaydayMarker) {
@@ -381,19 +388,20 @@ class CalendarPage extends StatelessWidget {
       padding: const EdgeInsets.only(top: 2),
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: dots
-            .map(
-              (color) => Container(
-                width: 4,
-                height: 4,
-                margin: const EdgeInsets.symmetric(horizontal: 1),
-                decoration: BoxDecoration(
-                  color: color,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            )
-            .toList(),
+        children:
+            dots
+                .map(
+                  (color) => Container(
+                    width: 4,
+                    height: 4,
+                    margin: const EdgeInsets.symmetric(horizontal: 1),
+                    decoration: BoxDecoration(
+                      color: color,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -403,10 +411,7 @@ class CalendarPage extends StatelessWidget {
       spacing: 14,
       runSpacing: 6,
       children: [
-        _LegendItem(
-          color: AppColors.alarmColor,
-          label: s.cal_holiday_national,
-        ),
+        _LegendItem(color: AppColors.alarmColor, label: s.cal_holiday_national),
         _LegendItem(color: AppColors.calendarColor, label: s.cal_cuti_bersama),
         _LegendItem(color: AppColors.income, label: s.cal_payday),
         _LegendItem(color: AppColors.primary, label: s.cal_event),
@@ -445,8 +450,7 @@ class CalendarPage extends StatelessWidget {
         ),
         if (state.eventsForSelectedDay.isNotEmpty)
           Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
             decoration: BoxDecoration(
               color: AppColors.primary.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(10),

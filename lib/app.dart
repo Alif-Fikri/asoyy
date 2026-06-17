@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'package:alarm/alarm.dart';
+import 'package:alarm/utils/alarm_set.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +14,9 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/theme_cubit.dart';
 import 'features/alarm/presentation/bloc/alarm_bloc.dart';
 import 'features/alarm/presentation/bloc/alarm_event.dart';
+import 'features/alarm/presentation/bloc/alarm_state.dart';
 import 'features/alarm/presentation/pages/alarm_page.dart';
+import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'features/calendar/presentation/bloc/calendar_event.dart';
 import 'features/calendar/presentation/pages/calendar_page.dart';
@@ -58,7 +63,7 @@ class NexusApp extends StatelessWidget {
                   ),
                 ],
                 child: MaterialApp(
-                  title: 'Nexus',
+                  title: 'Vela',
                   theme: AppTheme.light,
                   darkTheme: AppTheme.dark,
                   themeMode: themeMode,
@@ -94,14 +99,21 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   bool _passwordAuthenticated = false;
   final AuthConfigRepository _authRepo = AuthConfigRepository();
 
+  AlarmSet _previousRinging = AlarmSet.empty();
+  StreamSubscription<AlarmSet>? _alarmRingSubscription;
+  bool _isRingDialogShowing = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _previousRinging = Alarm.ringing.value;
+    _alarmRingSubscription = Alarm.ringing.listen(_onRingingChanged);
   }
 
   @override
   void dispose() {
+    _alarmRingSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -110,6 +122,51 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       setState(() => _passwordAuthenticated = false);
+    }
+  }
+
+  Future<void> _onRingingChanged(AlarmSet currentRinging) async {
+    final newlyRinging =
+        currentRinging.alarms
+            .where((a) => !_previousRinging.containsId(a.id))
+            .toList();
+    _previousRinging = currentRinging;
+    for (final alarmSettings in newlyRinging) {
+      await _showAlarmDialog(alarmSettings);
+    }
+  }
+
+  Future<void> _showAlarmDialog(AlarmSettings alarmSettings) async {
+    if (_isRingDialogShowing || !mounted) return;
+    _isRingDialogShowing = true;
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder:
+          (_) => _AlarmRingDialog(
+            label: alarmSettings.notificationSettings.title,
+            onStop: () async {
+              await Alarm.stop(alarmSettings.id);
+              if (mounted) _rescheduleIfRecurring(alarmSettings.id);
+            },
+          ),
+    );
+    _isRingDialogShowing = false;
+  }
+
+  void _rescheduleIfRecurring(int ringId) {
+    final state = context.read<AlarmBloc>().state;
+    if (state is! AlarmLoaded) return;
+    final stopText = context.strings.alarm_stop;
+    for (final alarm in state.alarms) {
+      if (!alarm.isEnabled || alarm.days.isEmpty) continue;
+      final baseId = alarm.id.hashCode.abs() % 100000;
+      for (final day in alarm.days) {
+        if ((baseId + day) % 100000 == ringId) {
+          NotificationService().scheduleAlarm(alarm, stopButtonText: stopText);
+          return;
+        }
+      }
     }
   }
 
@@ -186,6 +243,66 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
             ),
           ],
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+        ),
+      ),
+    );
+  }
+}
+
+class _AlarmRingDialog extends StatelessWidget {
+  const _AlarmRingDialog({required this.label, required this.onStop});
+
+  final String label;
+  final Future<void> Function() onStop;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.strings;
+    return PopScope(
+      canPop: false,
+      child: Dialog.fullscreen(
+        backgroundColor: AppColors.alarmColor,
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(
+                CupertinoIcons.alarm_fill,
+                size: 72,
+                color: Colors.white,
+              ),
+              const SizedBox(height: 24),
+              Text(
+                label.isEmpty ? s.alarm_notification_title : label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 64),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: AppColors.alarmColor,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                icon: const Icon(CupertinoIcons.stop_fill),
+                label: Text(s.alarm_stop),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  onStop();
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

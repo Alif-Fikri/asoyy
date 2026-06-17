@@ -34,6 +34,10 @@ class AuthConfigRepository {
     await _box.delete(_hashKey);
   }
 
+  Future<void> clearPasswords() async {
+    await Hive.box(AppConstants.passwordsBox).clear();
+  }
+
 
   bool verify(String secret) {
     final stored = _box.get(_hashKey) as String?;

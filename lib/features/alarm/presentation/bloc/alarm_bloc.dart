@@ -42,7 +42,7 @@ class AlarmBloc extends Bloc<AlarmBlocEvent, AlarmState> {
     if (state is! AlarmLoaded) return;
     final current = state as AlarmLoaded;
     await addAlarm(event.alarm);
-    await notificationService.scheduleAlarm(event.alarm);
+    await notificationService.scheduleAlarm(event.alarm, stopButtonText: event.stopButtonText);
     emit(current.copyWith(alarms: [...current.alarms, event.alarm]));
   }
 
@@ -51,7 +51,7 @@ class AlarmBloc extends Bloc<AlarmBlocEvent, AlarmState> {
     final current = state as AlarmLoaded;
     await toggleAlarm(event.alarm);
     if (event.alarm.isEnabled) {
-      await notificationService.scheduleAlarm(event.alarm);
+      await notificationService.scheduleAlarm(event.alarm, stopButtonText: event.stopButtonText);
     } else {
       await notificationService.cancelAlarm(event.alarm.id);
     }

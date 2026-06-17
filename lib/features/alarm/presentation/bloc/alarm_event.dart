@@ -10,14 +10,16 @@ class LoadAlarms extends AlarmBlocEvent {}
 
 class AddAlarmRequested extends AlarmBlocEvent {
   final AlarmEntity alarm;
-  AddAlarmRequested(this.alarm);
+  final String stopButtonText;
+  AddAlarmRequested(this.alarm, {this.stopButtonText = 'Stop'});
   @override
   List<Object?> get props => [alarm.id];
 }
 
 class ToggleAlarmRequested extends AlarmBlocEvent {
   final AlarmEntity alarm;
-  ToggleAlarmRequested(this.alarm);
+  final String stopButtonText;
+  ToggleAlarmRequested(this.alarm, {this.stopButtonText = 'Stop'});
   @override
   List<Object?> get props => [alarm.id];
 }
