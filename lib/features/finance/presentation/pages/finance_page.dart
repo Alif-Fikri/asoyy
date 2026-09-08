@@ -347,14 +347,17 @@ class _PeriodPickerDialog extends StatefulWidget {
 }
 
 class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
-  late int? _year;
-  late int? _month;
+  late int _viewYear;
 
   @override
   void initState() {
     super.initState();
-    _year = widget.selectedYear;
-    _month = widget.selectedMonth;
+    _viewYear = widget.selectedYear ?? DateTime.now().year;
+  }
+
+  void _pick(int? year, int? month) {
+    widget.onChanged(year, month);
+    widget.onClose();
   }
 
   @override
@@ -363,69 +366,20 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
     final s = context.strings;
     final isId = context.currentLocale.languageCode == 'id';
     final locale = isId ? 'id_ID' : 'en_US';
-    final now = DateTime.now();
-    final years = [now.year, now.year - 1, now.year - 2];
-
-    final items = <Widget>[
-      _ListRow(
-        label: s.fin_period_all,
-        isSelected: _year == null,
-        color: AppColors.primary,
-        onTap: () {
-          setState(() {
-            _year = null;
-            _month = null;
-          });
-          widget.onChanged(null, null);
-          widget.onClose();
-        },
-      ),
-      _SectionHeader(label: isId ? 'TAHUN' : 'YEAR'),
-      ...years.map(
-        (y) => _ListRow(
-          label: '$y',
-          isSelected: _year == y,
-          color: AppColors.primary,
-          onTap: () {
-            setState(() {
-              _year = y;
-              _month = null;
-            });
-            widget.onChanged(y, null);
-          },
-        ),
-      ),
-      if (_year != null) ...[
-        _SectionHeader(label: isId ? 'BULAN' : 'MONTH'),
-        ...List.generate(12, (i) {
-          final month = i + 1;
-          final label =
-              DateFormat('MMMM', locale).format(DateTime(2000, month));
-          return _ListRow(
-            label: label,
-            isSelected: _month == month,
-            color: AppColors.income,
-            onTap: () {
-              final newMonth = _month == month ? null : month;
-              setState(() => _month = newMonth);
-              widget.onChanged(_year, newMonth);
-              if (newMonth != null) widget.onClose();
-            },
-          );
-        }),
-      ],
-    ];
+    final isAllTime = widget.selectedYear == null;
+    final isFullYear =
+        widget.selectedYear == _viewYear && widget.selectedMonth == null;
 
     return Dialog(
       backgroundColor: c.surface,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 18, 12, 14),
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 18, 20, 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
               children: [
                 Text(
                   s.fin_period,
@@ -444,87 +398,143 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
                 ),
               ],
             ),
-          ),
-          Divider(height: 1, color: c.divider),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxHeight: 380),
-            child: ListView(shrinkWrap: true, children: items),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String label;
-  const _SectionHeader({required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 14, 20, 4),
-      child: Text(
-        label,
-        style: TextStyle(
-          color: context.colors.textSecondary,
-          fontSize: 11,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  onPressed: () => setState(() => _viewYear--),
+                  icon: Icon(CupertinoIcons.chevron_left,
+                      color: c.textSecondary, size: 18),
+                ),
+                GestureDetector(
+                  onTap: () => _pick(_viewYear, null),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 150),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: isFullYear
+                          ? AppColors.primary.withValues(alpha: 0.12)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isFullYear ? AppColors.primary : Colors.transparent,
+                      ),
+                    ),
+                    child: Text(
+                      '$_viewYear',
+                      style: TextStyle(
+                        color: isFullYear ? AppColors.primary : c.textPrimary,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () => setState(() => _viewYear++),
+                  icon: Icon(CupertinoIcons.chevron_right,
+                      color: c.textSecondary, size: 18),
+                ),
+              ],
+            ),
+            GridView.count(
+              crossAxisCount: 4,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 1.6,
+              children: List.generate(12, (i) {
+                final month = i + 1;
+                final label =
+                    DateFormat('MMM', locale).format(DateTime(2000, month));
+                final isSelected = widget.selectedYear == _viewYear &&
+                    widget.selectedMonth == month;
+                return _MonthTile(
+                  label: label,
+                  isSelected: isSelected,
+                  onTap: () => _pick(_viewYear, month),
+                );
+              }),
+            ),
+            const SizedBox(height: 8),
+            Divider(height: 1, color: c.divider),
+            InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => _pick(null, null),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: [
+                    Icon(
+                      CupertinoIcons.infinite,
+                      size: 16,
+                      color: isAllTime ? AppColors.primary : c.textSecondary,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      s.fin_period_all,
+                      style: TextStyle(
+                        color: isAllTime ? AppColors.primary : c.textPrimary,
+                        fontSize: 14,
+                        fontWeight:
+                            isAllTime ? FontWeight.w700 : FontWeight.normal,
+                      ),
+                    ),
+                    if (isAllTime) ...[
+                      const Spacer(),
+                      Icon(CupertinoIcons.check_mark,
+                          size: 16, color: AppColors.primary),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
 
-class _ListRow extends StatelessWidget {
+class _MonthTile extends StatelessWidget {
   final String label;
   final bool isSelected;
-  final Color color;
   final VoidCallback onTap;
-  const _ListRow({
+
+  const _MonthTile({
     required this.label,
     required this.isSelected,
-    required this.color,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 13),
-        child: Row(
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              width: 7,
-              height: 7,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isSelected ? color : Colors.transparent,
-                border: Border.all(
-                  color: isSelected ? color : c.border,
-                  width: 1.5,
-                ),
-              ),
+    return Material(
+      color: isSelected ? AppColors.primary.withValues(alpha: 0.12) : c.cardLight,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected ? AppColors.primary : c.border,
             ),
-            const SizedBox(width: 14),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? color : c.textPrimary,
-                fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-              ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? AppColors.primary : c.textPrimary,
+              fontSize: 13,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             ),
-            if (isSelected) ...[
-              const Spacer(),
-              Icon(CupertinoIcons.check_mark, size: 16, color: color),
-            ],
-          ],
+          ),
         ),
       ),
     );
