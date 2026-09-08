@@ -126,14 +126,14 @@ class _PasswordFormDialogState extends State<PasswordFormDialog> {
               ),
               const SizedBox(height: 12),
               AppTextField(
-                label: '${s.pass_website} (${s.optional})',
+                label: s.pass_website,
                 controller: _webCtrl,
                 prefixIcon: CupertinoIcons.globe,
                 keyboardType: TextInputType.url,
               ),
               const SizedBox(height: 12),
               AppTextField(
-                label: '${s.pass_notes} (${s.optional})',
+                label: s.pass_notes,
                 controller: _notesCtrl,
                 prefixIcon: CupertinoIcons.doc_text,
                 maxLines: 2,

@@ -191,7 +191,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
               ),
               const SizedBox(height: 12),
               AppTextField(
-                label: '${s.fin_notes} (${s.optional})',
+                label: s.fin_notes,
                 controller: _notesCtrl,
                 prefixIcon: CupertinoIcons.text_alignleft,
                 maxLines: 2,

@@ -29,7 +29,11 @@ class NexusAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       scrolledUnderElevation: 0,
-      title: Text(title),
+      title: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(title, maxLines: 1),
+      ),
       leading: leading,
       actions: actions,
     );

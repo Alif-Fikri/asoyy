@@ -52,22 +52,36 @@ class _PinInputState extends State<PinInput> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _dots(context),
-        if (widget.errorText != null) ...[
-          const SizedBox(height: 12),
-          Text(
-            widget.errorText!,
-            style: const TextStyle(
-              color: AppColors.alarmColor,
-              fontSize: 13,
-            ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxH = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : 420.0;
+        final reserved = 14 + 16 + (widget.errorText != null ? 12 + 16 : 0);
+        final keypadHeight = (maxH - reserved).clamp(140.0, 420.0);
+        final buttonSize = (keypadHeight / 4 - 12).clamp(34.0, 72.0);
+        final spacing = (buttonSize / 4).clamp(8.0, 32.0);
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              _dots(context),
+              if (widget.errorText != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  widget.errorText!,
+                  style: const TextStyle(
+                    color: AppColors.alarmColor,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+              SizedBox(height: spacing),
+              _keypad(context, buttonSize),
+            ],
           ),
-        ],
-        const SizedBox(height: 32),
-        _keypad(context),
-      ],
+        );
+      },
     );
   }
 
@@ -94,8 +108,9 @@ class _PinInputState extends State<PinInput> {
     );
   }
 
-  Widget _keypad(BuildContext context) {
+  Widget _keypad(BuildContext context, double buttonSize) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         for (final row in const [
           ['1', '2', '3'],
@@ -106,16 +121,20 @@ class _PinInputState extends State<PinInput> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: row
                 .map(
-                  (d) => _KeypadButton(label: d, onTap: () => _tap(d)),
+                  (d) => _KeypadButton(
+                    label: d,
+                    onTap: () => _tap(d),
+                    size: buttonSize,
+                  ),
                 )
                 .toList(),
           ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const _KeypadButton.empty(),
-            _KeypadButton(label: '0', onTap: () => _tap('0')),
-            _KeypadButton.backspace(onTap: _backspace),
+            _KeypadButton.empty(size: buttonSize),
+            _KeypadButton(label: '0', onTap: () => _tap('0'), size: buttonSize),
+            _KeypadButton.backspace(onTap: _backspace, size: buttonSize),
           ],
         ),
       ],
@@ -128,17 +147,18 @@ class _KeypadButton extends StatelessWidget {
   final VoidCallback? onTap;
   final bool isBackspace;
   final bool isEmpty;
+  final double size;
 
-  const _KeypadButton({this.label, required this.onTap})
+  const _KeypadButton({this.label, required this.onTap, this.size = 60})
       : isBackspace = false,
         isEmpty = false;
 
-  const _KeypadButton.backspace({required this.onTap})
+  const _KeypadButton.backspace({required this.onTap, this.size = 60})
       : label = null,
         isBackspace = true,
         isEmpty = false;
 
-  const _KeypadButton.empty()
+  const _KeypadButton.empty({this.size = 60})
       : label = null,
         onTap = null,
         isBackspace = false,
@@ -148,7 +168,7 @@ class _KeypadButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     if (isEmpty) {
-      return const SizedBox(width: 72, height: 72);
+      return SizedBox(width: size + 12, height: size + 12);
     }
     return Padding(
       padding: const EdgeInsets.all(6),
@@ -159,20 +179,20 @@ class _KeypadButton extends StatelessWidget {
           customBorder: const CircleBorder(),
           onTap: onTap,
           child: SizedBox(
-            width: 60,
-            height: 60,
+            width: size,
+            height: size,
             child: Center(
               child: isBackspace
                   ? Icon(
                       CupertinoIcons.delete_left,
                       color: c.textSecondary,
-                      size: 22,
+                      size: size * 0.36,
                     )
                   : Text(
                       label!,
                       style: TextStyle(
                         color: c.textPrimary,
-                        fontSize: 26,
+                        fontSize: size * 0.43,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
