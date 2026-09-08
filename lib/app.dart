@@ -76,6 +76,14 @@ class NexusApp extends StatelessWidget {
                     GlobalWidgetsLocalizations.delegate,
                     GlobalCupertinoLocalizations.delegate,
                   ],
+                  builder: (context, child) => GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      final focus = FocusManager.instance.primaryFocus;
+                      if (focus != null && focus.hasFocus) focus.unfocus();
+                    },
+                    child: child,
+                  ),
                   home: const _MainShell(),
                 ),
               );

@@ -61,7 +61,6 @@ class _HomePageState extends State<HomePage> {
         ),
         content: TextField(
           controller: ctrl,
-          autofocus: true,
           style: TextStyle(color: c.textPrimary),
           decoration: InputDecoration(
             hintText: s.enter_name,

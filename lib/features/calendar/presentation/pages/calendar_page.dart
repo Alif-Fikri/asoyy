@@ -83,7 +83,6 @@ class CalendarPage extends StatelessWidget {
                   const SizedBox(height: 16),
                   TextFormField(
                     controller: ctrl,
-                    autofocus: true,
                     keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,

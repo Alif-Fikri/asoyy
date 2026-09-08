@@ -276,7 +276,6 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
         title: Text(s.fin_add_category),
         content: TextField(
           controller: controller,
-          autofocus: true,
           textCapitalization: TextCapitalization.words,
           decoration: InputDecoration(hintText: s.fin_category_name_hint),
         ),
