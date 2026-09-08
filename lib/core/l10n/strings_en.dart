@@ -139,6 +139,14 @@ class StringsEn extends AppStrings {
   @override String get auth_reset_title => 'Reset Vault';
   @override String get auth_reset_warning => 'This will permanently delete ALL saved passwords and reset your lock method. This cannot be undone.';
   @override String get auth_reset_confirm => 'Reset & Delete';
+  @override String get auth_reset_options_title => 'Forgot Your Lock?';
+  @override String get auth_reset_options_subtitle => 'Choose how to set a new lock';
+  @override String get auth_reset_device_option => 'Verify with Device Lock';
+  @override String get auth_reset_device_desc => 'Use your fingerprint, face, or phone PIN/pattern. All saved passwords stay safe and are not deleted.';
+  @override String get auth_reset_wipe_option => 'Erase Everything & Start Over';
+  @override String get auth_reset_wipe_desc => 'All saved passwords will be permanently deleted.';
+  @override String get auth_reset_device_failed_title => 'Verification Failed';
+  @override String get auth_reset_device_failed_desc => 'Device verification is unavailable or was cancelled. Try again, or use the erase-everything option.';
 
   @override String get fin_title => 'Finance';
   @override String get fin_add => 'Add Transaction';

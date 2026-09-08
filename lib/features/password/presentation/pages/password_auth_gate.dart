@@ -32,6 +32,7 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
 
 
   AuthMethod? _setupChoice;
+  bool _recoveryFlow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,7 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
     return Scaffold(
       backgroundColor: c.background,
       body: SafeArea(
-        child: !widget.repo.isConfigured
+        child: (!widget.repo.isConfigured || _recoveryFlow)
             ? _buildSetupRoute()
             : _LockScreen(
                 repo: widget.repo,
@@ -80,6 +81,48 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
   }
 
   Future<void> _onForgot() async {
+    final choice = await showModalBottomSheet<_ForgotChoice>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => const _ForgotOptionsSheet(),
+    );
+    if (choice == null || !mounted) return;
+
+    if (choice == _ForgotChoice.deviceAuth) {
+      await _startDeviceRecovery();
+    } else {
+      await _confirmWipe();
+    }
+  }
+
+  Future<void> _startDeviceRecovery() async {
+    final s = context.strings;
+    final verified = await _verifyBiometric(context);
+    if (!mounted) return;
+    if (!verified) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(s.auth_reset_device_failed_title),
+          content: Text(s.auth_reset_device_failed_desc),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(s.close),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+    setState(() {
+      _recoveryFlow = true;
+      _setupChoice = null;
+    });
+  }
+
+  Future<void> _confirmWipe() async {
     final s = context.strings;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -100,11 +143,159 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
       ),
     );
     if (confirmed != true || !mounted) return;
-    await widget.repo.clear();
-    await widget.repo.clearPasswords();
+    try {
+      await widget.repo.clear();
+      await widget.repo.clearPasswords();
+    } catch (_) {
+      // Even if clearing storage partially fails, fall through so the UI
+      // still reflects whatever succeeded instead of freezing on the old
+      // lock screen.
+    }
     if (!mounted) return;
     context.read<PasswordBloc>().add(LoadPasswords());
-    setState(() => _setupChoice = null);
+    setState(() {
+      _setupChoice = null;
+      _recoveryFlow = false;
+    });
+  }
+}
+
+enum _ForgotChoice { deviceAuth, wipe }
+
+class _ForgotOptionsSheet extends StatelessWidget {
+  const _ForgotOptionsSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final s = context.strings;
+    return Container(
+      padding: EdgeInsets.fromLTRB(
+          24, 16, 24, MediaQuery.of(context).padding.bottom + 24),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: c.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            s.auth_reset_options_title,
+            style: TextStyle(
+              color: c.textPrimary,
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            s.auth_reset_options_subtitle,
+            style: TextStyle(color: c.textSecondary, fontSize: 14),
+          ),
+          const SizedBox(height: 20),
+          _ForgotOptionCard(
+            icon: CupertinoIcons.lock_shield,
+            iconColor: AppColors.income,
+            title: s.auth_reset_device_option,
+            subtitle: s.auth_reset_device_desc,
+            recommended: true,
+            onTap: () =>
+                Navigator.pop(context, _ForgotChoice.deviceAuth),
+          ),
+          const SizedBox(height: 12),
+          _ForgotOptionCard(
+            icon: CupertinoIcons.trash,
+            iconColor: AppColors.alarmColor,
+            title: s.auth_reset_wipe_option,
+            subtitle: s.auth_reset_wipe_desc,
+            recommended: false,
+            onTap: () => Navigator.pop(context, _ForgotChoice.wipe),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ForgotOptionCard extends StatelessWidget {
+  final IconData icon;
+  final Color iconColor;
+  final String title;
+  final String subtitle;
+  final bool recommended;
+  final VoidCallback onTap;
+
+  const _ForgotOptionCard({
+    required this.icon,
+    required this.iconColor,
+    required this.title,
+    required this.subtitle,
+    required this.recommended,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Material(
+      color: c.card,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: iconColor.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: iconColor, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: c.textPrimary,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: TextStyle(color: c.textSecondary, fontSize: 13),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(CupertinoIcons.chevron_right, size: 20, color: c.textHint),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:crypto/crypto.dart';
 import 'package:hive/hive.dart';
 import '../../../core/constants/app_constants.dart';
 import '../domain/entities/auth_method.dart';
+import 'models/password_model.dart';
 
 class AuthConfigRepository {
   static const _methodKey = 'auth_method';
@@ -35,7 +36,7 @@ class AuthConfigRepository {
   }
 
   Future<void> clearPasswords() async {
-    await Hive.box(AppConstants.passwordsBox).clear();
+    await Hive.box<PasswordModel>(AppConstants.passwordsBox).clear();
   }
 
 

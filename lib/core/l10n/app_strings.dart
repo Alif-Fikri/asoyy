@@ -146,6 +146,14 @@ abstract class AppStrings {
   String get auth_reset_title;
   String get auth_reset_warning;
   String get auth_reset_confirm;
+  String get auth_reset_options_title;
+  String get auth_reset_options_subtitle;
+  String get auth_reset_device_option;
+  String get auth_reset_device_desc;
+  String get auth_reset_wipe_option;
+  String get auth_reset_wipe_desc;
+  String get auth_reset_device_failed_title;
+  String get auth_reset_device_failed_desc;
 
 
   String get fin_title;

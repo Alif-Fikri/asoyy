@@ -139,6 +139,14 @@ class StringsId extends AppStrings {
   @override String get auth_reset_title => 'Reset Vault';
   @override String get auth_reset_warning => 'Ini akan menghapus SEMUA password tersimpan dan mereset metode kunci. Tindakan ini tidak dapat dibatalkan.';
   @override String get auth_reset_confirm => 'Reset & Hapus';
+  @override String get auth_reset_options_title => 'Lupa Kunci?';
+  @override String get auth_reset_options_subtitle => 'Pilih cara membuat kunci baru';
+  @override String get auth_reset_device_option => 'Verifikasi dengan Kunci Perangkat';
+  @override String get auth_reset_device_desc => 'Gunakan sidik jari, wajah, atau PIN/pola HP Anda. Semua password yang tersimpan tetap aman, tidak terhapus.';
+  @override String get auth_reset_wipe_option => 'Hapus Semua & Mulai Ulang';
+  @override String get auth_reset_wipe_desc => 'Semua password tersimpan akan terhapus permanen.';
+  @override String get auth_reset_device_failed_title => 'Verifikasi Gagal';
+  @override String get auth_reset_device_failed_desc => 'Verifikasi perangkat tidak tersedia atau dibatalkan. Coba lagi, atau gunakan opsi hapus semua data.';
 
   @override String get fin_title => 'Keuangan';
   @override String get fin_add => 'Tambah Transaksi';
