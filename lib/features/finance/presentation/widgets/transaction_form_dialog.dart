@@ -8,6 +8,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../data/finance_category_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
 
 class TransactionFormDialog extends StatefulWidget {
@@ -24,6 +25,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   final _titleCtrl = TextEditingController();
   final _amountCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
+  final _categoryRepo = FinanceCategoryRepository();
   TransactionType _type = TransactionType.expense;
   late String _category;
   bool _categoryInitialized = false;
@@ -45,9 +47,34 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
     s.cat_entertainment, s.cat_education, s.cat_other,
   ];
 
-  List<String> _categories(AppStrings s) => _type == TransactionType.income
-      ? _incomeCategories(s)
-      : _expenseCategories(s);
+  List<String> _defaultCategories(AppStrings s, TransactionType type) =>
+      type == TransactionType.income
+          ? _incomeCategories(s)
+          : _expenseCategories(s);
+
+  List<String> _categories(AppStrings s) => [
+        ..._defaultCategories(s, _type),
+        ..._categoryRepo.getCustom(_type),
+      ];
+
+  Future<void> _openCategoryPicker() async {
+    final color = _type == TransactionType.income
+        ? AppColors.income
+        : AppColors.expense;
+    final result = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _CategoryPickerSheet(
+        type: _type,
+        selected: _category,
+        color: color,
+        repo: _categoryRepo,
+        defaults: _defaultCategories(context.strings, _type),
+      ),
+    );
+    if (result != null && mounted) setState(() => _category = result);
+  }
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
@@ -160,34 +187,31 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
               const SizedBox(height: 12),
               Text(s.fin_category, style: TextStyle(color: c.textSecondary, fontSize: 13)),
               const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: categories.map((cat) {
-                  final selected = _category == cat;
-                  return GestureDetector(
-                    onTap: () => setState(() => _category = cat),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: selected ? color.withValues(alpha: 0.15) : c.card,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: selected ? color : c.border,
+              InkWell(
+                onTap: _openCategoryPicker,
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: c.card,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: c.border),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(CupertinoIcons.tag, color: color, size: 18),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _category,
+                          style: TextStyle(color: c.textPrimary, fontSize: 14),
                         ),
                       ),
-                      child: Text(
-                        cat,
-                        style: TextStyle(
-                          color: selected ? color : c.textSecondary,
-                          fontSize: 13,
-                          fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      Icon(CupertinoIcons.chevron_down,
+                          color: c.textSecondary, size: 16),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 12),
               AppTextField(
@@ -207,6 +231,209 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CategoryPickerSheet extends StatefulWidget {
+  final TransactionType type;
+  final String selected;
+  final Color color;
+  final FinanceCategoryRepository repo;
+  final List<String> defaults;
+
+  const _CategoryPickerSheet({
+    required this.type,
+    required this.selected,
+    required this.color,
+    required this.repo,
+    required this.defaults,
+  });
+
+  @override
+  State<_CategoryPickerSheet> createState() => _CategoryPickerSheetState();
+}
+
+class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
+  late List<String> _custom;
+  late String _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _custom = widget.repo.getCustom(widget.type);
+    _selected = widget.selected;
+  }
+
+  Future<void> _addCategory() async {
+    final s = context.strings;
+    final controller = TextEditingController();
+    final all = [...widget.defaults, ..._custom];
+    final name = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.fin_add_category),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          textCapitalization: TextCapitalization.words,
+          decoration: InputDecoration(hintText: s.fin_category_name_hint),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(s.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
+            child: Text(s.save),
+          ),
+        ],
+      ),
+    );
+    if (name == null || name.isEmpty || !mounted) return;
+    if (all.contains(name)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(s.fin_category_exists)),
+      );
+      return;
+    }
+    await widget.repo.add(widget.type, name);
+    if (!mounted) return;
+    setState(() => _custom = widget.repo.getCustom(widget.type));
+    Navigator.pop(context, name);
+  }
+
+  Future<void> _deleteCategory(String name) async {
+    final s = context.strings;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.fin_delete_category_title),
+        content: Text(s.fin_delete_category_warning),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.cancel),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: AppColors.alarmColor),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    await widget.repo.remove(widget.type, name);
+    if (!mounted) return;
+    setState(() {
+      _custom = widget.repo.getCustom(widget.type);
+      if (_selected == name) {
+        final remaining = [...widget.defaults, ..._custom];
+        _selected = remaining.isNotEmpty ? remaining.first : '';
+      }
+    });
+    if (name == widget.selected && _selected != name) {
+      Navigator.pop(context, _selected);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final s = context.strings;
+    final all = [...widget.defaults, ..._custom];
+
+    return Container(
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+      padding: EdgeInsets.fromLTRB(
+          20, 16, 20, MediaQuery.of(context).padding.bottom + 16),
+      decoration: BoxDecoration(
+        color: c.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: c.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Text(
+                s.fin_category,
+                style: TextStyle(
+                  color: c.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const Spacer(),
+              TextButton.icon(
+                onPressed: _addCategory,
+                icon: Icon(CupertinoIcons.add, size: 16, color: widget.color),
+                label: Text(
+                  s.fin_add_category,
+                  style: TextStyle(
+                    color: widget.color,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: all.length,
+              separatorBuilder: (_, _) => Divider(height: 1, color: c.divider),
+              itemBuilder: (ctx, i) {
+                final cat = all[i];
+                final isCustom = i >= widget.defaults.length;
+                final isSelected = cat == _selected;
+                return ListTile(
+                  onTap: () => Navigator.pop(context, cat),
+                  contentPadding: EdgeInsets.zero,
+                  leading: Icon(
+                    isSelected
+                        ? CupertinoIcons.checkmark_alt_circle_fill
+                        : CupertinoIcons.circle,
+                    color: isSelected ? widget.color : c.textHint,
+                    size: 20,
+                  ),
+                  title: Text(
+                    cat,
+                    style: TextStyle(
+                      color: isSelected ? widget.color : c.textPrimary,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                  ),
+                  trailing: isCustom
+                      ? IconButton(
+                          icon: Icon(CupertinoIcons.trash,
+                              size: 18, color: c.textHint),
+                          onPressed: () => _deleteCategory(cat),
+                        )
+                      : null,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

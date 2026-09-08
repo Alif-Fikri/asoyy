@@ -164,6 +164,11 @@ class StringsId extends AppStrings {
   @override String get fin_notes => 'Catatan (Opsional)';
   @override String get fin_period => 'Periode';
   @override String get fin_period_all => 'Semua Waktu';
+  @override String get fin_add_category => 'Tambah Kategori';
+  @override String get fin_category_name_hint => 'Nama kategori baru';
+  @override String get fin_category_exists => 'Kategori sudah ada';
+  @override String get fin_delete_category_title => 'Hapus Kategori?';
+  @override String get fin_delete_category_warning => 'Kategori ini akan dihapus dari daftar pilihan. Transaksi yang sudah memakai kategori ini tidak akan berubah.';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'Dari';
   @override String get fin_export_to => 'Sampai';

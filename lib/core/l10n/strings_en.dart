@@ -164,6 +164,11 @@ class StringsEn extends AppStrings {
   @override String get fin_notes => 'Notes (Optional)';
   @override String get fin_period => 'Period';
   @override String get fin_period_all => 'All Time';
+  @override String get fin_add_category => 'Add Category';
+  @override String get fin_category_name_hint => 'New category name';
+  @override String get fin_category_exists => 'Category already exists';
+  @override String get fin_delete_category_title => 'Delete Category?';
+  @override String get fin_delete_category_warning => 'This category will be removed from the picker. Transactions that already use it will keep their label.';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'From';
   @override String get fin_export_to => 'To';

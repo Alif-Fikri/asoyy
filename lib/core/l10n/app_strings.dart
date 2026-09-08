@@ -172,6 +172,11 @@ abstract class AppStrings {
   String get fin_notes;
   String get fin_period;
   String get fin_period_all;
+  String get fin_add_category;
+  String get fin_category_name_hint;
+  String get fin_category_exists;
+  String get fin_delete_category_title;
+  String get fin_delete_category_warning;
   String get fin_export;
   String get fin_export_from;
   String get fin_export_to;
