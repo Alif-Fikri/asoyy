@@ -44,7 +44,7 @@ dependencies:
   # Utilities
   intl: ^0.20.0
   uuid: ^4.5.1
-  flutter_timezone: ^1.0.8
+  flutter_timezone: ^5.1.0
 
   # CSV Export/Import
   share_plus: ^10.0.0
