@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 2),
                     Text(
                       dateFmt.format(now),
-                      style: TextStyle(color: c.textHint, fontSize: 13),
+                      style: TextStyle(color: c.textSecondary, fontSize: 13),
                     ),
                   ],
                 ),

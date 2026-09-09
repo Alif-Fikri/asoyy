@@ -104,6 +104,28 @@ abstract class AppTheme {
         color: AppColorTheme.dark.divider,
         thickness: 1,
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.primary.withValues(alpha: 0.24),
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : AppColorTheme.dark.textSecondary,
+          ),
+        ),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            color: states.contains(WidgetState.selected)
+                ? AppColorTheme.dark.textPrimary
+                : AppColorTheme.dark.textSecondary,
+            fontSize: 12,
+            fontWeight:
+                states.contains(WidgetState.selected) ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
+      ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColorTheme.dark.cardLight,
         contentTextStyle: TextStyle(color: AppColorTheme.dark.textPrimary),
@@ -227,6 +249,28 @@ abstract class AppTheme {
       dividerTheme: DividerThemeData(
         color: AppColorTheme.light.divider,
         thickness: 1,
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.primary.withValues(alpha: 0.18),
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : AppColorTheme.light.textSecondary,
+          ),
+        ),
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => TextStyle(
+            color: states.contains(WidgetState.selected)
+                ? AppColorTheme.light.textPrimary
+                : AppColorTheme.light.textSecondary,
+            fontSize: 12,
+            fontWeight:
+                states.contains(WidgetState.selected) ? FontWeight.w600 : FontWeight.normal,
+          ),
+        ),
       ),
       snackBarTheme: SnackBarThemeData(
         backgroundColor: AppColorTheme.light.surface,
