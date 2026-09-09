@@ -30,6 +30,31 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _scrollController = ScrollController();
+  double _titleOpacity = 0;
+
+  static const _collapseRange = 60.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    final opacity = (_scrollController.offset / _collapseRange).clamp(0.0, 1.0);
+    if (opacity != _titleOpacity) {
+      setState(() => _titleOpacity = opacity);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final s = context.strings;
@@ -42,18 +67,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: c.background,
       body: CustomScrollView(
+        controller: _scrollController,
         slivers: [
           SliverAppBar(
             expandedHeight: 140,
             floating: false,
             pinned: true,
             backgroundColor: c.background,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsetsDirectional.only(
-                start: 20,
-                bottom: 16,
-              ),
-              title: Text(
+            title: Opacity(
+              opacity: _titleOpacity,
+              child: Text(
                 '${_greeting(now.hour, s)}, ${readUserName()}',
                 style: TextStyle(
                   color: c.textPrimary,
@@ -62,6 +85,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
+            ),
+            flexibleSpace: FlexibleSpaceBar(
               background: Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 decoration: BoxDecoration(
