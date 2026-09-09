@@ -33,14 +33,8 @@ class CalculatorPage extends StatelessWidget {
 
   Widget _buildDisplay(BuildContext context, CalculatorState state) {
     final c = context.colors;
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: c.card,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: c.border),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
