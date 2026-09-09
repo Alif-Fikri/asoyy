@@ -1,5 +1,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../../finance/services/recurring_reminder_service.dart';
 import '../domain/entities/alarm_entity.dart';
 import 'alarm_schedule.dart';
 
@@ -8,12 +9,21 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._();
 
+  static final FlutterLocalNotificationsPlugin fln =
+      FlutterLocalNotificationsPlugin();
+
   Future<void> init() async {
-    final fln = FlutterLocalNotificationsPlugin();
-    await fln.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
-      iOS: DarwinInitializationSettings(),
-    ));
+    await fln.initialize(
+      InitializationSettings(
+        android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
+        iOS: DarwinInitializationSettings(
+          notificationCategories: [recurringReminderIosCategory],
+        ),
+      ),
+      onDidReceiveNotificationResponse: handleRecurringReminderResponse,
+      onDidReceiveBackgroundNotificationResponse:
+          handleRecurringReminderResponseBackground,
+    );
     await fln.cancelAll();
 
     await Alarm.init();

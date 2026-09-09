@@ -12,6 +12,7 @@ import '../../../../core/di/injection_container.dart' as di;
 import '../../data/recurring_transaction_repository.dart';
 import '../../domain/entities/recurring_transaction_entity.dart';
 import '../../domain/repositories/finance_repository.dart';
+import '../../services/recurring_reminder_service.dart';
 import '../widgets/recurring_form_dialog.dart';
 
 class RecurringTransactionsPage extends StatefulWidget {
@@ -26,6 +27,7 @@ class RecurringTransactionsPage extends StatefulWidget {
 
 class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
   final _repo = RecurringTransactionRepository();
+  final _reminderService = RecurringReminderService();
   late List<RecurringTransactionEntity> _items;
 
   @override
@@ -61,6 +63,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
       ),
     );
     setState(() => _items = _repo.getAll());
+    await _reminderService.rescheduleAll();
     widget.onChanged();
   }
 
@@ -68,6 +71,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
     final confirmed = await showDeleteConfirm(context);
     if (!confirmed) return;
     await _repo.delete(id);
+    await _reminderService.cancelReminder(id);
     setState(() => _items = _repo.getAll());
   }
 

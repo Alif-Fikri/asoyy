@@ -49,6 +49,12 @@ class RecurringTransactionRepository {
     await _saveAll(getAll().where((e) => e.id != id).toList());
   }
 
+  Future<void> markSkipped(String id, String monthKey) async {
+    await _saveAll(getAll()
+        .map((e) => e.id == id ? e.copyWith(lastGeneratedMonth: monthKey) : e)
+        .toList());
+  }
+
   Future<int> generateDueTransactions(FinanceRepository financeRepository) async {
     final now = DateTime.now();
     final currentMonthKey =

@@ -11,6 +11,7 @@ import 'features/alarm/data/models/alarm_model.dart';
 import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/data/models/event_model.dart';
 import 'features/finance/data/models/transaction_model.dart';
+import 'features/finance/services/recurring_reminder_service.dart';
 import 'features/password/data/models/password_model.dart';
 import 'app.dart';
 
@@ -48,6 +49,7 @@ void main() async {
   await di.init();
 
   await NotificationService().init();
+  await RecurringReminderService().rescheduleAll();
 
   runApp(const NexusApp());
 }
