@@ -33,6 +33,8 @@ abstract class AppStrings {
   String get notif_kind_event;
   String get notif_kind_holiday;
   String get notif_kind_payday;
+  String get notif_kind_recurring_bill;
+  String get notif_off_hint;
   String get profile_account;
   String get profile_name;
   String get profile_appearance;

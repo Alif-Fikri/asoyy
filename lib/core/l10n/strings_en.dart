@@ -34,6 +34,8 @@ class StringsEn extends AppStrings {
   @override String get notif_kind_event => 'Event';
   @override String get notif_kind_holiday => 'Holiday';
   @override String get notif_kind_payday => 'Payday';
+  @override String get notif_kind_recurring_bill => 'Recurring Bill';
+  @override String get notif_off_hint => 'This notification is turned off';
   @override String get profile_account => 'Account';
   @override String get profile_name => 'Name';
   @override String get profile_appearance => 'Appearance';

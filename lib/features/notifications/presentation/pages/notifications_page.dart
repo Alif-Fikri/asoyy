@@ -10,15 +10,71 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../../alarm/presentation/bloc/alarm_bloc.dart';
+import '../../../alarm/presentation/bloc/alarm_event.dart';
 import '../../../alarm/presentation/bloc/alarm_state.dart';
 import '../../../alarm/presentation/pages/alarm_page.dart';
 import '../../../calendar/presentation/bloc/calendar_bloc.dart';
 import '../../../calendar/presentation/bloc/calendar_state.dart';
 import '../../../calendar/presentation/pages/calendar_page.dart';
+import '../../../finance/data/recurring_transaction_repository.dart';
+import '../../../finance/presentation/bloc/finance_bloc.dart';
+import '../../../finance/presentation/bloc/finance_event.dart';
+import '../../../finance/presentation/pages/recurring_transactions_page.dart';
+import '../../../finance/services/recurring_reminder_service.dart';
+import '../../data/notification_mute_repository.dart';
 import '../../domain/reminder_item.dart';
 
-class NotificationsPage extends StatelessWidget {
+class NotificationsPage extends StatefulWidget {
   const NotificationsPage({super.key});
+
+  @override
+  State<NotificationsPage> createState() => _NotificationsPageState();
+}
+
+class _NotificationsPageState extends State<NotificationsPage> {
+  final _recurringRepo = RecurringTransactionRepository();
+  final _reminderService = RecurringReminderService();
+  final _muteRepo = NotificationMuteRepository();
+
+  Future<void> _toggle(ReminderItem item, bool enabled) async {
+    if (item.kind == ReminderKind.alarm) {
+      final state = context.read<AlarmBloc>().state;
+      if (state is AlarmLoaded) {
+        final alarm = state.alarms.where((a) => a.id == item.id).firstOrNull;
+        if (alarm != null) {
+          context.read<AlarmBloc>().add(ToggleAlarmRequested(
+                alarm.copyWith(isEnabled: enabled),
+                stopButtonText: context.strings.alarm_stop,
+              ));
+        }
+      }
+      return;
+    }
+
+    await _muteRepo.setMuted(item.id, !enabled);
+    if (item.kind == ReminderKind.recurringBill) {
+      if (enabled) {
+        final bill =
+            _recurringRepo.getAll().where((b) => b.id == item.id).firstOrNull;
+        if (bill != null) await _reminderService.scheduleReminder(bill);
+      } else {
+        await _reminderService.cancelReminder(item.id);
+      }
+    }
+    setState(() {});
+  }
+
+  void _openTarget(BuildContext context, ReminderItem item) {
+    final Widget page = switch (item.kind) {
+      ReminderKind.alarm => const AlarmPage(),
+      ReminderKind.event || ReminderKind.holiday || ReminderKind.payday =>
+        const CalendarPage(),
+      ReminderKind.recurringBill => RecurringTransactionsPage(
+          onChanged: () => context.read<FinanceBloc>().add(LoadTransactions()),
+        ),
+    };
+    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +104,15 @@ class NotificationsPage extends StatelessWidget {
                 paydayDay: calendarState is CalendarLoaded
                     ? calendarState.paydayDay
                     : null,
+                recurringBills: _recurringRepo.getAll(),
                 now: now,
                 alarmColor: AppColors.alarmColor,
                 holidayColor: AppColors.calendarColor,
                 paydayColor: AppColors.income,
+                recurringBillColor: AppColors.financeColor,
                 paydayLabel: s.cal_payday,
                 isId: isId,
+                mutedIds: _muteRepo.getMuted(),
               );
 
               if (items.isEmpty) {
@@ -97,7 +156,12 @@ class NotificationsPage extends StatelessWidget {
                       IosSection(
                         header: entry.key,
                         children: entry.value
-                            .map((item) => _ReminderRow(item: item, isId: isId))
+                            .map((item) => _ReminderRow(
+                                  item: item,
+                                  isId: isId,
+                                  onToggle: (v) => _toggle(item, v),
+                                  onTap: () => _openTarget(context, item),
+                                ))
                             .toList(),
                       ),
                 ],
@@ -110,17 +174,29 @@ class NotificationsPage extends StatelessWidget {
   }
 }
 
+extension _FirstOrNull<T> on Iterable<T> {
+  T? get firstOrNull => isEmpty ? null : first;
+}
+
 class _ReminderRow extends StatelessWidget {
   final ReminderItem item;
   final bool isId;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onTap;
 
-  const _ReminderRow({required this.item, required this.isId});
+  const _ReminderRow({
+    required this.item,
+    required this.isId,
+    required this.onToggle,
+    required this.onTap,
+  });
 
   IconData get _icon => switch (item.kind) {
         ReminderKind.alarm => CupertinoIcons.alarm,
         ReminderKind.event => CupertinoIcons.calendar,
         ReminderKind.holiday => CupertinoIcons.flag,
         ReminderKind.payday => CupertinoIcons.money_dollar_circle,
+        ReminderKind.recurringBill => CupertinoIcons.repeat,
       };
 
   String _kindLabel(AppStrings s) => switch (item.kind) {
@@ -128,26 +204,80 @@ class _ReminderRow extends StatelessWidget {
         ReminderKind.event => s.notif_kind_event,
         ReminderKind.holiday => s.notif_kind_holiday,
         ReminderKind.payday => s.notif_kind_payday,
+        ReminderKind.recurringBill => s.notif_kind_recurring_bill,
       };
 
   @override
   Widget build(BuildContext context) {
     final s = context.strings;
+    final c = context.colors;
     final locale = isId ? 'id_ID' : 'en_US';
     final pattern = item.hasTime ? 'EEE, d MMM · HH:mm' : 'EEE, d MMM';
     final subtitle =
-        '${_kindLabel(s)} · ${DateFormat(pattern, locale).format(item.when)}';
+        '${_kindLabel(s)} · ${DateFormat(pattern, locale).format(item.when)}'
+        '${item.enabled ? '' : ' · ${s.notif_off_hint}'}';
 
     return IosRow(
-      leading: IosIcon(icon: _icon, color: item.color),
+      leading: IosIcon(
+        icon: _icon,
+        color: item.enabled ? item.color : c.textHint,
+      ),
       title: item.title,
+      titleColor: item.enabled ? null : c.textHint,
       subtitle: subtitle,
-      showChevron: true,
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => item.kind == ReminderKind.alarm
-              ? const AlarmPage()
-              : const CalendarPage(),
+      onTap: onTap,
+      trailing: _NotifToggle(
+        value: item.enabled,
+        color: item.color,
+        onChanged: onToggle,
+      ),
+    );
+  }
+}
+
+class _NotifToggle extends StatelessWidget {
+  final bool value;
+  final Color color;
+  final ValueChanged<bool> onChanged;
+
+  const _NotifToggle({
+    required this.value,
+    required this.color,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+        width: 52,
+        height: 30,
+        padding: const EdgeInsets.all(3),
+        decoration: BoxDecoration(
+          color: value ? color : c.border,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        alignment: value ? Alignment.centerRight : Alignment.centerLeft,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          width: 24,
+          height: 24,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 3,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
         ),
       ),
     );

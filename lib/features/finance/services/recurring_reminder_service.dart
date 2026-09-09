@@ -3,8 +3,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:timezone/timezone.dart' as tz;
 import '../../../core/constants/app_constants.dart';
 import '../../alarm/services/notification_service.dart';
+import '../../notifications/data/notification_mute_repository.dart';
 import '../data/recurring_transaction_repository.dart';
 import '../domain/entities/recurring_transaction_entity.dart';
+import '../domain/utils/recurring_schedule.dart';
 
 const _actionMarkPaid = 'recurring_mark_paid';
 const _actionSnooze = 'recurring_snooze';
@@ -18,36 +20,22 @@ final recurringReminderIosCategory = DarwinNotificationCategory(
   ],
 );
 
-int _notificationIdFor(String recurringId) =>
+int notificationIdForRecurring(String recurringId) =>
     recurringId.hashCode.abs() % 100000;
-
-DateTime? _nextReminderTime(RecurringTransactionEntity item, DateTime now) {
-  final currentMonthKey =
-      '${now.year}-${now.month.toString().padLeft(2, '0')}';
-  DateTime dueDate;
-  if (item.lastGeneratedMonth == currentMonthKey) {
-    dueDate = DateTime(now.year, now.month + 1, item.dayOfMonth);
-  } else {
-    dueDate = DateTime(now.year, now.month, item.dayOfMonth);
-    if (dueDate.isBefore(DateTime(now.year, now.month, now.day))) {
-      dueDate = DateTime(now.year, now.month + 1, item.dayOfMonth);
-    }
-  }
-  final reminderTime =
-      DateTime(dueDate.year, dueDate.month, dueDate.day - 1, 9);
-  if (reminderTime.isBefore(now)) return null;
-  return reminderTime;
-}
 
 class RecurringReminderService {
   final _repo = RecurringTransactionRepository();
+  final _muteRepo = NotificationMuteRepository();
 
   Future<void> scheduleReminder(RecurringTransactionEntity item) async {
-    final id = _notificationIdFor(item.id);
+    final id = notificationIdForRecurring(item.id);
     await NotificationService.fln.cancel(id);
 
-    final reminderTime = _nextReminderTime(item, DateTime.now());
-    if (reminderTime == null) return;
+    if (_muteRepo.isMuted(item.id)) return;
+
+    final now = DateTime.now();
+    final reminderTime = nextReminderTime(item, now);
+    if (reminderTime.isBefore(now)) return;
 
     await NotificationService.fln.zonedSchedule(
       id,
@@ -75,7 +63,7 @@ class RecurringReminderService {
   }
 
   Future<void> cancelReminder(String recurringId) async {
-    await NotificationService.fln.cancel(_notificationIdFor(recurringId));
+    await NotificationService.fln.cancel(notificationIdForRecurring(recurringId));
   }
 
   Future<void> rescheduleAll() async {
@@ -107,9 +95,9 @@ Future<void> _handleAction(NotificationResponse response) async {
     final currentMonthKey =
         '${now.year}-${now.month.toString().padLeft(2, '0')}';
     await repo.markSkipped(recurringId, currentMonthKey);
-    await NotificationService.fln.cancel(_notificationIdFor(recurringId));
+    await NotificationService.fln.cancel(notificationIdForRecurring(recurringId));
   } else if (actionId == _actionSnooze) {
-    final id = _notificationIdFor(recurringId);
+    final id = notificationIdForRecurring(recurringId);
     final snoozeTime = DateTime.now().add(const Duration(hours: 4));
     await NotificationService.fln.zonedSchedule(
       id,

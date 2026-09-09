@@ -34,6 +34,8 @@ class StringsId extends AppStrings {
   @override String get notif_kind_event => 'Acara';
   @override String get notif_kind_holiday => 'Hari Libur';
   @override String get notif_kind_payday => 'Gajian';
+  @override String get notif_kind_recurring_bill => 'Tagihan Berulang';
+  @override String get notif_off_hint => 'Notifikasi ini dimatikan';
   @override String get profile_account => 'Akun';
   @override String get profile_name => 'Nama';
   @override String get profile_appearance => 'Tampilan';
