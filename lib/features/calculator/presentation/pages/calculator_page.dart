@@ -20,6 +20,7 @@ class CalculatorPage extends StatelessWidget {
           backgroundColor: c.background,
           appBar: AppBar(title: Text(context.strings.calc_title)),
           body: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(child: _buildDisplay(context, state)),
               _buildKeypad(bloc),
