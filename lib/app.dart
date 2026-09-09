@@ -19,6 +19,7 @@ import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'features/calendar/presentation/bloc/calendar_event.dart';
 import 'features/calculator/presentation/bloc/calculator_bloc.dart';
+import 'features/converter/presentation/bloc/converter_cubit.dart';
 import 'features/finance/presentation/bloc/finance_bloc.dart';
 import 'features/finance/presentation/bloc/finance_event.dart';
 import 'features/home/presentation/pages/home_page.dart';
@@ -50,6 +51,7 @@ class NexusApp extends StatelessWidget {
                     create: (_) => di.sl<AlarmBloc>()..add(LoadAlarms()),
                   ),
                   BlocProvider(create: (_) => di.sl<CalculatorBloc>()),
+                  BlocProvider(create: (_) => di.sl<ConverterCubit>()),
                   BlocProvider(
                     create: (_) => di.sl<PasswordBloc>()..add(LoadPasswords()),
                   ),

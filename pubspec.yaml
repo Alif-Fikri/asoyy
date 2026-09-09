@@ -51,6 +51,9 @@ dependencies:
   file_picker: ^8.0.0
   path_provider: ^2.1.4
 
+  # Converter (currency API)
+  http: ^1.2.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

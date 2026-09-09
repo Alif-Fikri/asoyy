@@ -18,6 +18,7 @@ abstract class AppColors {
   static const Color calculatorColor = Color(0xFF10B981);
   static const Color passwordColor = Color(0xFF3B82F6);
   static const Color financeColor = Color(0xFFF97316);
+  static const Color converterColor = Color(0xFF14B8A6);
 
   static const Color income = Color(0xFF10B981);
   static const Color expense = Color(0xFFEF4444);

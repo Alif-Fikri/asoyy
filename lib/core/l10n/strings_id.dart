@@ -104,6 +104,46 @@ class StringsId extends AppStrings {
 
   @override String get calc_title => 'Kalkulator';
 
+  @override String get convert_title => 'Konversi';
+  @override String get convert_units => 'Satuan';
+  @override String get convert_currency => 'Mata Uang';
+  @override String get convert_category => 'Kategori';
+  @override String get convert_amount => 'Jumlah';
+  @override String get convert_result => 'Hasil';
+  @override String get convert_last_updated_now => 'Diperbarui baru saja';
+  @override String convert_last_updated_minutes(int n) => 'Diperbarui $n menit lalu';
+  @override String convert_last_updated_hours(int n) => 'Diperbarui $n jam lalu';
+  @override String get convert_refreshing => 'Memperbarui kurs...';
+  @override String get convert_offline_error => 'Tidak bisa mengambil kurs. Periksa koneksi internet Anda.';
+  @override String get convert_offline_stale => 'Sedang offline, menampilkan kurs tersimpan terakhir.';
+  @override String get convert_retry => 'Coba Lagi';
+  @override String get convert_cat_length => 'Panjang';
+  @override String get convert_cat_weight => 'Berat';
+  @override String get convert_cat_temperature => 'Suhu';
+  @override String get convert_cat_volume => 'Volume';
+  @override String get convert_unit_mm => 'Milimeter (mm)';
+  @override String get convert_unit_cm => 'Sentimeter (cm)';
+  @override String get convert_unit_m => 'Meter (m)';
+  @override String get convert_unit_km => 'Kilometer (km)';
+  @override String get convert_unit_in => 'Inci (in)';
+  @override String get convert_unit_ft => 'Kaki (ft)';
+  @override String get convert_unit_yd => 'Yard (yd)';
+  @override String get convert_unit_mi => 'Mil (mi)';
+  @override String get convert_unit_mg => 'Miligram (mg)';
+  @override String get convert_unit_g => 'Gram (g)';
+  @override String get convert_unit_kg => 'Kilogram (kg)';
+  @override String get convert_unit_ton => 'Ton';
+  @override String get convert_unit_oz => 'Ons (oz)';
+  @override String get convert_unit_lb => 'Pon (lb)';
+  @override String get convert_unit_ml => 'Mililiter (mL)';
+  @override String get convert_unit_l => 'Liter (L)';
+  @override String get convert_unit_m3 => 'Meter Kubik (m³)';
+  @override String get convert_unit_gal => 'Galon (gal)';
+  @override String get convert_unit_cup => 'Cup';
+  @override String get convert_unit_c => 'Celsius (°C)';
+  @override String get convert_unit_f => 'Fahrenheit (°F)';
+  @override String get convert_unit_k => 'Kelvin (K)';
+
   @override String get pass_title => 'Password Manager';
   @override String get pass_add => 'Tambah Password';
   @override String get pass_edit => 'Edit Password';

@@ -104,6 +104,46 @@ class StringsEn extends AppStrings {
 
   @override String get calc_title => 'Calculator';
 
+  @override String get convert_title => 'Converter';
+  @override String get convert_units => 'Units';
+  @override String get convert_currency => 'Currency';
+  @override String get convert_category => 'Category';
+  @override String get convert_amount => 'Amount';
+  @override String get convert_result => 'Result';
+  @override String get convert_last_updated_now => 'Updated just now';
+  @override String convert_last_updated_minutes(int n) => 'Updated $n minute${n == 1 ? '' : 's'} ago';
+  @override String convert_last_updated_hours(int n) => 'Updated $n hour${n == 1 ? '' : 's'} ago';
+  @override String get convert_refreshing => 'Refreshing rates...';
+  @override String get convert_offline_error => 'Could not fetch exchange rates. Check your internet connection.';
+  @override String get convert_offline_stale => 'You are offline, showing the last saved rates.';
+  @override String get convert_retry => 'Retry';
+  @override String get convert_cat_length => 'Length';
+  @override String get convert_cat_weight => 'Weight';
+  @override String get convert_cat_temperature => 'Temperature';
+  @override String get convert_cat_volume => 'Volume';
+  @override String get convert_unit_mm => 'Millimeter (mm)';
+  @override String get convert_unit_cm => 'Centimeter (cm)';
+  @override String get convert_unit_m => 'Meter (m)';
+  @override String get convert_unit_km => 'Kilometer (km)';
+  @override String get convert_unit_in => 'Inch (in)';
+  @override String get convert_unit_ft => 'Foot (ft)';
+  @override String get convert_unit_yd => 'Yard (yd)';
+  @override String get convert_unit_mi => 'Mile (mi)';
+  @override String get convert_unit_mg => 'Milligram (mg)';
+  @override String get convert_unit_g => 'Gram (g)';
+  @override String get convert_unit_kg => 'Kilogram (kg)';
+  @override String get convert_unit_ton => 'Ton';
+  @override String get convert_unit_oz => 'Ounce (oz)';
+  @override String get convert_unit_lb => 'Pound (lb)';
+  @override String get convert_unit_ml => 'Milliliter (mL)';
+  @override String get convert_unit_l => 'Liter (L)';
+  @override String get convert_unit_m3 => 'Cubic Meter (m³)';
+  @override String get convert_unit_gal => 'Gallon (gal)';
+  @override String get convert_unit_cup => 'Cup';
+  @override String get convert_unit_c => 'Celsius (°C)';
+  @override String get convert_unit_f => 'Fahrenheit (°F)';
+  @override String get convert_unit_k => 'Kelvin (K)';
+
   @override String get pass_title => 'Password Manager';
   @override String get pass_add => 'Add Password';
   @override String get pass_edit => 'Edit Password';

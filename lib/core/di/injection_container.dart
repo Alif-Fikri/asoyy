@@ -22,6 +22,9 @@ import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 
 import '../../features/calculator/presentation/bloc/calculator_bloc.dart';
 
+import '../../features/converter/data/converter_rates_repository.dart';
+import '../../features/converter/presentation/bloc/converter_cubit.dart';
+
 import '../../features/finance/data/datasources/finance_local_datasource.dart';
 import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
@@ -71,6 +74,9 @@ Future<void> init() async {
       ));
 
   sl.registerFactory(() => CalculatorBloc());
+
+  sl.registerLazySingleton(() => ConverterRatesRepository());
+  sl.registerFactory(() => ConverterCubit(sl()));
 
   final passwordDs = await PasswordLocalDatasourceImpl.create();
   sl.registerSingleton<PasswordLocalDatasource>(passwordDs);

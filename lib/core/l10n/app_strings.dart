@@ -103,6 +103,46 @@ abstract class AppStrings {
 
   String get calc_title;
 
+  String get convert_title;
+  String get convert_units;
+  String get convert_currency;
+  String get convert_category;
+  String get convert_amount;
+  String get convert_result;
+  String get convert_last_updated_now;
+  String convert_last_updated_minutes(int n);
+  String convert_last_updated_hours(int n);
+  String get convert_refreshing;
+  String get convert_offline_error;
+  String get convert_offline_stale;
+  String get convert_retry;
+  String get convert_cat_length;
+  String get convert_cat_weight;
+  String get convert_cat_temperature;
+  String get convert_cat_volume;
+  String get convert_unit_mm;
+  String get convert_unit_cm;
+  String get convert_unit_m;
+  String get convert_unit_km;
+  String get convert_unit_in;
+  String get convert_unit_ft;
+  String get convert_unit_yd;
+  String get convert_unit_mi;
+  String get convert_unit_mg;
+  String get convert_unit_g;
+  String get convert_unit_kg;
+  String get convert_unit_ton;
+  String get convert_unit_oz;
+  String get convert_unit_lb;
+  String get convert_unit_ml;
+  String get convert_unit_l;
+  String get convert_unit_m3;
+  String get convert_unit_gal;
+  String get convert_unit_cup;
+  String get convert_unit_c;
+  String get convert_unit_f;
+  String get convert_unit_k;
+
   String get pass_title;
   String get pass_add;
   String get pass_edit;
