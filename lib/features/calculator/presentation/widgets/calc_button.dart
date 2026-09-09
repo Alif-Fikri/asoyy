@@ -41,7 +41,7 @@ class CalcButton extends StatelessWidget {
       case CalcButtonStyle.action:
         fgColor = c.textSecondary;
       case CalcButtonStyle.equals:
-        fgColor = c.textPrimary;
+        fgColor = Colors.white;
       case CalcButtonStyle.number:
         fgColor = c.textPrimary;
     }
@@ -50,21 +50,28 @@ class CalcButton extends StatelessWidget {
       flex: flex,
       child: Padding(
         padding: const EdgeInsets.all(5),
-        child: Material(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(16),
-          child: InkWell(
-            onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            child: Container(
-              height: 70,
-              alignment: Alignment.center,
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: fgColor,
-                  fontSize: label.length > 1 ? 18 : 22,
-                  fontWeight: FontWeight.w600,
+            border: style == CalcButtonStyle.equals
+                ? null
+                : Border.all(color: c.border),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Material(
+            color: bgColor,
+            child: InkWell(
+              onTap: onTap,
+              child: Container(
+                height: 70,
+                alignment: Alignment.center,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: fgColor,
+                    fontSize: label.length > 1 ? 18 : 22,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ),

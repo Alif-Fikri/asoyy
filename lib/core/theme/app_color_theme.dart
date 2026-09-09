@@ -39,7 +39,7 @@ class AppColorTheme extends ThemeExtension<AppColorTheme> {
     background: Color(0xFFF2F2F7),
     surface: Color(0xFFFFFFFF),
     card: Color(0xFFFFFFFF),
-    cardLight: Color(0xFFF2F2F7),
+    cardLight: Color(0xFFE5E5EA),
     textPrimary: Color(0xFF000000),
     textSecondary: Color(0xFF6E6E73),
     textHint: Color(0xFFC7C7CC),
