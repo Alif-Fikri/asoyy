@@ -49,6 +49,19 @@ class _HomePageState extends State<HomePage> {
             pinned: true,
             backgroundColor: c.background,
             flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsetsDirectional.only(
+                start: 20,
+                bottom: 16,
+              ),
+              title: Text(
+                '${_greeting(now.hour, s)}, ${readUserName()}',
+                style: TextStyle(
+                  color: c.textPrimary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
               background: Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                 decoration: BoxDecoration(
