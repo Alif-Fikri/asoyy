@@ -17,7 +17,6 @@ import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -27,7 +26,6 @@ void main() async {
     const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
   );
 
-
   tz_data.initializeTimeZones();
   try {
     final deviceTimezone = await FlutterTimezone.getLocalTimezone();
@@ -36,22 +34,18 @@ void main() async {
 
   }
 
-
   await Hive.initFlutter();
   Hive.registerAdapter(EventModelAdapter());
   Hive.registerAdapter(AlarmModelAdapter());
   Hive.registerAdapter(PasswordModelAdapter());
   Hive.registerAdapter(TransactionModelAdapter());
 
-
   await Future.wait([
     initializeDateFormatting('id_ID', null),
     initializeDateFormatting('en_US', null),
   ]);
 
-
   await di.init();
-
 
   await NotificationService().init();
 

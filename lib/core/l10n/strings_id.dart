@@ -23,6 +23,27 @@ class StringsId extends AppStrings {
   @override String get nav_alarm => 'Alarm';
   @override String get nav_finance => 'Keuangan';
   @override String get nav_password => 'Password';
+  @override String get nav_notifications => 'Notifikasi';
+  @override String get nav_profile => 'Profil';
+  @override String get notif_group_today => 'Hari Ini';
+  @override String get notif_group_tomorrow => 'Besok';
+  @override String get notif_group_upcoming => 'Mendatang';
+  @override String get notif_empty_title => 'Belum Ada Pengingat';
+  @override String get notif_empty_subtitle => 'Alarm dan acara yang akan datang muncul di sini';
+  @override String get notif_kind_alarm => 'Alarm';
+  @override String get notif_kind_event => 'Acara';
+  @override String get notif_kind_holiday => 'Hari Libur';
+  @override String get notif_kind_payday => 'Gajian';
+  @override String get profile_account => 'Akun';
+  @override String get profile_name => 'Nama';
+  @override String get profile_appearance => 'Tampilan';
+  @override String get profile_theme => 'Tema';
+  @override String get profile_language => 'Bahasa';
+  @override String get profile_security => 'Keamanan';
+  @override String get profile_data => 'Data';
+  @override String get profile_export_finance => 'Export Keuangan';
+  @override String get profile_export_password => 'Export Password';
+  @override String get profile_import_password => 'Import Password';
 
   @override String get greeting_morning => 'Selamat Pagi';
   @override String get greeting_afternoon => 'Selamat Siang';

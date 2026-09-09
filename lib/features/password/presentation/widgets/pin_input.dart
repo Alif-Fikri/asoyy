@@ -8,8 +8,6 @@ class PinInput extends StatefulWidget {
   final void Function(String pin) onCompleted;
   final String? errorText;
 
-
-
   final int resetToken;
 
   const PinInput({

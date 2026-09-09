@@ -1,8 +1,6 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:share_plus/share_plus.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
@@ -11,13 +9,12 @@ import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../data/auth_config_repository.dart';
 import '../../domain/entities/password_entity.dart';
-import '../../services/csv_service.dart';
+import '../password_actions.dart';
 import '../bloc/password_bloc.dart';
 import '../bloc/password_event.dart';
 import '../bloc/password_state.dart';
 import '../widgets/password_card.dart';
 import '../widgets/password_form_dialog.dart';
-import 'password_auth_gate.dart';
 
 class PasswordPage extends StatefulWidget {
   final AuthConfigRepository authRepo;
@@ -41,139 +38,14 @@ class _PasswordPageState extends State<PasswordPage> {
     );
   }
 
-
-
   Future<void> _changeAuthMethod() async {
-    final ok = await verifyCurrentAuth(context, widget.authRepo);
-    if (!ok || !mounted) return;
-    await widget.authRepo.clear();
-    if (!mounted) return;
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (ctx) => PasswordAuthGate(
-          repo: widget.authRepo,
-          onAuthenticated: () => Navigator.of(ctx).pop(),
-        ),
-      ),
-    );
+    await changeAuthMethod(context, widget.authRepo);
     if (mounted) setState(() {});
   }
 
-  Future<void> _exportCsv() async {
-    final s = context.strings;
-    final isId = context.currentLocale.languageCode == 'id';
-    final bloc = context.read<PasswordBloc>();
-    final screenSize = MediaQuery.of(context).size;
+  Future<void> _exportCsv() => exportPasswordsCsv(context, widget.authRepo);
 
-    final ok = await verifyCurrentAuth(context, widget.authRepo);
-    if (!ok || !mounted) return;
-
-    final state = bloc.state;
-    if (state is! PasswordLoaded || state.all.isEmpty) return;
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(s.pass_export),
-        content: Text(s.pass_export_warning),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(isId ? 'Batal' : 'Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Export'),
-          ),
-        ],
-      ),
-    );
-    if (confirm != true || !mounted) return;
-
-    try {
-      final file = await CsvService().exportToFile(state.all);
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(isId ? 'CSV disimpan' : 'CSV saved'),
-          action: SnackBarAction(
-            label: isId ? 'Bagikan' : 'Share',
-            onPressed: () => Share.shareXFiles(
-              [XFile(file.path, mimeType: 'text/csv')],
-              sharePositionOrigin: Rect.fromLTWH(
-                0, screenSize.height - 100, screenSize.width, 100),
-            ),
-          ),
-          duration: const Duration(seconds: 4),
-        ),
-      );
-    } catch (_) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(s.pass_import_error)),
-        );
-      }
-    }
-  }
-
-  Future<void> _importCsv() async {
-    final s = context.strings;
-    final isId = context.currentLocale.languageCode == 'id';
-    final bloc = context.read<PasswordBloc>();
-
-    final ok = await verifyCurrentAuth(context, widget.authRepo);
-    if (!ok || !mounted) return;
-
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['csv'],
-      withData: true,
-    );
-    if (result == null || result.files.single.bytes == null || !mounted) return;
-
-    final passwords = CsvService().importFromBytes(result.files.single.bytes!);
-
-    if (passwords.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.pass_import_empty)),
-      );
-      return;
-    }
-
-    final confirm = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(s.pass_import_title),
-        content: Text(
-          isId
-              ? 'Ditemukan ${passwords.length} password. Import semua?'
-              : 'Found ${passwords.length} password${passwords.length == 1 ? '' : 's'}. Import all?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(isId ? 'Batal' : 'Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Import'),
-          ),
-        ],
-      ),
-    );
-    if (confirm != true || !mounted) return;
-
-    bloc.add(ImportPasswordsRequested(passwords));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isId
-              ? '${passwords.length} password diimport'
-              : '${passwords.length} password${passwords.length == 1 ? '' : 's'} imported',
-        ),
-      ),
-    );
-  }
+  Future<void> _importCsv() => importPasswordsCsv(context, widget.authRepo);
 
   @override
   Widget build(BuildContext context) {

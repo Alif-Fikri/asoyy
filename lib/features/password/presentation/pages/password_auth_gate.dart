@@ -29,8 +29,6 @@ class PasswordAuthGate extends StatefulWidget {
 
 class _PasswordAuthGateState extends State<PasswordAuthGate> {
 
-
-
   AuthMethod? _setupChoice;
   bool _recoveryFlow = false;
 
@@ -147,9 +145,7 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
       await widget.repo.clear();
       await widget.repo.clearPasswords();
     } catch (_) {
-      // Even if clearing storage partially fails, fall through so the UI
-      // still reflects whatever succeeded instead of freezing on the old
-      // lock screen.
+
     }
     if (!mounted) return;
     context.read<PasswordBloc>().add(LoadPasswords());
@@ -554,7 +550,6 @@ class _LockScreenState extends State<_LockScreen> {
   @override
   void initState() {
     super.initState();
-
 
     if (widget.method == AuthMethod.biometric) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryBiometric());

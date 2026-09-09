@@ -16,20 +16,38 @@ abstract class AppStrings {
   String get confirm;
   String get delete_message;
 
-
   String get app_name;
   String get nav_home;
   String get nav_calendar;
   String get nav_alarm;
   String get nav_finance;
   String get nav_password;
-
+  String get nav_notifications;
+  String get nav_profile;
+  String get notif_group_today;
+  String get notif_group_tomorrow;
+  String get notif_group_upcoming;
+  String get notif_empty_title;
+  String get notif_empty_subtitle;
+  String get notif_kind_alarm;
+  String get notif_kind_event;
+  String get notif_kind_holiday;
+  String get notif_kind_payday;
+  String get profile_account;
+  String get profile_name;
+  String get profile_appearance;
+  String get profile_theme;
+  String get profile_language;
+  String get profile_security;
+  String get profile_data;
+  String get profile_export_finance;
+  String get profile_export_password;
+  String get profile_import_password;
 
   String get greeting_morning;
   String get greeting_afternoon;
   String get greeting_evening;
   String get greeting_night;
-
 
   String get home_balance;
   String get home_active_alarms;
@@ -43,7 +61,6 @@ abstract class AppStrings {
   String get see_all;
   String get edit_name;
   String get enter_name;
-
 
   String get cal_title;
   String get cal_add_event;
@@ -63,7 +80,6 @@ abstract class AppStrings {
   String get cal_holiday_national;
   String get cal_cuti_bersama;
   String get cal_legend;
-
 
   String get alarm_title;
   String get alarm_add;
@@ -85,9 +101,7 @@ abstract class AppStrings {
   String get alarm_stop;
   String get alarm_disabled;
 
-
   String get calc_title;
-
 
   String get pass_title;
   String get pass_add;
@@ -117,7 +131,6 @@ abstract class AppStrings {
   String get pass_import_title;
   String get pass_import_empty;
   String get pass_import_error;
-
 
   String get auth_setup_title;
   String get auth_setup_subtitle;
@@ -155,7 +168,6 @@ abstract class AppStrings {
   String get auth_reset_device_failed_title;
   String get auth_reset_device_failed_desc;
 
-
   String get fin_title;
   String get fin_add;
   String get fin_balance;
@@ -182,13 +194,11 @@ abstract class AppStrings {
   String get fin_export_to;
   String get fin_export_empty;
 
-
   String get cat_salary;
   String get cat_freelance;
   String get cat_investment;
   String get cat_bonus;
   String get cat_gift;
-
 
   String get cat_food;
   String get cat_transport;

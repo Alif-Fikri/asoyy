@@ -145,7 +145,6 @@ class _PatternPainter extends CustomPainter {
     final outerRadius = cellW * 0.16;
     final innerRadius = cellW * 0.06;
 
-
     if (sequence.length > 1) {
       final linePaint = Paint()
         ..color = lineColor.withValues(alpha: 0.7)
@@ -177,11 +176,9 @@ class _PatternPainter extends CustomPainter {
       );
     }
 
-
     for (int i = 0; i < _gridSize * _gridSize; i++) {
       final isActive = sequence.contains(i);
       final center = _dotCenter(i, size);
-
 
       canvas.drawCircle(
         center,

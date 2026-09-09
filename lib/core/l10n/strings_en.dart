@@ -23,6 +23,27 @@ class StringsEn extends AppStrings {
   @override String get nav_alarm => 'Alarm';
   @override String get nav_finance => 'Finance';
   @override String get nav_password => 'Password';
+  @override String get nav_notifications => 'Notifications';
+  @override String get nav_profile => 'Profile';
+  @override String get notif_group_today => 'Today';
+  @override String get notif_group_tomorrow => 'Tomorrow';
+  @override String get notif_group_upcoming => 'Upcoming';
+  @override String get notif_empty_title => 'No Reminders Yet';
+  @override String get notif_empty_subtitle => 'Upcoming alarms and events will show up here';
+  @override String get notif_kind_alarm => 'Alarm';
+  @override String get notif_kind_event => 'Event';
+  @override String get notif_kind_holiday => 'Holiday';
+  @override String get notif_kind_payday => 'Payday';
+  @override String get profile_account => 'Account';
+  @override String get profile_name => 'Name';
+  @override String get profile_appearance => 'Appearance';
+  @override String get profile_theme => 'Theme';
+  @override String get profile_language => 'Language';
+  @override String get profile_security => 'Security';
+  @override String get profile_data => 'Data';
+  @override String get profile_export_finance => 'Export Finance';
+  @override String get profile_export_password => 'Export Passwords';
+  @override String get profile_import_password => 'Import Passwords';
 
   @override String get greeting_morning => 'Good Morning';
   @override String get greeting_afternoon => 'Good Afternoon';

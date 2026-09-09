@@ -1,6 +1,7 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import '../domain/entities/alarm_entity.dart';
+import 'alarm_schedule.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._();
@@ -36,7 +37,7 @@ class NotificationService {
         await Alarm.set(
           alarmSettings: settings.copyWith(
             id: (baseId + day) % 100000,
-            dateTime: _nextOccurrence(alarm.hour, alarm.minute, day),
+            dateTime: nextOccurrence(alarm.hour, alarm.minute, day),
           ),
         );
       }
@@ -58,7 +59,7 @@ class NotificationService {
   }) {
     return AlarmSettings(
       id: id,
-      dateTime: _nextOccurrence(alarm.hour, alarm.minute, null),
+      dateTime: nextOccurrence(alarm.hour, alarm.minute, null),
       assetAudioPath: 'assets/audio/alarm.wav',
       loopAudio: true,
       vibrate: true,
@@ -76,18 +77,6 @@ class NotificationService {
         stopButton: stopButtonText,
       ),
     );
-  }
-
-  DateTime _nextOccurrence(int hour, int minute, int? weekday) {
-    final now = DateTime.now();
-    var date = DateTime(now.year, now.month, now.day, hour, minute);
-    if (!date.isAfter(now)) date = date.add(const Duration(days: 1));
-    if (weekday != null) {
-      while (date.weekday != weekday) {
-        date = date.add(const Duration(days: 1));
-      }
-    }
-    return date;
   }
 
   String _formatTime(int hour, int minute) =>

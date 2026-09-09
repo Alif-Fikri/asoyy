@@ -3,8 +3,6 @@ import '../domain/entities/holiday_entity.dart';
 abstract class IndonesianHolidays {
   static final List<HolidayEntity> all = [..._holidays2025, ..._holidays2026];
 
-
-
   static final _holidays2025 = <HolidayEntity>[
 
     HolidayEntity(date: DateTime(2025, 1, 1), nameId: 'Tahun Baru Masehi', nameEn: "New Year's Day", type: HolidayType.national),
@@ -34,8 +32,6 @@ abstract class IndonesianHolidays {
     HolidayEntity(date: DateTime(2025, 5, 30), nameId: 'Cuti Bersama Kenaikan Yesus', nameEn: 'Joint Leave – Ascension', type: HolidayType.cutiBersama),
     HolidayEntity(date: DateTime(2025, 12, 26), nameId: 'Cuti Bersama Natal', nameEn: 'Joint Leave – Christmas', type: HolidayType.cutiBersama),
   ];
-
-
 
   static final _holidays2026 = <HolidayEntity>[
     HolidayEntity(date: DateTime(2026, 1, 1), nameId: 'Tahun Baru Masehi', nameEn: "New Year's Day", type: HolidayType.national),

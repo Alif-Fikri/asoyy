@@ -16,7 +16,6 @@ class AuthConfigRepository {
 
   bool get isConfigured => currentMethod != null;
 
-
   Future<void> setMethod(AuthMethod method, {String? secret}) async {
     await _box.put(_methodKey, method.name);
     if (method == AuthMethod.biometric) {
@@ -29,7 +28,6 @@ class AuthConfigRepository {
     }
   }
 
-
   Future<void> clear() async {
     await _box.delete(_methodKey);
     await _box.delete(_hashKey);
@@ -38,7 +36,6 @@ class AuthConfigRepository {
   Future<void> clearPasswords() async {
     await Hive.box<PasswordModel>(AppConstants.passwordsBox).clear();
   }
-
 
   bool verify(String secret) {
     final stored = _box.get(_hashKey) as String?;

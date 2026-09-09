@@ -44,11 +44,9 @@ Future<void> init() async {
 
   await Hive.openBox(AppConstants.settingsBox);
 
-
   final notificationService = NotificationService();
   await notificationService.init();
   sl.registerSingleton<NotificationService>(notificationService);
-
 
   final calendarDs = await CalendarLocalDatasourceImpl.create();
   sl.registerSingleton<CalendarLocalDatasource>(calendarDs);
@@ -59,7 +57,6 @@ Future<void> init() async {
         addEvent: AddEvent(sl()),
         deleteEvent: DeleteEvent(sl()),
       ));
-
 
   final alarmDs = await AlarmLocalDatasourceImpl.create();
   sl.registerSingleton<AlarmLocalDatasource>(alarmDs);
@@ -73,9 +70,7 @@ Future<void> init() async {
         notificationService: sl(),
       ));
 
-
   sl.registerFactory(() => CalculatorBloc());
-
 
   final passwordDs = await PasswordLocalDatasourceImpl.create();
   sl.registerSingleton<PasswordLocalDatasource>(passwordDs);
@@ -86,7 +81,6 @@ Future<void> init() async {
         savePassword: SavePassword(sl()),
         deletePassword: DeletePassword(sl()),
       ));
-
 
   final financeDs = await FinanceLocalDatasourceImpl.create();
   sl.registerSingleton<FinanceLocalDatasource>(financeDs);

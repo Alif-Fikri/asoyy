@@ -15,21 +15,17 @@ import 'core/theme/theme_cubit.dart';
 import 'features/alarm/presentation/bloc/alarm_bloc.dart';
 import 'features/alarm/presentation/bloc/alarm_event.dart';
 import 'features/alarm/presentation/bloc/alarm_state.dart';
-import 'features/alarm/presentation/pages/alarm_page.dart';
 import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'features/calendar/presentation/bloc/calendar_event.dart';
-import 'features/calendar/presentation/pages/calendar_page.dart';
 import 'features/calculator/presentation/bloc/calculator_bloc.dart';
 import 'features/finance/presentation/bloc/finance_bloc.dart';
 import 'features/finance/presentation/bloc/finance_event.dart';
-import 'features/finance/presentation/pages/finance_page.dart';
 import 'features/home/presentation/pages/home_page.dart';
-import 'features/password/data/auth_config_repository.dart';
+import 'features/notifications/presentation/pages/notifications_page.dart';
+import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/password/presentation/bloc/password_bloc.dart';
 import 'features/password/presentation/bloc/password_event.dart';
-import 'features/password/presentation/pages/password_auth_gate.dart';
-import 'features/password/presentation/pages/password_page.dart';
 
 class NexusApp extends StatelessWidget {
   const NexusApp({super.key});
@@ -102,10 +98,8 @@ class _MainShell extends StatefulWidget {
   State<_MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
+class _MainShellState extends State<_MainShell> {
   int _currentIndex = 0;
-  bool _passwordAuthenticated = false;
-  final AuthConfigRepository _authRepo = AuthConfigRepository();
 
   AlarmSet _previousRinging = AlarmSet.empty();
   StreamSubscription<AlarmSet>? _alarmRingSubscription;
@@ -114,7 +108,6 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _previousRinging = Alarm.ringing.value;
     _alarmRingSubscription = Alarm.ringing.listen(_onRingingChanged);
   }
@@ -122,15 +115,7 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   @override
   void dispose() {
     _alarmRingSubscription?.cancel();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      setState(() => _passwordAuthenticated = false);
-    }
   }
 
   Future<void> _onRingingChanged(AlarmSet currentRinging) async {
@@ -178,30 +163,6 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
     }
   }
 
-  Widget _buildPage(int index) {
-    switch (index) {
-      case 0:
-        return HomePage(onNavigate: (i) => setState(() => _currentIndex = i));
-      case 1:
-        return const CalendarPage();
-      case 2:
-        return const AlarmPage();
-      case 3:
-        return const FinancePage();
-      case 4:
-        if (!_passwordAuthenticated) {
-          return PasswordAuthGate(
-            repo: _authRepo,
-            onAuthenticated:
-                () => setState(() => _passwordAuthenticated = true),
-          );
-        }
-        return PasswordPage(authRepo: _authRepo);
-      default:
-        return const SizedBox();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final s = context.strings;
@@ -210,7 +171,11 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
-        children: List.generate(5, _buildPage),
+        children: const [
+          HomePage(),
+          NotificationsPage(),
+          ProfilePage(),
+        ],
       ),
       bottomNavigationBar: DecoratedBox(
         decoration: BoxDecoration(
@@ -230,24 +195,14 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
               label: s.nav_home,
             ),
             NavigationDestination(
-              icon: const Icon(CupertinoIcons.calendar),
-              selectedIcon: const Icon(CupertinoIcons.calendar_today),
-              label: s.nav_calendar,
+              icon: const Icon(CupertinoIcons.bell),
+              selectedIcon: const Icon(CupertinoIcons.bell_fill),
+              label: s.nav_notifications,
             ),
             NavigationDestination(
-              icon: const Icon(CupertinoIcons.alarm),
-              selectedIcon: const Icon(CupertinoIcons.alarm_fill),
-              label: s.nav_alarm,
-            ),
-            NavigationDestination(
-              icon: const Icon(CupertinoIcons.creditcard),
-              selectedIcon: const Icon(CupertinoIcons.creditcard_fill),
-              label: s.nav_finance,
-            ),
-            NavigationDestination(
-              icon: const Icon(CupertinoIcons.lock),
-              selectedIcon: const Icon(CupertinoIcons.lock_fill),
-              label: s.nav_password,
+              icon: const Icon(CupertinoIcons.person),
+              selectedIcon: const Icon(CupertinoIcons.person_fill),
+              label: s.nav_profile,
             ),
           ],
           labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
