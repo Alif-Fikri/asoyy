@@ -26,6 +26,11 @@ class NotificationService {
     );
     await fln.cancelAll();
 
+    await fln
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
     await Alarm.init();
   }
 

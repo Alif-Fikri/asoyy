@@ -103,6 +103,8 @@ class StringsId extends AppStrings {
   @override String get alarm_notification_title => 'Alarm';
   @override String get alarm_stop => 'Matikan';
   @override String get alarm_disabled => 'Nonaktif';
+  @override String get alarm_snooze => 'Tunda 5 Menit';
+  @override String get alarm_ringing_now => 'Alarm berbunyi';
 
   @override String get calc_title => 'Kalkulator';
   @override String get search_title => 'Pencarian';

@@ -103,6 +103,8 @@ class StringsEn extends AppStrings {
   @override String get alarm_notification_title => 'Alarm';
   @override String get alarm_stop => 'Stop';
   @override String get alarm_disabled => 'Disabled';
+  @override String get alarm_snooze => 'Snooze 5 min';
+  @override String get alarm_ringing_now => 'Alarm ringing';
 
   @override String get calc_title => 'Calculator';
   @override String get search_title => 'Search';
