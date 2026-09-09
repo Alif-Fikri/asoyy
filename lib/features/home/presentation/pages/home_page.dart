@@ -21,6 +21,7 @@ import '../../../finance/presentation/pages/finance_page.dart';
 import '../../../password/presentation/bloc/password_bloc.dart';
 import '../../../password/presentation/bloc/password_state.dart';
 import '../../../password/presentation/pages/password_flow_page.dart';
+import '../../../search/presentation/pages/search_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -128,6 +129,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            sliver: SliverToBoxAdapter(child: _SearchBar(s: s)),
+          ),
+          SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
             sliver: SliverToBoxAdapter(child: _QuickStats()),
           ),
@@ -148,6 +153,41 @@ class _HomePageState extends State<HomePage> {
 
 void openFeature(BuildContext context, Widget page) {
   Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
+}
+
+class _SearchBar extends StatelessWidget {
+  final AppStrings s;
+
+  const _SearchBar({required this.s});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Material(
+      color: c.card,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () => openFeature(context, const SearchPage()),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+          child: Row(
+            children: [
+              Icon(CupertinoIcons.search, color: c.textSecondary, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  s.search_hint,
+                  style: TextStyle(color: c.textHint, fontSize: 14),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _QuickStats extends StatelessWidget {

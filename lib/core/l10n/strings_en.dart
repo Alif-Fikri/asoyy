@@ -103,6 +103,16 @@ class StringsEn extends AppStrings {
   @override String get alarm_disabled => 'Disabled';
 
   @override String get calc_title => 'Calculator';
+  @override String get search_title => 'Search';
+  @override String get search_hint => 'Search transactions, events, passwords, alarms...';
+  @override String get search_prompt_title => 'Search anything';
+  @override String get search_prompt_subtitle => 'Type to search across transactions, calendar, passwords, and alarms at once';
+  @override String get search_empty_title => 'No results found';
+  @override String get search_empty_subtitle => 'Try a different keyword';
+  @override String get search_section_finance => 'Finance';
+  @override String get search_section_calendar => 'Calendar';
+  @override String get search_section_password => 'Password';
+  @override String get search_section_alarm => 'Alarm';
 
   @override String get convert_title => 'Converter';
   @override String get convert_units => 'Units';

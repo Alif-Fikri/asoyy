@@ -102,6 +102,16 @@ abstract class AppStrings {
   String get alarm_disabled;
 
   String get calc_title;
+  String get search_title;
+  String get search_hint;
+  String get search_prompt_title;
+  String get search_prompt_subtitle;
+  String get search_empty_title;
+  String get search_empty_subtitle;
+  String get search_section_finance;
+  String get search_section_calendar;
+  String get search_section_password;
+  String get search_section_alarm;
 
   String get convert_title;
   String get convert_units;

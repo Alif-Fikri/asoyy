@@ -103,6 +103,16 @@ class StringsId extends AppStrings {
   @override String get alarm_disabled => 'Nonaktif';
 
   @override String get calc_title => 'Kalkulator';
+  @override String get search_title => 'Pencarian';
+  @override String get search_hint => 'Cari transaksi, event, password, alarm...';
+  @override String get search_prompt_title => 'Cari apa saja';
+  @override String get search_prompt_subtitle => 'Ketik untuk mencari di transaksi, kalender, password, dan alarm sekaligus';
+  @override String get search_empty_title => 'Tidak ditemukan';
+  @override String get search_empty_subtitle => 'Coba kata kunci lain';
+  @override String get search_section_finance => 'Keuangan';
+  @override String get search_section_calendar => 'Kalender';
+  @override String get search_section_password => 'Password';
+  @override String get search_section_alarm => 'Alarm';
 
   @override String get convert_title => 'Konversi';
   @override String get convert_units => 'Satuan';
