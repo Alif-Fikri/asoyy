@@ -26,6 +26,7 @@ import '../../features/converter/data/converter_rates_repository.dart';
 import '../../features/converter/presentation/bloc/converter_cubit.dart';
 
 import '../../features/finance/data/datasources/finance_local_datasource.dart';
+import '../../features/finance/data/recurring_transaction_repository.dart';
 import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
 import '../../features/finance/domain/usecases/add_transaction.dart';
@@ -92,6 +93,9 @@ Future<void> init() async {
   sl.registerSingleton<FinanceLocalDatasource>(financeDs);
   sl.registerSingleton<FinanceRepository>(
       FinanceRepositoryImpl(sl<FinanceLocalDatasource>()));
+  sl.registerLazySingleton(() => RecurringTransactionRepository());
+  await sl<RecurringTransactionRepository>()
+      .generateDueTransactions(sl<FinanceRepository>());
   sl.registerFactory(() => FinanceBloc(
         getTransactions: GetTransactions(sl()),
         addTransaction: AddTransaction(sl()),

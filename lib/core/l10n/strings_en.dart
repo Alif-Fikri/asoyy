@@ -243,6 +243,17 @@ class StringsEn extends AppStrings {
   @override String get fin_category_exists => 'Category already exists';
   @override String get fin_delete_category_title => 'Delete Category?';
   @override String get fin_delete_category_warning => 'This category will be removed from the picker. Transactions that already use it will keep their label.';
+  @override String get fin_quick_add => 'Quick Add';
+  @override String get fin_quick_add_hint => 'Type a transaction in plain language';
+  @override String get fin_quick_add_placeholder => 'e.g. beli kopi 20rb';
+  @override String get fin_quick_add_unparsed => 'Include an amount, e.g. "20rb" or "20000"';
+  @override String get fin_recurring => 'Recurring Transactions';
+  @override String get fin_recurring_title => 'Recurring Transactions';
+  @override String get fin_recurring_add => 'Add Recurring';
+  @override String get fin_recurring_empty_title => 'No Recurring Transactions Yet';
+  @override String get fin_recurring_empty_subtitle => 'Add a monthly bill so it gets recorded automatically every month';
+  @override String get fin_recurring_day_label => 'Every Day of Month';
+  @override String fin_recurring_day_value(int day) => 'Day $day';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'From';
   @override String get fin_export_to => 'To';

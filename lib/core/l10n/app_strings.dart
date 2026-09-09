@@ -242,6 +242,17 @@ abstract class AppStrings {
   String get fin_category_exists;
   String get fin_delete_category_title;
   String get fin_delete_category_warning;
+  String get fin_quick_add;
+  String get fin_quick_add_hint;
+  String get fin_quick_add_placeholder;
+  String get fin_quick_add_unparsed;
+  String get fin_recurring;
+  String get fin_recurring_title;
+  String get fin_recurring_add;
+  String get fin_recurring_empty_title;
+  String get fin_recurring_empty_subtitle;
+  String get fin_recurring_day_label;
+  String fin_recurring_day_value(int day);
   String get fin_export;
   String get fin_export_from;
   String get fin_export_to;

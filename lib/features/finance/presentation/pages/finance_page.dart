@@ -16,8 +16,10 @@ import '../widgets/finance_category_chart.dart';
 import '../widgets/finance_chart.dart';
 import '../widgets/finance_export_dialog.dart';
 import '../widgets/finance_summary.dart';
+import '../widgets/quick_add_dialog.dart';
 import '../widgets/transaction_card.dart';
 import '../widgets/transaction_form_dialog.dart';
+import 'recurring_transactions_page.dart';
 
 class FinancePage extends StatelessWidget {
   const FinancePage({super.key});
@@ -36,6 +38,21 @@ class FinancePage extends StatelessWidget {
 
   void _showExportDialog(BuildContext context, FinanceLoaded state) {
     showFinanceExportSheet(context, state.all);
+  }
+
+  void _showQuickAdd(BuildContext context) {
+    showQuickAddSheet(
+      context,
+      (tx) => context.read<FinanceBloc>().add(AddTransactionRequested(tx)),
+    );
+  }
+
+  void _openRecurring(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => RecurringTransactionsPage(
+        onChanged: () => context.read<FinanceBloc>().add(LoadTransactions()),
+      ),
+    ));
   }
 
   void _showPeriodPicker(BuildContext context, FinanceLoaded state) {
@@ -63,7 +80,6 @@ class FinancePage extends StatelessWidget {
           backgroundColor: c.background,
           appBar: NexusAppBar(
             title: context.strings.fin_title,
-            showLanguageToggle: true,
             extraActions: [
               if (state is FinanceLoaded)
                 IconButton(
@@ -71,6 +87,16 @@ class FinancePage extends StatelessWidget {
                   onPressed: () => _showExportDialog(context, state),
                   tooltip: context.strings.fin_export,
                 ),
+              IconButton(
+                icon: const Icon(CupertinoIcons.repeat),
+                onPressed: () => _openRecurring(context),
+                tooltip: context.strings.fin_recurring,
+              ),
+              IconButton(
+                icon: const Icon(CupertinoIcons.sparkles),
+                onPressed: () => _showQuickAdd(context),
+                tooltip: context.strings.fin_quick_add,
+              ),
               IconButton(
                 icon: const Icon(CupertinoIcons.plus_circle),
                 onPressed: () => _showAddTransaction(context),

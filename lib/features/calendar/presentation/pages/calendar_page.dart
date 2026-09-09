@@ -188,7 +188,6 @@ class CalendarPage extends StatelessWidget {
           backgroundColor: c.background,
           appBar: NexusAppBar(
             title: s.cal_title,
-            showLanguageToggle: true,
             extraActions: [
               IconButton(
                 icon: Icon(

@@ -57,7 +57,6 @@ class _PasswordPageState extends State<PasswordPage> {
           backgroundColor: c.background,
           appBar: NexusAppBar(
             title: s.pass_title,
-            showLanguageToggle: true,
             extraActions: [
               IconButton(
                 icon: const Icon(CupertinoIcons.shield),

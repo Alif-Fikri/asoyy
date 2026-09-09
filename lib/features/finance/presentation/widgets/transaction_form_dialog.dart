@@ -53,7 +53,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
           : _expenseCategories(s);
 
   List<String> _categories(AppStrings s) => [
-        ..._defaultCategories(s, _type),
+        ..._categoryRepo.visibleDefaults(_type, _defaultCategories(s, _type)),
         ..._categoryRepo.getCustom(_type),
       ];
 
@@ -70,7 +70,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
         selected: _category,
         color: color,
         repo: _categoryRepo,
-        defaults: _defaultCategories(context.strings, _type),
+        allDefaults: _defaultCategories(context.strings, _type),
       ),
     );
     if (result != null && mounted) setState(() => _category = result);
@@ -243,14 +243,14 @@ class _CategoryPickerSheet extends StatefulWidget {
   final String selected;
   final Color color;
   final FinanceCategoryRepository repo;
-  final List<String> defaults;
+  final List<String> allDefaults;
 
   const _CategoryPickerSheet({
     required this.type,
     required this.selected,
     required this.color,
     required this.repo,
-    required this.defaults,
+    required this.allDefaults,
   });
 
   @override
@@ -259,19 +259,21 @@ class _CategoryPickerSheet extends StatefulWidget {
 
 class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
   late List<String> _custom;
+  late List<String> _visibleDefaults;
   late String _selected;
 
   @override
   void initState() {
     super.initState();
     _custom = widget.repo.getCustom(widget.type);
+    _visibleDefaults = widget.repo.visibleDefaults(widget.type, widget.allDefaults);
     _selected = widget.selected;
   }
 
   Future<void> _addCategory() async {
     final s = context.strings;
     final controller = TextEditingController();
-    final all = [...widget.defaults, ..._custom];
+    final all = [..._visibleDefaults, ..._custom];
     final name = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -306,7 +308,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
     Navigator.pop(context, name);
   }
 
-  Future<void> _deleteCategory(String name) async {
+  Future<void> _deleteCategory(String name, {required bool isDefault}) async {
     final s = context.strings;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -327,12 +329,18 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
       ),
     );
     if (confirmed != true || !mounted) return;
-    await widget.repo.remove(widget.type, name);
+    if (isDefault) {
+      await widget.repo.hideDefault(widget.type, name);
+    } else {
+      await widget.repo.remove(widget.type, name);
+    }
     if (!mounted) return;
     setState(() {
       _custom = widget.repo.getCustom(widget.type);
+      _visibleDefaults =
+          widget.repo.visibleDefaults(widget.type, widget.allDefaults);
       if (_selected == name) {
-        final remaining = [...widget.defaults, ..._custom];
+        final remaining = [..._visibleDefaults, ..._custom];
         _selected = remaining.isNotEmpty ? remaining.first : '';
       }
     });
@@ -345,7 +353,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
   Widget build(BuildContext context) {
     final c = context.colors;
     final s = context.strings;
-    final all = [...widget.defaults, ..._custom];
+    final all = [..._visibleDefaults, ..._custom];
 
     return Container(
       constraints:
@@ -403,7 +411,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
               separatorBuilder: (_, _) => Divider(height: 1, color: c.divider),
               itemBuilder: (ctx, i) {
                 final cat = all[i];
-                final isCustom = i >= widget.defaults.length;
+                final isDefault = i < _visibleDefaults.length;
                 final isSelected = cat == _selected;
                 return ListTile(
                   onTap: () => Navigator.pop(context, cat),
@@ -423,13 +431,12 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
                           isSelected ? FontWeight.w600 : FontWeight.normal,
                     ),
                   ),
-                  trailing: isCustom
-                      ? IconButton(
-                          icon: Icon(CupertinoIcons.trash,
-                              size: 18, color: c.textHint),
-                          onPressed: () => _deleteCategory(cat),
-                        )
-                      : null,
+                  trailing: IconButton(
+                    icon: Icon(CupertinoIcons.trash,
+                        size: 18, color: c.textHint),
+                    onPressed: () =>
+                        _deleteCategory(cat, isDefault: isDefault),
+                  ),
                 );
               },
             ),

@@ -243,6 +243,17 @@ class StringsId extends AppStrings {
   @override String get fin_category_exists => 'Kategori sudah ada';
   @override String get fin_delete_category_title => 'Hapus Kategori?';
   @override String get fin_delete_category_warning => 'Kategori ini akan dihapus dari daftar pilihan. Transaksi yang sudah memakai kategori ini tidak akan berubah.';
+  @override String get fin_quick_add => 'Tambah Cepat';
+  @override String get fin_quick_add_hint => 'Ketik transaksi dengan bahasa sehari-hari';
+  @override String get fin_quick_add_placeholder => 'contoh: beli kopi 20rb';
+  @override String get fin_quick_add_unparsed => 'Sertakan nominal, misal "20rb" atau "20000"';
+  @override String get fin_recurring => 'Transaksi Berulang';
+  @override String get fin_recurring_title => 'Transaksi Berulang';
+  @override String get fin_recurring_add => 'Tambah Berulang';
+  @override String get fin_recurring_empty_title => 'Belum Ada Transaksi Berulang';
+  @override String get fin_recurring_empty_subtitle => 'Tambahkan tagihan bulanan agar otomatis tercatat setiap bulan';
+  @override String get fin_recurring_day_label => 'Setiap Tanggal';
+  @override String fin_recurring_day_value(int day) => 'Tanggal $day';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'Dari';
   @override String get fin_export_to => 'Sampai';

@@ -38,7 +38,6 @@ class AlarmPage extends StatelessWidget {
           backgroundColor: c.background,
           appBar: NexusAppBar(
             title: context.strings.alarm_title,
-            showLanguageToggle: true,
             extraActions: [
               IconButton(
                 icon: const Icon(CupertinoIcons.plus_circle),

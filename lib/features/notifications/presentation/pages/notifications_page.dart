@@ -27,7 +27,7 @@ class NotificationsPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: c.background,
-      appBar: NexusAppBar(title: s.nav_notifications, showLanguageToggle: true),
+      appBar: NexusAppBar(title: s.nav_notifications),
       body: BlocBuilder<AlarmBloc, AlarmState>(
         builder: (context, alarmState) {
           return BlocBuilder<CalendarBloc, CalendarState>(

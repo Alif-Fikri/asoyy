@@ -19,7 +19,6 @@ class ConverterPage extends StatelessWidget {
         backgroundColor: c.background,
         appBar: NexusAppBar(
           title: s.convert_title,
-          showLanguageToggle: true,
         ),
         body: SafeArea(
           child: Column(
