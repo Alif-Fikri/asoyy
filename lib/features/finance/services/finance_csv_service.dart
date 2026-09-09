@@ -35,6 +35,28 @@ class FinanceCsvService {
         _escape(t.notes),
       ].join(','));
     }
+
+    final expenseByCategory = <String, double>{};
+    for (final t in transactions.where((t) => !t.isIncome)) {
+      expenseByCategory[t.category] =
+          (expenseByCategory[t.category] ?? 0) + t.amount;
+    }
+    if (expenseByCategory.isNotEmpty) {
+      final entries = expenseByCategory.entries.toList()
+        ..sort((a, b) => b.value.compareTo(a.value));
+      final totalExpense = entries.fold(0.0, (sum, e) => sum + e.value);
+      buffer.writeln();
+      buffer.writeln('summary_category,total_expense,percentage');
+      for (final e in entries) {
+        final pct = totalExpense == 0 ? 0 : e.value / totalExpense * 100;
+        buffer.writeln([
+          _escape(e.key),
+          e.value.toStringAsFixed(2),
+          '${pct.toStringAsFixed(1)}%',
+        ].join(','));
+      }
+    }
+
     return buffer.toString();
   }
 
