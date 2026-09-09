@@ -53,7 +53,7 @@ class StringsEn extends AppStrings {
   @override String get home_balance => 'Balance';
   @override String get home_active_alarms => 'Active Alarms';
   @override String get home_passwords => 'Passwords';
-  @override String get home_features => 'Features';
+  @override String get home_features => 'Menu';
   @override String get home_upcoming => 'Upcoming Events';
   @override String get home_today => 'Today';
   @override String get home_tomorrow => 'Tomorrow';
@@ -168,6 +168,7 @@ class StringsEn extends AppStrings {
   @override String get auth_reset_wipe_desc => 'All saved passwords will be permanently deleted.';
   @override String get auth_reset_device_failed_title => 'Verification Failed';
   @override String get auth_reset_device_failed_desc => 'Device verification is unavailable or was cancelled. Try again, or use the erase-everything option.';
+  @override String get auth_verify_forgot_guide => 'Verification failed. Open Password Manager and tap "Forgot?" on the lock screen to recover access without deleting your passwords.';
 
   @override String get fin_title => 'Finance';
   @override String get fin_add => 'Add Transaction';

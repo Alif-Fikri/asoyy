@@ -784,6 +784,29 @@ class _VerifyDialogState extends State<_VerifyDialog> {
     }
   }
 
+  Future<void> _onForgot() async {
+    final s = context.strings;
+    final verified = await _verifyBiometric(context);
+    if (!mounted) return;
+    if (verified) {
+      Navigator.of(context).pop(true);
+      return;
+    }
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.auth_reset_device_failed_title),
+        content: Text(s.auth_verify_forgot_guide),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(s.close),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
@@ -832,6 +855,14 @@ class _VerifyDialogState extends State<_VerifyDialog> {
                 errorText: _error,
                 resetToken: _resetToken,
               ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: _onForgot,
+              child: Text(
+                s.auth_forgot_button,
+                style: TextStyle(color: c.textSecondary, fontSize: 13),
+              ),
+            ),
           ],
         ),
       ),

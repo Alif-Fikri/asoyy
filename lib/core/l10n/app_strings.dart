@@ -167,6 +167,7 @@ abstract class AppStrings {
   String get auth_reset_wipe_desc;
   String get auth_reset_device_failed_title;
   String get auth_reset_device_failed_desc;
+  String get auth_verify_forgot_guide;
 
   String get fin_title;
   String get fin_add;

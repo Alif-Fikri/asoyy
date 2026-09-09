@@ -6,6 +6,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/name_prefs.dart';
 import '../../../../core/widgets/ios_section.dart';
+import '../../../../core/widgets/menu_icon.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../../../core/widgets/toggle_controls.dart';
 import '../../../finance/presentation/bloc/finance_bloc.dart';
@@ -58,9 +59,9 @@ class _ProfilePageState extends State<ProfilePage> {
             header: s.profile_account,
             children: [
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.person,
-                  color: AppColors.primary,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_person.png',
+                  size: 40,
                 ),
                 title: s.profile_name,
                 subtitle: _userName,
@@ -73,17 +74,17 @@ class _ProfilePageState extends State<ProfilePage> {
             header: s.profile_appearance,
             children: [
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.paintbrush,
-                  color: AppColors.calendarColor,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_theme.png',
+                  size: 40,
                 ),
                 title: s.profile_theme,
                 trailing: const ThemeToggleButton(),
               ),
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.globe,
-                  color: AppColors.secondary,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_language.png',
+                  size: 40,
                 ),
                 title: s.profile_language,
                 trailing: const LanguageToggleChip(),
@@ -94,9 +95,9 @@ class _ProfilePageState extends State<ProfilePage> {
             header: s.profile_security,
             children: [
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.shield,
-                  color: AppColors.passwordColor,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_security.png',
+                  size: 40,
                 ),
                 title: s.auth_change_method,
                 showChevron: true,
@@ -108,27 +109,27 @@ class _ProfilePageState extends State<ProfilePage> {
             header: s.profile_data,
             children: [
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.arrow_down_to_line,
-                  color: AppColors.financeColor,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_finance.png',
+                  size: 40,
                 ),
                 title: s.profile_export_finance,
                 showChevron: true,
                 onTap: _exportFinance,
               ),
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.arrow_down_to_line,
-                  color: AppColors.passwordColor,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_download.png',
+                  size: 40,
                 ),
                 title: s.profile_export_password,
                 showChevron: true,
                 onTap: () => exportPasswordsCsv(context, _authRepo),
               ),
               IosRow(
-                leading: const IosIcon(
-                  icon: CupertinoIcons.arrow_up_circle,
-                  color: AppColors.income,
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_upload.png',
+                  size: 40,
                 ),
                 title: s.profile_import_password,
                 showChevron: true,

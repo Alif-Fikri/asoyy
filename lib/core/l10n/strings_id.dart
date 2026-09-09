@@ -53,7 +53,7 @@ class StringsId extends AppStrings {
   @override String get home_balance => 'Saldo';
   @override String get home_active_alarms => 'Alarm Aktif';
   @override String get home_passwords => 'Password';
-  @override String get home_features => 'Fitur';
+  @override String get home_features => 'Menu';
   @override String get home_upcoming => 'Event Mendatang';
   @override String get home_today => 'Hari ini';
   @override String get home_tomorrow => 'Besok';
@@ -168,6 +168,7 @@ class StringsId extends AppStrings {
   @override String get auth_reset_wipe_desc => 'Semua password tersimpan akan terhapus permanen.';
   @override String get auth_reset_device_failed_title => 'Verifikasi Gagal';
   @override String get auth_reset_device_failed_desc => 'Verifikasi perangkat tidak tersedia atau dibatalkan. Coba lagi, atau gunakan opsi hapus semua data.';
+  @override String get auth_verify_forgot_guide => 'Verifikasi gagal. Buka Password Manager lalu ketuk "Lupa?" di layar kunci untuk memulihkan akses tanpa menghapus password Anda.';
 
   @override String get fin_title => 'Keuangan';
   @override String get fin_add => 'Tambah Transaksi';

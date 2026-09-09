@@ -8,7 +8,7 @@ import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/name_prefs.dart';
 import '../../../../core/widgets/app_card.dart';
-import '../../../../core/widgets/ios_section.dart';
+import '../../../../core/widgets/menu_icon.dart';
 import '../../../alarm/presentation/bloc/alarm_bloc.dart';
 import '../../../alarm/presentation/bloc/alarm_state.dart';
 import '../../../alarm/presentation/pages/alarm_page.dart';
@@ -173,55 +173,114 @@ class _FeatureMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = context.strings;
-    return IosSection(
-      header: s.home_features,
-      children: [
-        IosRow(
-          leading: const IosIcon(
-            icon: CupertinoIcons.calendar,
-            color: AppColors.calendarColor,
+    final items = [
+      _MenuItemData(
+        asset: 'assets/images/menu_calendar.png',
+        label: s.nav_calendar,
+        onTap: () => openFeature(context, const CalendarPage()),
+      ),
+      _MenuItemData(
+        asset: 'assets/images/menu_alarm.png',
+        label: s.nav_alarm,
+        onTap: () => openFeature(context, const AlarmPage()),
+      ),
+      _MenuItemData(
+        asset: 'assets/images/menu_calculator.png',
+        label: s.calc_title,
+        onTap: () => openFeature(context, const CalculatorPage()),
+      ),
+      _MenuItemData(
+        asset: 'assets/images/menu_finance.png',
+        label: s.nav_finance,
+        onTap: () => openFeature(context, const FinancePage()),
+      ),
+      _MenuItemData(
+        asset: 'assets/images/menu_password.png',
+        label: s.nav_password,
+        onTap: () => openFeature(context, const PasswordFlowPage()),
+      ),
+    ];
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
+            child: Text(
+              s.home_features.toUpperCase(),
+              style: TextStyle(
+                color: context.colors.textSecondary,
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
+              ),
+            ),
           ),
-          title: s.nav_calendar,
-          showChevron: true,
-          onTap: () => openFeature(context, const CalendarPage()),
-        ),
-        IosRow(
-          leading: const IosIcon(
-            icon: CupertinoIcons.alarm,
-            color: AppColors.alarmColor,
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 14,
+            crossAxisSpacing: 14,
+            childAspectRatio: 1.9,
+            children: items.map((item) => _MenuTile(item: item)).toList(),
           ),
-          title: s.nav_alarm,
-          showChevron: true,
-          onTap: () => openFeature(context, const AlarmPage()),
-        ),
-        IosRow(
-          leading: const IosIcon(
-            icon: CupertinoIcons.plus_slash_minus,
-            color: AppColors.calculatorColor,
+        ],
+      ),
+    );
+  }
+}
+
+class _MenuItemData {
+  final String asset;
+  final String label;
+  final VoidCallback onTap;
+
+  const _MenuItemData({
+    required this.asset,
+    required this.label,
+    required this.onTap,
+  });
+}
+
+class _MenuTile extends StatelessWidget {
+  final _MenuItemData item;
+
+  const _MenuTile({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Material(
+      color: c.card,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: item.onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              MenuIconImage(asset: item.asset, size: 46),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  item.label,
+                  style: TextStyle(
+                    color: c.textPrimary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
           ),
-          title: s.calc_title,
-          showChevron: true,
-          onTap: () => openFeature(context, const CalculatorPage()),
         ),
-        IosRow(
-          leading: const IosIcon(
-            icon: CupertinoIcons.creditcard,
-            color: AppColors.financeColor,
-          ),
-          title: s.nav_finance,
-          showChevron: true,
-          onTap: () => openFeature(context, const FinancePage()),
-        ),
-        IosRow(
-          leading: const IosIcon(
-            icon: CupertinoIcons.lock,
-            color: AppColors.passwordColor,
-          ),
-          title: s.nav_password,
-          showChevron: true,
-          onTap: () => openFeature(context, const PasswordFlowPage()),
-        ),
-      ],
+      ),
     );
   }
 }
