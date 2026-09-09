@@ -66,7 +66,9 @@ class _PasswordFormDialogState extends State<PasswordFormDialog> {
     final s = context.strings;
     return Container(
       padding: EdgeInsets.fromLTRB(
-          24, 16, 24, MediaQuery.of(context).viewInsets.bottom + 24),
+          24, 16, 24,
+          MediaQuery.of(context).viewInsets.bottom +
+              MediaQuery.of(context).padding.bottom + 24),
       decoration: BoxDecoration(
         color: c.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),

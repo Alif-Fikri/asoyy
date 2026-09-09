@@ -96,7 +96,7 @@ class _PasswordPageState extends State<PasswordPage> {
               ),
             ],
           ),
-          body: _buildBody(context, state),
+          body: SafeArea(child: _buildBody(context, state)),
         );
       },
     );

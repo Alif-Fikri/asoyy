@@ -161,16 +161,18 @@ class CalendarPage extends StatelessWidget {
         if (state is CalendarLoading) {
           return Scaffold(
             backgroundColor: c.background,
-            body: const Center(child: CircularProgressIndicator()),
+            body: const SafeArea(child: Center(child: CircularProgressIndicator())),
           );
         }
         if (state is CalendarError) {
           return Scaffold(
             backgroundColor: c.background,
-            body: Center(
-              child: Text(
-                state.message,
-                style: const TextStyle(color: AppColors.alarmColor),
+            body: SafeArea(
+              child: Center(
+                child: Text(
+                  state.message,
+                  style: const TextStyle(color: AppColors.alarmColor),
+                ),
               ),
             ),
           );

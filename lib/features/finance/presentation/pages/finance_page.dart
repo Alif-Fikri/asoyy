@@ -77,7 +77,7 @@ class FinancePage extends StatelessWidget {
               ),
             ],
           ),
-          body: _buildBody(context, state),
+          body: SafeArea(child: _buildBody(context, state)),
         );
       },
     );
