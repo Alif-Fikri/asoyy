@@ -32,6 +32,9 @@ class AlarmBloc extends Bloc<AlarmBlocEvent, AlarmState> {
     emit(AlarmLoading());
     try {
       final alarms = await getAlarms(const NoParams());
+      for (final alarm in alarms.where((a) => a.isEnabled)) {
+        await notificationService.scheduleAlarm(alarm);
+      }
       emit(AlarmLoaded(alarms));
     } catch (e) {
       emit(AlarmError(e.toString()));

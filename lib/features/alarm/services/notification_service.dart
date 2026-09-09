@@ -75,6 +75,7 @@ class NotificationService {
       vibrate: true,
       androidFullScreenIntent: true,
       warningNotificationOnKill: true,
+      androidStopAlarmOnTermination: false,
       volumeSettings: VolumeSettings.fade(
         fadeDuration: const Duration(seconds: 5),
         volume: 1.0,
