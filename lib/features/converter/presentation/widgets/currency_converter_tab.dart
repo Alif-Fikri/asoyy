@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -25,7 +26,7 @@ class CurrencyConverterTab extends StatefulWidget {
 class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
   String _from = 'IDR';
   String _to = 'USD';
-  final _amountCtrl = TextEditingController(text: '100000');
+  final _amountCtrl = TextEditingController();
 
   @override
   void dispose() {
@@ -68,7 +69,7 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
         final rates = state.rates.rates;
         final fromRate = rates[_from] ?? 1;
         final toRate = rates[_to] ?? 1;
-        final amount = double.tryParse(_amountCtrl.text.replaceAll(',', '.')) ?? 0;
+        final amount = double.tryParse(_amountCtrl.text.replaceAll('.', '')) ?? 0;
         final result = amount / fromRate * toRate;
         final fmt = NumberFormat.decimalPattern(
           context.currentLocale.languageCode == 'id' ? 'id_ID' : 'en_US',
@@ -82,7 +83,8 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
               AppTextField(
                 label: s.convert_amount,
                 controller: _amountCtrl,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: TextInputType.number,
+                inputFormatters: [_ThousandsInputFormatter()],
                 prefixIcon: CupertinoIcons.money_dollar,
                 onChanged: (_) => setState(() {}),
               ),
@@ -195,6 +197,33 @@ class _CurrencyDropdown extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+}
+
+class _ThousandsInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digits.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i++) {
+      final posFromEnd = digits.length - i;
+      buffer.write(digits[i]);
+      if (posFromEnd > 1 && posFromEnd % 3 == 1) buffer.write('.');
+    }
+    final formatted = buffer.toString();
+    return TextEditingValue(
+      text: formatted,
+      selection: TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

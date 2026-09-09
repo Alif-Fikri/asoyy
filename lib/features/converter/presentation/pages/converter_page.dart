@@ -27,6 +27,7 @@ class ConverterPage extends StatelessWidget {
               labelColor: c.textPrimary,
               unselectedLabelColor: c.textSecondary,
               indicatorColor: c.textPrimary,
+              dividerColor: Colors.transparent,
               tabs: [
                 Tab(text: s.convert_units),
                 Tab(text: s.convert_currency),
