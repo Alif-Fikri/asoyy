@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 import '../theme/app_color_theme.dart';
+import '../theme/design_tokens.dart';
 
 class AppCard extends StatelessWidget {
   final Widget child;
@@ -17,7 +18,7 @@ class AppCard extends StatelessWidget {
     this.padding,
     this.color,
     this.borderColor,
-    this.radius = 16,
+    this.radius = Radii.lg,
     this.onTap,
     this.gradient,
   });
@@ -32,7 +33,7 @@ class AppCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(radius),
         child: Container(
-          padding: padding ?? const EdgeInsets.all(16),
+          padding: padding ?? const EdgeInsets.all(Insets.lg),
           decoration: BoxDecoration(
             color: gradient == null ? (color ?? c.card) : null,
             gradient: gradient,
@@ -58,7 +59,7 @@ class GradientCard extends StatelessWidget {
     required this.child,
     required this.colors,
     this.padding,
-    this.radius = 16,
+    this.radius = Radii.lg,
     this.onTap,
   });
 

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../theme/app_color_theme.dart';
+import '../theme/design_tokens.dart';
 
 class IosSection extends StatelessWidget {
   final String? header;
@@ -14,8 +15,13 @@ class IosSection extends StatelessWidget {
     this.header,
     this.footer,
     required this.children,
-    this.margin = const EdgeInsets.fromLTRB(16, 0, 16, 24),
-    this.dividerIndent = 16,
+    this.margin = const EdgeInsets.fromLTRB(
+      Insets.lg,
+      0,
+      Insets.lg,
+      Insets.xl,
+    ),
+    this.dividerIndent = Insets.lg,
   });
 
   @override
@@ -29,21 +35,25 @@ class IosSection extends StatelessWidget {
         children: [
           if (header != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 6),
+              padding: const EdgeInsets.fromLTRB(
+                Insets.xs,
+                0,
+                Insets.xs,
+                Insets.sm,
+              ),
               child: Text(
                 header!.toUpperCase(),
-                style: TextStyle(
-                  color: c.textSecondary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                ),
+                style: AppType.label.copyWith(color: c.textSecondary),
               ),
             ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Radii.lg),
             child: Container(
-              color: c.card,
+              decoration: BoxDecoration(
+                color: c.card,
+                border: Border.all(color: c.border),
+                borderRadius: BorderRadius.circular(Radii.lg),
+              ),
               child: Column(
                 children: _interleaveSeparators(children, c.divider),
               ),
@@ -51,12 +61,16 @@ class IosSection extends StatelessWidget {
           ),
           if (footer != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              padding: const EdgeInsets.fromLTRB(
+                Insets.xs,
+                Insets.sm,
+                Insets.xs,
+                0,
+              ),
               child: Text(
                 footer!,
-                style: TextStyle(
+                style: AppType.caption.copyWith(
                   color: c.textSecondary,
-                  fontSize: 12,
                   height: 1.35,
                 ),
               ),
@@ -102,7 +116,10 @@ class IosRow extends StatelessWidget {
     this.trailing,
     this.onTap,
     this.titleColor,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    this.padding = const EdgeInsets.symmetric(
+      horizontal: Insets.lg,
+      vertical: Insets.md,
+    ),
     this.showChevron = false,
   });
 
@@ -111,10 +128,7 @@ class IosRow extends StatelessWidget {
     final c = context.colors;
     final content = Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: 12),
-        ],
+        if (leading != null) ...[leading!, const SizedBox(width: Insets.md)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,9 +136,8 @@ class IosRow extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: AppType.body.copyWith(
                   color: titleColor ?? c.textPrimary,
-                  fontSize: 15,
                   fontWeight: FontWeight.w500,
                 ),
                 maxLines: 1,
@@ -134,7 +147,7 @@ class IosRow extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   subtitle!,
-                  style: TextStyle(color: c.textSecondary, fontSize: 13),
+                  style: AppType.caption.copyWith(color: c.textSecondary),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -142,10 +155,14 @@ class IosRow extends StatelessWidget {
             ],
           ),
         ),
-        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+        if (trailing != null) ...[const SizedBox(width: Insets.md), trailing!],
         if (showChevron) ...[
-          const SizedBox(width: 4),
-          Icon(CupertinoIcons.chevron_right, size: 18, color: c.textHint),
+          const SizedBox(width: Insets.xs),
+          Icon(
+            CupertinoIcons.chevron_right,
+            size: Insets.lg,
+            color: c.textHint,
+          ),
         ],
       ],
     );
@@ -154,7 +171,10 @@ class IosRow extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        child: Padding(padding: padding, child: content),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minHeight: Sizes.rowMinHeight),
+          child: Padding(padding: padding, child: content),
+        ),
       ),
     );
   }
@@ -169,7 +189,7 @@ class IosIcon extends StatelessWidget {
     super.key,
     required this.icon,
     required this.color,
-    this.size = 30,
+    this.size = Sizes.iconTile,
   });
 
   @override
@@ -178,10 +198,10 @@ class IosIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(size * 0.24),
+        color: color.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(Radii.sm + 2),
       ),
-      child: Icon(icon, color: Colors.white, size: size * 0.6),
+      child: Icon(icon, color: color, size: size * 0.52),
     );
   }
 }

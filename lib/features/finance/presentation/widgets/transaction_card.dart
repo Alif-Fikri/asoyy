@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../domain/entities/transaction_entity.dart';
 
@@ -36,26 +37,30 @@ class TransactionCard extends StatelessWidget {
           final confirmed = await showDeleteConfirm(context);
           if (confirmed) onDelete();
         },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(14, 12, 16, 12),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: Sizes.rowMinHeight),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Insets.lg,
+            vertical: Insets.md,
+          ),
           child: Row(
             children: [
               Container(
-                width: 34,
-                height: 34,
+                width: Sizes.iconTile,
+                height: Sizes.iconTile,
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(Radii.sm + 2),
                 ),
                 child: Icon(
                   isIncome
                       ? CupertinoIcons.arrow_down
                       : CupertinoIcons.arrow_up,
                   color: color,
-                  size: 16,
+                  size: Sizes.iconSm,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: Insets.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,9 +68,8 @@ class TransactionCard extends StatelessWidget {
                   children: [
                     Text(
                       transaction.title,
-                      style: TextStyle(
+                      style: AppType.body.copyWith(
                         color: c.textPrimary,
-                        fontSize: 15,
                         fontWeight: FontWeight.w500,
                       ),
                       maxLines: 1,
@@ -74,19 +78,15 @@ class TransactionCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Text(
                       '${transaction.category} · ${dateFmt.format(transaction.date)}',
-                      style: TextStyle(color: c.textSecondary, fontSize: 13),
+                      style: AppType.caption.copyWith(color: c.textSecondary),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: Insets.md),
               Text(
                 '${isIncome ? '+' : '-'}${fmt.format(transaction.amount)}',
-                style: TextStyle(
-                  color: color,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: AppType.bodyStrong.copyWith(color: color),
               ),
             ],
           ),

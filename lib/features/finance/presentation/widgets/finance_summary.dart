@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 
 class FinanceSummary extends StatelessWidget {
   final double balance;
@@ -27,29 +28,26 @@ class FinanceSummary extends StatelessWidget {
     final c = context.colors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+      padding: const EdgeInsets.all(Insets.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            s.fin_balance,
-            style: TextStyle(color: c.textSecondary, fontSize: 13),
+            s.fin_balance.toUpperCase(),
+            style: AppType.label.copyWith(color: c.textSecondary),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: Insets.sm),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
             child: Text(
               fmt.format(balance),
-              style: TextStyle(
+              style: AppType.display.copyWith(
                 color: balance >= 0 ? c.textPrimary : AppColors.expense,
-                fontSize: 34,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -1,
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: Insets.lg),
           Row(
             children: [
               Expanded(
@@ -60,7 +58,7 @@ class FinanceSummary extends StatelessWidget {
                   icon: CupertinoIcons.arrow_down,
                 ),
               ),
-              Container(width: 0.5, height: 36, color: c.divider),
+              Container(width: 0.5, height: Sizes.iconTile, color: c.divider),
               Expanded(
                 child: _StatItem(
                   label: s.fin_expense,
@@ -98,8 +96,8 @@ class _StatItem extends StatelessWidget {
     final c = context.colors;
     return Padding(
       padding: EdgeInsets.only(
-        left: alignEnd ? 14 : 0,
-        right: alignEnd ? 0 : 14,
+        left: alignEnd ? Insets.md : 0,
+        right: alignEnd ? 0 : Insets.md,
       ),
       child: Column(
         crossAxisAlignment:
@@ -109,22 +107,18 @@ class _StatItem extends StatelessWidget {
             mainAxisAlignment:
                 alignEnd ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: [
-              Icon(icon, color: color, size: 13),
-              const SizedBox(width: 4),
+              Icon(icon, color: color, size: 14),
+              const SizedBox(width: Insets.xs),
               Text(
                 label,
-                style: TextStyle(color: c.textSecondary, fontSize: 12),
+                style: AppType.caption.copyWith(color: c.textSecondary),
               ),
             ],
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: Insets.xs),
           Text(
             value,
-            style: TextStyle(
-              color: color,
-              fontSize: 15,
-              fontWeight: FontWeight.w600,
-            ),
+            style: AppType.bodyStrong.copyWith(color: c.textPrimary),
             overflow: TextOverflow.ellipsis,
           ),
         ],

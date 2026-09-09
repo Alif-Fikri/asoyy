@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/widgets/app_chip.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -220,7 +222,7 @@ class _TypeFilterRow extends StatelessWidget {
               onTap: () =>
                   context.read<FinanceBloc>().add(FilterChanged(null)),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: Insets.sm),
             _FilterChip(
               label: s.fin_income,
               color: AppColors.income,
@@ -229,7 +231,7 @@ class _TypeFilterRow extends StatelessWidget {
                   .read<FinanceBloc>()
                   .add(FilterChanged(TransactionType.income)),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: Insets.sm),
             _FilterChip(
               label: s.fin_expense,
               color: AppColors.expense,
@@ -240,7 +242,7 @@ class _TypeFilterRow extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: Insets.sm),
         _PeriodChip(state: state, onTap: onPeriodTap),
       ],
     );
@@ -262,27 +264,11 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final chipColor = color ?? AppColors.primary;
-    return GestureDetector(
+    return AppChip(
+      label: label,
+      isSelected: isSelected,
+      color: color,
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 150),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected ? chipColor.withValues(alpha: 0.15) : c.card,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: isSelected ? chipColor : c.border),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? chipColor : c.textSecondary,
-            fontSize: 13,
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-      ),
     );
   }
 }
@@ -308,48 +294,12 @@ class _PeriodChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = context.colors;
-    final isFiltered = state.filterYear != null;
-    return GestureDetector(
+    return AppChip(
+      label: _label(context),
+      isSelected: state.filterYear != null,
+      icon: CupertinoIcons.calendar,
+      trailingIcon: CupertinoIcons.chevron_down,
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(right: 2),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(
-          color: isFiltered
-              ? AppColors.primary.withValues(alpha: 0.12)
-              : c.cardLight,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: isFiltered ? AppColors.primary : c.border,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              CupertinoIcons.calendar,
-              size: 12,
-              color: isFiltered ? AppColors.primary : c.textSecondary,
-            ),
-            const SizedBox(width: 5),
-            Text(
-              _label(context),
-              style: TextStyle(
-                color: isFiltered ? AppColors.primary : c.textSecondary,
-                fontSize: 12,
-                fontWeight: isFiltered ? FontWeight.w700 : FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 3),
-            Icon(
-              CupertinoIcons.chevron_down,
-              size: 14,
-              color: isFiltered ? AppColors.primary : c.textSecondary,
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

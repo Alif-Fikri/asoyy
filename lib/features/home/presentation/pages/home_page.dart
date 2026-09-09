@@ -6,11 +6,9 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/utils/name_prefs.dart';
-import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/menu_icon.dart';
-import '../../../alarm/presentation/bloc/alarm_bloc.dart';
-import '../../../alarm/presentation/bloc/alarm_state.dart';
 import '../../../alarm/presentation/pages/alarm_page.dart';
 import '../../../calculator/presentation/pages/calculator_page.dart';
 import '../../../calendar/presentation/pages/calendar_page.dart';
@@ -18,8 +16,6 @@ import '../../../converter/presentation/pages/converter_page.dart';
 import '../../../finance/presentation/bloc/finance_bloc.dart';
 import '../../../finance/presentation/bloc/finance_state.dart';
 import '../../../finance/presentation/pages/finance_page.dart';
-import '../../../password/presentation/bloc/password_bloc.dart';
-import '../../../password/presentation/bloc/password_state.dart';
 import '../../../password/presentation/pages/password_flow_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 
@@ -63,7 +59,6 @@ class _HomePageState extends State<HomePage> {
     final now = DateTime.now();
     final isId = context.currentLocale.languageCode == 'id';
     final dateFmt = DateFormat('EEEE, d MMMM yyyy', isId ? 'id_ID' : 'en_US');
-    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
       backgroundColor: c.background,
@@ -71,33 +66,24 @@ class _HomePageState extends State<HomePage> {
         controller: _scrollController,
         slivers: [
           SliverAppBar(
-            expandedHeight: 140,
-            floating: false,
+            expandedHeight: 132,
             pinned: true,
             backgroundColor: c.background,
             title: Opacity(
               opacity: _titleOpacity,
               child: Text(
-                '${_greeting(now.hour, s)}, ${readUserName()}',
-                style: TextStyle(
-                  color: c.textPrimary,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
+                readUserName(),
+                style: AppType.title.copyWith(color: c.textPrimary),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: isDark
-                        ? [const Color(0xFF1a0533), c.background]
-                        : [const Color(0xFFEDE9FE), c.background],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
+              background: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Insets.lg,
+                  0,
+                  Insets.lg,
+                  Insets.lg,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -105,23 +91,18 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Text(
                       _greeting(now.hour, s),
-                      style: TextStyle(color: c.textSecondary, fontSize: 14),
+                      style: AppType.caption.copyWith(color: c.textSecondary),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: Insets.xs),
                     Text(
                       readUserName(),
-                      style: TextStyle(
-                        color: c.textPrimary,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                      ),
+                      style: AppType.display.copyWith(color: c.textPrimary),
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       dateFmt.format(now),
-                      style: TextStyle(color: c.textSecondary, fontSize: 13),
+                      style: AppType.caption.copyWith(color: c.textSecondary),
                     ),
                   ],
                 ),
@@ -129,15 +110,28 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            padding: const EdgeInsets.fromLTRB(
+              Insets.lg,
+              Insets.sm,
+              Insets.lg,
+              Insets.xl,
+            ),
             sliver: SliverToBoxAdapter(child: _SearchBar(s: s)),
           ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
-            sliver: SliverToBoxAdapter(child: _QuickStats()),
+            padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, 0),
+            sliver: SliverToBoxAdapter(child: _BalanceCard()),
           ),
-          SliverToBoxAdapter(child: _FeatureMenu()),
-          const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+              Insets.lg,
+              Insets.xl,
+              Insets.lg,
+              Insets.xxl,
+            ),
+            sliver: SliverToBoxAdapter(child: _FeatureMenu()),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: Insets.xxl)),
         ],
       ),
     );
@@ -165,20 +159,29 @@ class _SearchBar extends StatelessWidget {
     final c = context.colors;
     return Material(
       color: c.card,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(Radii.md),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(Radii.md),
         onTap: () => openFeature(context, const SearchPage()),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        child: Container(
+          height: Sizes.fieldHeight,
+          padding: const EdgeInsets.symmetric(horizontal: Insets.md),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Radii.md),
+            border: Border.all(color: c.border),
+          ),
           child: Row(
             children: [
-              Icon(CupertinoIcons.search, color: c.textSecondary, size: 20),
-              const SizedBox(width: 10),
+              Icon(
+                CupertinoIcons.search,
+                color: c.textSecondary,
+                size: Sizes.icon,
+              ),
+              const SizedBox(width: Insets.sm),
               Expanded(
                 child: Text(
                   s.search_hint,
-                  style: TextStyle(color: c.textHint, fontSize: 14),
+                  style: AppType.body.copyWith(color: c.textHint),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -190,57 +193,121 @@ class _SearchBar extends StatelessWidget {
   }
 }
 
-class _QuickStats extends StatelessWidget {
+class _BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final s = context.strings;
+
+    return BlocBuilder<FinanceBloc, FinanceState>(
+      builder: (context, state) {
+        final loaded = state is FinanceLoaded ? state : null;
+        final balance = loaded?.balance ?? 0;
+        final income = loaded?.totalIncome ?? 0;
+        final expense = loaded?.totalExpense ?? 0;
+        final fmt = NumberFormat.decimalPattern('id_ID');
+
+        return Material(
+          color: c.card,
+          borderRadius: BorderRadius.circular(Radii.lg),
+          child: InkWell(
+            borderRadius: BorderRadius.circular(Radii.lg),
+            onTap: () => openFeature(context, const FinancePage()),
+            child: Container(
+              padding: const EdgeInsets.all(Insets.lg),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Radii.lg),
+                border: Border.all(color: c.border),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    s.home_balance.toUpperCase(),
+                    style: AppType.label.copyWith(color: c.textSecondary),
+                  ),
+                  const SizedBox(height: Insets.sm),
+                  Text(
+                    'Rp ${fmt.format(balance)}',
+                    style: AppType.display.copyWith(
+                      color: balance < 0 ? AppColors.expense : c.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: Insets.lg),
+                  Container(height: 0.5, color: c.divider),
+                  const SizedBox(height: Insets.md),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _FlowStat(
+                          icon: CupertinoIcons.arrow_down_left,
+                          label: s.fin_income,
+                          value: 'Rp ${fmt.format(income)}',
+                          color: AppColors.income,
+                        ),
+                      ),
+                      Expanded(
+                        child: _FlowStat(
+                          icon: CupertinoIcons.arrow_up_right,
+                          label: s.fin_expense,
+                          value: 'Rp ${fmt.format(expense)}',
+                          color: AppColors.expense,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _FlowStat extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _FlowStat({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
     return Row(
       children: [
+        Icon(icon, size: Sizes.iconSm, color: color),
+        const SizedBox(width: Insets.sm),
         Expanded(
-          child: BlocBuilder<FinanceBloc, FinanceState>(
-            builder: (_, state) {
-              final fmt = NumberFormat.compact(locale: 'id_ID');
-              final balance = state is FinanceLoaded ? state.balance : 0.0;
-              return _StatCard(
-                label: s.home_balance,
-                value: 'Rp ${fmt.format(balance)}',
-                icon: CupertinoIcons.creditcard,
-                color: AppColors.financeColor,
-                onTap: () => openFeature(context, const FinancePage()),
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: BlocBuilder<AlarmBloc, AlarmState>(
-            builder: (_, state) {
-              final active = state is AlarmLoaded
-                  ? state.alarms.where((a) => a.isEnabled).length
-                  : 0;
-              return _StatCard(
-                label: s.home_active_alarms,
-                value: '$active',
-                icon: CupertinoIcons.alarm,
-                color: AppColors.alarmColor,
-                onTap: () => openFeature(context, const AlarmPage()),
-              );
-            },
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: BlocBuilder<PasswordBloc, PasswordState>(
-            builder: (_, state) {
-              final count = state is PasswordLoaded ? state.all.length : 0;
-              return _StatCard(
-                label: s.home_passwords,
-                value: '$count',
-                icon: CupertinoIcons.lock,
-                color: AppColors.passwordColor,
-                onTap: () => openFeature(context, const PasswordFlowPage()),
-              );
-            },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: AppType.caption.copyWith(color: c.textSecondary),
+              ),
+              const SizedBox(height: 1),
+              Text(
+                value,
+                style: AppType.body.copyWith(
+                  color: c.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
           ),
         ),
       ],
@@ -251,6 +318,7 @@ class _QuickStats extends StatelessWidget {
 class _FeatureMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     final s = context.strings;
     final items = [
       _MenuItemData(
@@ -285,34 +353,26 @@ class _FeatureMenu extends StatelessWidget {
       ),
     ];
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 12),
-            child: Text(
-              s.home_features.toUpperCase(),
-              style: TextStyle(
-                color: context.colors.textSecondary,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                letterSpacing: 0.3,
-              ),
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(Insets.xs, 0, Insets.xs, Insets.md),
+          child: Text(
+            s.home_features.toUpperCase(),
+            style: AppType.label.copyWith(color: c.textSecondary),
           ),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 14,
-            crossAxisSpacing: 14,
-            childAspectRatio: 1.9,
-            children: items.map((item) => _MenuTile(item: item)).toList(),
-          ),
-        ],
-      ),
+        ),
+        GridView.count(
+          crossAxisCount: 3,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          mainAxisSpacing: Insets.md,
+          crossAxisSpacing: Insets.md,
+          childAspectRatio: 1.12,
+          children: items.map((item) => _MenuTile(item: item)).toList(),
+        ),
+      ],
     );
   }
 }
@@ -339,74 +399,35 @@ class _MenuTile extends StatelessWidget {
     final c = context.colors;
     return Material(
       color: c.card,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(Radii.lg),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(Radii.lg),
         onTap: item.onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          child: Row(
+        child: Container(
+          padding: const EdgeInsets.all(Insets.md),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Radii.lg),
+            border: Border.all(color: c.border),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MenuIconImage(asset: item.asset, size: 46),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(
-                    color: c.textPrimary,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+              MenuIconImage(asset: item.asset, size: Sizes.menuIcon),
+              const SizedBox(height: Insets.sm),
+              Text(
+                item.label,
+                textAlign: TextAlign.center,
+                style: AppType.caption.copyWith(
+                  color: c.textPrimary,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 12,
                 ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-  final VoidCallback onTap;
-
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    return AppCard(
-      padding: const EdgeInsets.all(12),
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: color, size: 20),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              color: c.textPrimary,
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-            ),
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 2),
-          Text(label, style: TextStyle(color: c.textSecondary, fontSize: 11)),
-        ],
       ),
     );
   }

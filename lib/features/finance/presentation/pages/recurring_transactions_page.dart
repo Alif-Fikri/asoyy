@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
@@ -100,7 +101,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
                 subtitle: s.fin_recurring_empty_subtitle,
               )
             : ListView(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                padding: const EdgeInsets.fromLTRB(0, Insets.sm, 0, Insets.xl),
                 children: [
                   IosSection(
                     children: _items.map((item) {
@@ -123,17 +124,23 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
                           children: [
                             Text(
                               'Rp ${fmt.format(item.amount)}',
-                              style: TextStyle(
-                                color: color,
+                              style: AppType.caption.copyWith(
+                                color: c.textPrimary,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 13,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: () => _delete(item.id),
-                              child: Icon(CupertinoIcons.trash,
-                                  size: 18, color: c.textHint),
+                            SizedBox(
+                              width: Sizes.touchTarget,
+                              height: Sizes.touchTarget,
+                              child: IconButton(
+                                onPressed: () => _delete(item.id),
+                                padding: EdgeInsets.zero,
+                                icon: Icon(
+                                  CupertinoIcons.trash,
+                                  size: Sizes.icon,
+                                  color: c.textHint,
+                                ),
+                              ),
                             ),
                           ],
                         ),

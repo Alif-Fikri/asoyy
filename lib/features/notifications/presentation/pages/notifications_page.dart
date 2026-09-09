@@ -226,25 +226,16 @@ class _ReminderRow extends StatelessWidget {
       titleColor: item.enabled ? null : c.textHint,
       subtitle: subtitle,
       onTap: onTap,
-      trailing: _NotifToggle(
-        value: item.enabled,
-        color: item.color,
-        onChanged: onToggle,
-      ),
+      trailing: _NotifToggle(value: item.enabled, onChanged: onToggle),
     );
   }
 }
 
 class _NotifToggle extends StatelessWidget {
   final bool value;
-  final Color color;
   final ValueChanged<bool> onChanged;
 
-  const _NotifToggle({
-    required this.value,
-    required this.color,
-    required this.onChanged,
-  });
+  const _NotifToggle({required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -258,7 +249,7 @@ class _NotifToggle extends StatelessWidget {
         height: 30,
         padding: const EdgeInsets.all(3),
         decoration: BoxDecoration(
-          color: value ? color : c.border,
+          color: value ? AppColors.primary : c.border,
           borderRadius: BorderRadius.circular(16),
         ),
         alignment: value ? Alignment.centerRight : Alignment.centerLeft,

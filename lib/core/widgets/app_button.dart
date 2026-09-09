@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
+import '../theme/app_color_theme.dart';
+import '../theme/design_tokens.dart';
 
 class AppButton extends StatelessWidget {
   final String label;
@@ -25,30 +27,43 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = color ?? AppColors.primary;
-    final fg = textColor ?? AppColors.textPrimary;
+    final c = context.colors;
+    final isDisabled = onTap == null && !isLoading;
+
+    final accent = color ?? AppColors.primary;
+    final bg = isDisabled ? c.cardLight : accent;
+    final fg = isDisabled
+        ? c.textHint
+        : (textColor ?? (isOutlined ? accent : Colors.white));
 
     return SizedBox(
       width: width,
       child: Material(
         color: isOutlined ? AppColors.transparent : bg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(Radii.md),
         child: InkWell(
           onTap: isLoading ? null : onTap,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(Radii.md),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+            constraints: const BoxConstraints(minHeight: Sizes.fieldHeight),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Insets.xl,
+              vertical: Insets.md,
+            ),
             decoration: isOutlined
                 ? BoxDecoration(
-                    border: Border.all(color: bg, width: 1.5),
-                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isDisabled ? c.border : accent,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(Radii.md),
                   )
                 : null,
             child: isLoading
                 ? Center(
                     child: SizedBox(
-                      width: 20,
-                      height: 20,
+                      width: Sizes.icon,
+                      height: Sizes.icon,
                       child: CircularProgressIndicator(
                         color: fg,
                         strokeWidth: 2,
@@ -60,14 +75,13 @@ class AppButton extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (icon != null) ...[
-                        Icon(icon, color: isOutlined ? bg : fg, size: 18),
-                        const SizedBox(width: 8),
+                        Icon(icon, color: fg, size: 18),
+                        const SizedBox(width: Insets.sm),
                       ],
                       Text(
                         label,
-                        style: TextStyle(
-                          color: isOutlined ? bg : fg,
-                          fontSize: 15,
+                        style: AppType.body.copyWith(
+                          color: fg,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

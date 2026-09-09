@@ -4,6 +4,8 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/widgets/app_chip.dart';
 import '../../../../core/utils/unit_conversion.dart';
 import '../../../../core/widgets/app_text_field.dart';
 
@@ -96,42 +98,24 @@ class _UnitConverterTabState extends State<UnitConverterTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(s.convert_category,
-              style: TextStyle(color: c.textSecondary, fontSize: 13)),
-          const SizedBox(height: 8),
+          Text(
+            s.convert_category.toUpperCase(),
+            style: AppType.label.copyWith(color: c.textSecondary),
+          ),
+          const SizedBox(height: Insets.md),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: Insets.sm,
+            runSpacing: Insets.sm,
             children: UnitCategory.values.map((cat) {
-              final selected = cat == _category;
-              return GestureDetector(
+              return AppChip(
+                label: _categoryLabel(cat, s),
+                isSelected: cat == _category,
+                color: AppColors.converterColor,
                 onTap: () => _onCategoryChanged(cat),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: selected
-                        ? AppColors.converterColor.withValues(alpha: 0.15)
-                        : c.card,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: selected ? AppColors.converterColor : c.border,
-                    ),
-                  ),
-                  child: Text(
-                    _categoryLabel(cat, s),
-                    style: TextStyle(
-                      color: selected ? AppColors.converterColor : c.textSecondary,
-                      fontSize: 13,
-                      fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
-                    ),
-                  ),
-                ),
               );
             }).toList(),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: Insets.xl),
           AppTextField(
             label: s.convert_amount,
             controller: _amountCtrl,
@@ -139,7 +123,7 @@ class _UnitConverterTabState extends State<UnitConverterTab> {
             prefixIcon: CupertinoIcons.number,
             onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: Insets.lg),
           Row(
             children: [
               Expanded(child: _UnitDropdown(
@@ -159,13 +143,13 @@ class _UnitConverterTabState extends State<UnitConverterTab> {
               )),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: Insets.xl),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(Insets.lg),
             decoration: BoxDecoration(
               color: AppColors.converterColor.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(Radii.lg),
               border: Border.all(
                 color: AppColors.converterColor.withValues(alpha: 0.3),
               ),
@@ -173,15 +157,15 @@ class _UnitConverterTabState extends State<UnitConverterTab> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(s.convert_result,
-                    style: TextStyle(color: c.textSecondary, fontSize: 13)),
-                const SizedBox(height: 6),
+                Text(
+                  s.convert_result.toUpperCase(),
+                  style: AppType.label.copyWith(color: c.textSecondary),
+                ),
+                const SizedBox(height: Insets.sm),
                 Text(
                   _formatNumber(result),
-                  style: const TextStyle(
+                  style: AppType.display.copyWith(
                     color: AppColors.converterColor,
-                    fontSize: 26,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
               ],
@@ -215,10 +199,10 @@ class _UnitDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: Insets.md),
       decoration: BoxDecoration(
         color: c.cardLight,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(Radii.md),
         border: Border.all(color: c.border),
       ),
       child: DropdownButtonHideUnderline(
@@ -226,7 +210,7 @@ class _UnitDropdown extends StatelessWidget {
           value: value,
           isExpanded: true,
           dropdownColor: c.card,
-          style: TextStyle(color: c.textPrimary, fontSize: 14),
+          style: AppType.body.copyWith(color: c.textPrimary),
           items: units
               .map((u) => DropdownMenuItem(value: u.code, child: Text(u.label)))
               .toList(),

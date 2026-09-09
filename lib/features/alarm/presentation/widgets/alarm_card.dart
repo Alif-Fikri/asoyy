@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../domain/entities/alarm_entity.dart';
 
@@ -37,8 +38,14 @@ class AlarmCard extends StatelessWidget {
           final confirmed = await showDeleteConfirm(context);
           if (confirmed) onDelete();
         },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 12, 14),
+        child: Container(
+          constraints: const BoxConstraints(minHeight: Sizes.rowMinHeight),
+          padding: const EdgeInsets.fromLTRB(
+            Insets.lg,
+            Insets.md,
+            Insets.sm,
+            Insets.md,
+          ),
           child: Row(
             children: [
               Expanded(
@@ -67,7 +74,7 @@ class AlarmCard extends StatelessWidget {
                               s.alarm_once,
                               s.alarm_everyday,
                             ),
-                        style: TextStyle(color: c.textSecondary, fontSize: 13),
+                        style: AppType.caption.copyWith(color: c.textSecondary),
                       ),
                     ],
                   ),

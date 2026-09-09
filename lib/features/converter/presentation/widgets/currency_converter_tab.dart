@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../bloc/converter_cubit.dart';
 import '../bloc/converter_state.dart';
@@ -76,7 +77,7 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
         );
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(Insets.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -88,7 +89,7 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
                 prefixIcon: CupertinoIcons.money_dollar,
                 onChanged: (_) => setState(() {}),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: Insets.lg),
               Row(
                 children: [
                   Expanded(child: _CurrencyDropdown(
@@ -106,13 +107,13 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
                   )),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: Insets.xl),
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.all(Insets.lg),
                 decoration: BoxDecoration(
                   color: AppColors.converterColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(Radii.lg),
                   border: Border.all(
                     color: AppColors.converterColor.withValues(alpha: 0.3),
                   ),
@@ -120,21 +121,21 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(s.convert_result,
-                        style: TextStyle(color: c.textSecondary, fontSize: 13)),
-                    const SizedBox(height: 6),
+                    Text(
+                      s.convert_result.toUpperCase(),
+                      style: AppType.label.copyWith(color: c.textSecondary),
+                    ),
+                    const SizedBox(height: Insets.sm),
                     Text(
                       '$_to ${fmt.format(result)}',
-                      style: const TextStyle(
+                      style: AppType.display.copyWith(
                         color: AppColors.converterColor,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: Insets.lg),
               Row(
                 children: [
                   Icon(
@@ -154,7 +155,7 @@ class _CurrencyConverterTabState extends State<CurrencyConverterTab> {
                           : state.refreshFailed
                               ? s.convert_offline_stale
                               : _lastUpdatedLabel(state.rates.fetchedAt, s),
-                      style: TextStyle(color: c.textSecondary, fontSize: 12),
+                      style: AppType.caption.copyWith(color: c.textSecondary),
                     ),
                   ),
                 ],
@@ -177,10 +178,10 @@ class _CurrencyDropdown extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: Insets.md),
       decoration: BoxDecoration(
         color: c.cardLight,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(Radii.md),
         border: Border.all(color: c.border),
       ),
       child: DropdownButtonHideUnderline(
@@ -188,7 +189,7 @@ class _CurrencyDropdown extends StatelessWidget {
           value: value,
           isExpanded: true,
           dropdownColor: c.card,
-          style: TextStyle(color: c.textPrimary, fontSize: 14),
+          style: AppType.body.copyWith(color: c.textPrimary),
           items: _currencies
               .map((code) => DropdownMenuItem(value: code, child: Text(code)))
               .toList(),
@@ -240,18 +241,18 @@ class _ErrorView extends StatelessWidget {
     final s = context.strings;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(Insets.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(CupertinoIcons.wifi_slash, size: 40, color: c.textHint),
-            const SizedBox(height: 16),
+            const SizedBox(height: Insets.lg),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(color: c.textSecondary, fontSize: 14),
+              style: AppType.body.copyWith(color: c.textSecondary),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: Insets.lg),
             TextButton(
               onPressed: onRetry,
               child: Text(s.convert_retry),

@@ -1,9 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/utils/name_prefs.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/menu_icon.dart';
@@ -61,7 +61,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_person.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_name,
                 subtitle: _userName,
@@ -76,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_theme.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_theme,
                 trailing: const ThemeToggleButton(),
@@ -84,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_language.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_language,
                 trailing: const LanguageToggleChip(),
@@ -97,7 +97,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_security.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.auth_change_method,
                 showChevron: true,
@@ -111,7 +111,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_finance.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_export_finance,
                 showChevron: true,
@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_download.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_export_password,
                 showChevron: true,
@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
               IosRow(
                 leading: const MenuIconImage(
                   asset: 'assets/images/menu_upload.png',
-                  size: 40,
+                  size: Sizes.iconTile,
                 ),
                 title: s.profile_import_password,
                 showChevron: true,
