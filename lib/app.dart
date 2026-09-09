@@ -15,6 +15,7 @@ import 'core/theme/theme_cubit.dart';
 import 'features/alarm/presentation/bloc/alarm_bloc.dart';
 import 'features/alarm/presentation/bloc/alarm_event.dart';
 import 'features/alarm/presentation/bloc/alarm_state.dart';
+import 'features/alarm/presentation/pages/alarm_ring_screen.dart';
 import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'features/calendar/presentation/bloc/calendar_event.dart';
@@ -110,8 +111,8 @@ class _MainShellState extends State<_MainShell> {
   @override
   void initState() {
     super.initState();
-    _previousRinging = Alarm.ringing.value;
     _alarmRingSubscription = Alarm.ringing.listen(_onRingingChanged);
+    _onRingingChanged(Alarm.ringing.value);
   }
 
   @override
@@ -134,17 +135,29 @@ class _MainShellState extends State<_MainShell> {
   Future<void> _showAlarmDialog(AlarmSettings alarmSettings) async {
     if (_isRingDialogShowing || !mounted) return;
     _isRingDialogShowing = true;
-    await showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder:
-          (_) => _AlarmRingDialog(
-            label: alarmSettings.notificationSettings.title,
-            onStop: () async {
-              await Alarm.stop(alarmSettings.id);
-              if (mounted) _rescheduleIfRecurring(alarmSettings.id);
-            },
-          ),
+    await Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (_) => AlarmRingScreen(
+          label: alarmSettings.notificationSettings.title,
+          time: alarmSettings.notificationSettings.body,
+          onStop: () async {
+            await Alarm.stop(alarmSettings.id);
+            if (mounted) {
+              _rescheduleIfRecurring(alarmSettings.id);
+              Navigator.of(context, rootNavigator: true).pop();
+            }
+          },
+          onSnooze: () async {
+            await Alarm.set(
+              alarmSettings: alarmSettings.copyWith(
+                dateTime: DateTime.now().add(const Duration(minutes: 5)),
+              ),
+            );
+            if (mounted) Navigator.of(context, rootNavigator: true).pop();
+          },
+        ),
+      ),
     );
     _isRingDialogShowing = false;
   }
@@ -214,62 +227,3 @@ class _MainShellState extends State<_MainShell> {
   }
 }
 
-class _AlarmRingDialog extends StatelessWidget {
-  const _AlarmRingDialog({required this.label, required this.onStop});
-
-  final String label;
-  final Future<void> Function() onStop;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = context.strings;
-    return PopScope(
-      canPop: false,
-      child: Dialog.fullscreen(
-        backgroundColor: AppColors.alarmColor,
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                CupertinoIcons.alarm_fill,
-                size: 72,
-                color: Colors.white,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                label.isEmpty ? s.alarm_notification_title : label,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 64),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: AppColors.alarmColor,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                icon: const Icon(CupertinoIcons.stop_fill),
-                label: Text(s.alarm_stop),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  onStop();
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
