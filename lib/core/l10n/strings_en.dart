@@ -233,6 +233,8 @@ class StringsEn extends AppStrings {
   @override String get fin_empty_title => 'No Transactions Yet';
   @override String get fin_empty_data => 'No Data';
   @override String get fin_empty_subtitle => 'Tap + to record a new transaction';
+  @override String get fin_category_chart_title => 'Expenses by Category';
+  @override String get fin_category_chart_empty => 'No expenses in this period yet';
   @override String get fin_notes => 'Notes (Optional)';
   @override String get fin_period => 'Period';
   @override String get fin_period_all => 'All Time';

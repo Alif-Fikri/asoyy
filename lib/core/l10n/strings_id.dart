@@ -233,6 +233,8 @@ class StringsId extends AppStrings {
   @override String get fin_empty_title => 'Belum Ada Transaksi';
   @override String get fin_empty_data => 'Tidak Ada Data';
   @override String get fin_empty_subtitle => 'Ketuk + untuk mencatat transaksi baru';
+  @override String get fin_category_chart_title => 'Pengeluaran per Kategori';
+  @override String get fin_category_chart_empty => 'Belum ada pengeluaran pada periode ini';
   @override String get fin_notes => 'Catatan (Opsional)';
   @override String get fin_period => 'Periode';
   @override String get fin_period_all => 'Semua Waktu';

@@ -232,6 +232,8 @@ abstract class AppStrings {
   String get fin_empty_title;
   String get fin_empty_data;
   String get fin_empty_subtitle;
+  String get fin_category_chart_title;
+  String get fin_category_chart_empty;
   String get fin_notes;
   String get fin_period;
   String get fin_period_all;

@@ -12,6 +12,7 @@ import '../../domain/entities/transaction_entity.dart';
 import '../bloc/finance_bloc.dart';
 import '../bloc/finance_event.dart';
 import '../bloc/finance_state.dart';
+import '../widgets/finance_category_chart.dart';
 import '../widgets/finance_chart.dart';
 import '../widgets/finance_export_dialog.dart';
 import '../widgets/finance_summary.dart';
@@ -124,6 +125,14 @@ class FinancePage extends StatelessWidget {
             header: isId ? 'Grafik 6 Bulan' : '6 Month Chart',
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             children: [FinanceChart(transactions: state.all)],
+          ),
+
+          IosSection(
+            header: s.fin_category_chart_title,
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+            children: [
+              FinanceCategoryChart(expenseByCategory: state.expenseByCategory),
+            ],
           ),
 
           Padding(
