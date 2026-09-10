@@ -75,31 +75,11 @@ Unduh Beres, dan biarkan urusan harian Anda beres di satu tempat.
 
 ---
 
-## Release notes (Play Console — "What's new")
+## Release notes (Play Console — "What's new", maks 500 karakter)
 
-v1.0.0 (id-ID)
-Rilis pertama Beres!
-- Catatan keuangan dengan grafik enam bulan dan rincian per kategori
-- Budget per kategori dengan peringatan saat mendekati dan melewati limit
-- Transaksi berulang otomatis, plus pengingat H-1
-- Kalender dengan libur nasional, tanggal Hijriah, dan tanggal gajian
-- Alarm yang tetap berbunyi walau aplikasi ditutup, dengan nada dering
-  dari koleksi ponsel Anda
-- Password manager terkunci sidik jari, pola, atau PIN
-- Kalkulator serta konversi satuan dan mata uang
-- Mode gelap dan terang, Bahasa Indonesia dan Inggris
-
-v1.0.0 (en-US)
-First release of Beres!
-- Finance tracking with a six-month chart and per-category breakdown
-- Per-category budgets that warn as you approach and pass the limit
-- Recurring transactions generated automatically, with a day-before reminder
-- Calendar with Indonesian public holidays, Hijri dates and payday
-- Alarms that keep ringing after the app is closed, with a ringtone picked
-  from your phone's own collection
-- Password manager locked behind fingerprint, pattern or PIN
-- Calculator plus unit and currency conversion
-- Dark and light themes, Indonesian and English
+Teks lengkap dan hitungan karakternya ada di
+`store_assets/release_notes_v1.0.0.md` — id-ID 473/500,
+en-US 468/500.
 
 ---
 
