@@ -38,7 +38,7 @@ class CsvService {
 
   Future<File> exportToFile(List<PasswordEntity> passwords) async {
     final dir = await _passwordDir();
-    final file = File('${dir.path}/vela_passwords.csv');
+    final file = File('${dir.path}/beres_passwords.csv');
     await file.writeAsString(exportToCsvString(passwords), encoding: utf8);
     return file;
   }

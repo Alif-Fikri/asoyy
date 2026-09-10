@@ -62,7 +62,7 @@ class FinanceCsvService {
 
   Future<File> exportToFile(List<TransactionEntity> transactions) async {
     final dir = await _financeDir();
-    final file = File('${dir.path}/vela_finance.csv');
+    final file = File('${dir.path}/beres_finance.csv');
     await file.writeAsString(exportToCsvString(transactions), encoding: utf8);
     return file;
   }

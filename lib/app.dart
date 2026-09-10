@@ -62,7 +62,7 @@ class NexusApp extends StatelessWidget {
                   ),
                 ],
                 child: MaterialApp(
-                  title: 'Vela',
+                  title: 'Beres',
                   theme: AppTheme.light,
                   darkTheme: AppTheme.dark,
                   themeMode: themeMode,
