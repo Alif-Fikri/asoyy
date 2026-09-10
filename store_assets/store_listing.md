@@ -167,14 +167,19 @@ Beberapa izin di `AndroidManifest.xml` akan ditanyakan Play Console:
    tempat lain — kehilangan keystore berarti tidak bisa update app
    selamanya. Tanpa `key.properties`, build tetap jalan tapi jatuh ke
    debug key, yang akan ditolak Play.
-4. Build rilis pakai `flutter build appbundle --release`. R8 (`minify` +
-   `shrinkResources`) aktif, dengan keep rules di
-   `android/app/proguard-rules.pro` untuk Flutter,
+4. Build rilis pakai `shorebird release android` (bukan `flutter build
+   appbundle` biasa — lihat `SHOREBIRD.md`), yang menghasilkan
+   `build/app/outputs/bundle/release/app-release.aab` untuk diupload ke
+   Play Console. R8 (`minify` + `shrinkResources`) aktif, dengan keep
+   rules di `android/app/proguard-rules.pro` untuk Flutter,
    `flutter_local_notifications`/Gson, dan plugin `alarm`. Build release
    sudah diuji di emulator: app jalan, ringtone picker native terbuka,
    dan alarm benar-benar terdaftar di AlarmManager. Tetap cek sekali di
    perangkat asli bahwa alarm berbunyi setelah app ditutup dan konversi
    mata uang berhasil menarik kurs.
+5. **Shorebird sudah aktif** — setelah rilis ini live, bug di sisi Dart
+   bisa diperbaiki lewat `shorebird patch android` tanpa menunggu review
+   Play Store lagi. Detail alur kerja ada di `SHOREBIRD.md`.
 
 ### Screenshots
 

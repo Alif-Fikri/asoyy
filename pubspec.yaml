@@ -99,6 +99,7 @@ flutter:
     - assets/font/
     - assets/images/
     - assets/audio/
+    - shorebird.yaml
 
   fonts:
     - family: Inter
