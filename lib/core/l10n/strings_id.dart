@@ -119,6 +119,9 @@ class StringsId extends AppStrings {
   @override String get fin_transaction_deleted => 'Transaksi dihapus';
   @override String get fin_category_added => 'Kategori ditambahkan';
   @override String get fin_category_deleted => 'Kategori dihapus';
+  @override String get fin_category_in_use_title => 'Kategori masih dipakai';
+  @override String fin_category_in_use_desc(int count) =>
+      'Ada $count transaksi yang masih memakai kategori ini. Hapus atau pindahkan transaksi tersebut terlebih dahulu.';
   @override String get fin_recurring_added => 'Transaksi berulang ditambahkan';
   @override String get fin_recurring_deleted => 'Transaksi berulang dihapus';
   @override String get pass_saved => 'Password disimpan';

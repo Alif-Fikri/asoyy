@@ -51,8 +51,15 @@ class FinancePage extends StatelessWidget {
           AppToast.show(context, context.strings.fin_transaction_added);
           _checkBudget(context, tx);
         },
+        categoryUsageCount: (category) => _categoryUsageCount(context, category),
       ),
     );
+  }
+
+  int _categoryUsageCount(BuildContext context, String category) {
+    final state = context.read<FinanceBloc>().state;
+    if (state is! FinanceLoaded) return 0;
+    return state.all.where((t) => t.category == category).length;
   }
 
   void _checkBudget(BuildContext context, TransactionEntity tx) {

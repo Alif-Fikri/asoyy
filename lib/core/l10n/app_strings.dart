@@ -118,6 +118,8 @@ abstract class AppStrings {
   String get fin_transaction_deleted;
   String get fin_category_added;
   String get fin_category_deleted;
+  String get fin_category_in_use_title;
+  String fin_category_in_use_desc(int count);
   String get fin_recurring_added;
   String get fin_recurring_deleted;
   String get pass_saved;

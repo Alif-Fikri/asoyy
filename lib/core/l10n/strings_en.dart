@@ -119,6 +119,9 @@ class StringsEn extends AppStrings {
   @override String get fin_transaction_deleted => 'Transaction deleted';
   @override String get fin_category_added => 'Category added';
   @override String get fin_category_deleted => 'Category deleted';
+  @override String get fin_category_in_use_title => 'Category still in use';
+  @override String fin_category_in_use_desc(int count) =>
+      '$count transaction(s) still use this category. Delete or move those transactions first.';
   @override String get fin_recurring_added => 'Recurring transaction added';
   @override String get fin_recurring_deleted => 'Recurring transaction deleted';
   @override String get pass_saved => 'Password saved';

@@ -14,8 +14,13 @@ import '../../domain/entities/transaction_entity.dart';
 
 class TransactionFormDialog extends StatefulWidget {
   final void Function(TransactionEntity) onSave;
+  final int Function(String category) categoryUsageCount;
 
-  const TransactionFormDialog({super.key, required this.onSave});
+  const TransactionFormDialog({
+    super.key,
+    required this.onSave,
+    required this.categoryUsageCount,
+  });
 
   @override
   State<TransactionFormDialog> createState() => _TransactionFormDialogState();
@@ -72,6 +77,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
         color: color,
         repo: _categoryRepo,
         allDefaults: _defaultCategories(context.strings, _type),
+        categoryUsageCount: widget.categoryUsageCount,
       ),
     );
     if (result != null && mounted) setState(() => _category = result);
@@ -245,6 +251,7 @@ class _CategoryPickerSheet extends StatefulWidget {
   final Color color;
   final FinanceCategoryRepository repo;
   final List<String> allDefaults;
+  final int Function(String category) categoryUsageCount;
 
   const _CategoryPickerSheet({
     required this.type,
@@ -252,6 +259,7 @@ class _CategoryPickerSheet extends StatefulWidget {
     required this.color,
     required this.repo,
     required this.allDefaults,
+    required this.categoryUsageCount,
   });
 
   @override
@@ -310,6 +318,23 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
 
   Future<void> _deleteCategory(String name, {required bool isDefault}) async {
     final s = context.strings;
+    final usage = widget.categoryUsageCount(name);
+    if (usage > 0) {
+      await showDialog<void>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text(s.fin_category_in_use_title),
+          content: Text(s.fin_category_in_use_desc(usage)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(s.close),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
