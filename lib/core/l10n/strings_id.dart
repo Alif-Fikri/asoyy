@@ -124,6 +124,16 @@ class StringsId extends AppStrings {
   @override String get pass_saved => 'Password disimpan';
   @override String get pass_deleted => 'Password dihapus';
   @override String get auth_method_updated => 'Metode keamanan diperbarui';
+  @override String get fin_budget_title => 'Budget Kategori';
+  @override String get fin_budget_empty => 'Belum ada kategori pengeluaran';
+  @override String get fin_budget_no_limit => 'Belum ada limit';
+  @override String get fin_budget_limit_label => 'Limit bulanan';
+  @override String get fin_budget_saved => 'Limit tersimpan';
+  @override String get fin_budget_cleared => 'Limit dihapus';
+  @override String get fin_budget_clear_action => 'Hapus Limit';
+  @override String get fin_budget_invalid => 'Masukkan jumlah yang valid';
+  @override String fin_budget_exceeded(String category) => 'Budget $category sudah terlampaui';
+  @override String fin_budget_near(String category) => 'Budget $category hampir habis';
 
   @override String get calc_title => 'Kalkulator';
   @override String get search_title => 'Pencarian';

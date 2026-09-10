@@ -124,6 +124,16 @@ class StringsEn extends AppStrings {
   @override String get pass_saved => 'Password saved';
   @override String get pass_deleted => 'Password deleted';
   @override String get auth_method_updated => 'Security method updated';
+  @override String get fin_budget_title => 'Category Budgets';
+  @override String get fin_budget_empty => 'No expense categories yet';
+  @override String get fin_budget_no_limit => 'No limit set';
+  @override String get fin_budget_limit_label => 'Monthly limit';
+  @override String get fin_budget_saved => 'Limit saved';
+  @override String get fin_budget_cleared => 'Limit removed';
+  @override String get fin_budget_clear_action => 'Remove Limit';
+  @override String get fin_budget_invalid => 'Enter a valid amount';
+  @override String fin_budget_exceeded(String category) => 'Budget for $category has been exceeded';
+  @override String fin_budget_near(String category) => 'Budget for $category is almost used up';
 
   @override String get calc_title => 'Calculator';
   @override String get search_title => 'Search';

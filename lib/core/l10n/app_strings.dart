@@ -123,6 +123,16 @@ abstract class AppStrings {
   String get pass_saved;
   String get pass_deleted;
   String get auth_method_updated;
+  String get fin_budget_title;
+  String get fin_budget_empty;
+  String get fin_budget_no_limit;
+  String get fin_budget_limit_label;
+  String get fin_budget_saved;
+  String get fin_budget_cleared;
+  String get fin_budget_clear_action;
+  String get fin_budget_invalid;
+  String fin_budget_exceeded(String category);
+  String fin_budget_near(String category);
 
   String get calc_title;
   String get search_title;

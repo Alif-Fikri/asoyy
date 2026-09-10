@@ -11,6 +11,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../data/budget_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../bloc/finance_bloc.dart';
 import '../bloc/finance_event.dart';
@@ -22,7 +23,19 @@ import '../widgets/finance_summary.dart';
 import '../widgets/quick_add_dialog.dart';
 import '../widgets/transaction_card.dart';
 import '../widgets/transaction_form_dialog.dart';
+import 'budget_page.dart';
 import 'recurring_transactions_page.dart';
+
+Map<String, double> _currentMonthExpenseByCategory(List<TransactionEntity> all) {
+  final now = DateTime.now();
+  final map = <String, double>{};
+  for (final t in all) {
+    if (t.isIncome) continue;
+    if (t.date.year != now.year || t.date.month != now.month) continue;
+    map[t.category] = (map[t.category] ?? 0) + t.amount;
+  }
+  return map;
+}
 
 class FinancePage extends StatelessWidget {
   const FinancePage({super.key});
@@ -36,9 +49,35 @@ class FinancePage extends StatelessWidget {
         onSave: (tx) {
           context.read<FinanceBloc>().add(AddTransactionRequested(tx));
           AppToast.show(context, context.strings.fin_transaction_added);
+          _checkBudget(context, tx);
         },
       ),
     );
+  }
+
+  void _checkBudget(BuildContext context, TransactionEntity tx) {
+    if (tx.isIncome) return;
+    final limit = BudgetRepository().getLimit(tx.category);
+    if (limit == null || limit <= 0) return;
+
+    final state = context.read<FinanceBloc>().state;
+    if (state is! FinanceLoaded) return;
+    final spentBefore = _currentMonthExpenseByCategory(state.all)[tx.category] ?? 0;
+    final spent = spentBefore + tx.amount;
+    final s = context.strings;
+    if (spent >= limit) {
+      AppToast.show(context, s.fin_budget_exceeded(tx.category));
+    } else if (spent >= limit * 0.8) {
+      AppToast.show(context, s.fin_budget_near(tx.category));
+    }
+  }
+
+  void _openBudget(BuildContext context, FinanceLoaded state) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => BudgetPage(
+        spentByCategory: _currentMonthExpenseByCategory(state.all),
+      ),
+    ));
   }
 
   void _showExportDialog(BuildContext context, FinanceLoaded state) {
@@ -51,6 +90,7 @@ class FinancePage extends StatelessWidget {
       (tx) {
         context.read<FinanceBloc>().add(AddTransactionRequested(tx));
         AppToast.show(context, context.strings.fin_transaction_added);
+        _checkBudget(context, tx);
       },
     );
   }
@@ -89,12 +129,18 @@ class FinancePage extends StatelessWidget {
           appBar: NexusAppBar(
             title: context.strings.fin_title,
             extraActions: [
-              if (state is FinanceLoaded)
+              if (state is FinanceLoaded) ...[
+                IconButton(
+                  icon: const Icon(CupertinoIcons.chart_pie),
+                  onPressed: () => _openBudget(context, state),
+                  tooltip: context.strings.fin_budget_title,
+                ),
                 IconButton(
                   icon: const Icon(CupertinoIcons.arrow_down_to_line),
                   onPressed: () => _showExportDialog(context, state),
                   tooltip: context.strings.fin_export,
                 ),
+              ],
               IconButton(
                 icon: const Icon(CupertinoIcons.repeat),
                 onPressed: () => _openRecurring(context),
