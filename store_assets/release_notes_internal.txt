@@ -1,0 +1,108 @@
+Internal testing build (v1.0.0+1) — first release for internal QA.
+
+Package: id.co.alchemist.beres
+This build is for internal testing only, not a public release.
+
+Signed with the shared Alchemist keystore
+(~/AndroidKeystores/alchemist-release.jks, alias "alchemist"), and built
+with R8 minification on, so this is the same shape as the eventual Play
+build. Verified cert: CN=Alif Fikri, OU=Suiten.
+
+WHAT TO TEST
+
+Home
+- Greeting, date, and the balance card totals match the transaction list
+- All six menu tiles open the right feature
+- Global search finds transactions, events, passwords, and alarms
+
+Keuangan (finance)
+- Add a transaction from the + form and from quick-add (the sparkle icon)
+- Six-month chart and the category donut update after adding
+- Filter by type (Semua / Pemasukan / Pengeluaran) and by month
+- Delete a transaction (long-press) — confirm dialog, then a toast
+- Export CSV, then check the file opens in a spreadsheet app
+
+Budget
+- Pie icon in the Keuangan app bar opens Budget Kategori
+- Set a limit, clear a limit, and try an invalid amount (0 or empty)
+- Bar colour: green under 80%, amber 80-99%, red at or over 100%
+- Add an expense that pushes a category past 80% and past 100% — a
+  warning toast should appear each time
+- Try deleting a category that still has transactions (via the category
+  picker in the add-transaction form) — it must be blocked with a dialog
+  naming how many transactions use it
+
+Kalender
+- National holidays and joint leave appear with the right colour dots
+- Hijri date shows under the Gregorian one
+- Add and delete an event; set and clear the payday date
+- Payday should then appear on that date every month
+
+Alarm
+- Add an alarm with repeat days and one without
+- Pick a ringtone from the phone's own sounds (Pilih dari HP) and confirm
+  the picked name shows on the form
+- Toggle an alarm off and on
+- IMPORTANT: set an alarm a couple of minutes out, swipe the app away
+  from Recents, and confirm it still rings with the full-screen screen,
+  Stop and Tunda 5 Menit
+- Snooze should re-ring about five minutes later
+- Reboot the device with an alarm pending and confirm it survives
+
+Password Manager
+- First open asks to set biometric, pattern, or PIN
+- Wrong PIN or pattern shows an error and does not unlock
+- Add, reveal (tap), edit, and delete (long-press) an entry
+- Copy username and password — a toast should confirm
+- Change the security method from Profil, and confirm the toast
+- Export and import CSV
+
+Kalkulator & Konversi
+- Basic arithmetic, including chained operations
+- Unit conversion in all four categories (temperature uses a formula, not
+  a multiplier — check it separately)
+- Currency: online it should say "Diperbarui baru saja"; turn off the
+  network and confirm it still converts using cached rates with an older
+  timestamp
+
+General
+- Dark and light theme, and switching language between ID and EN
+- Notifications page lists upcoming reminders with working toggles
+- App icon and name ("Beres") on the launcher, plus the splash screen
+
+KNOWN LIMITATIONS
+
+- Alarms do NOT survive an explicit Force Stop (Settings > Apps > Force
+  Stop). Android cancels every pending alarm for an app put into the
+  stopped state; no app can work around this. Swiping the app away from
+  Recents is fine — that path is tested and works. Reopening the app
+  re-registers any enabled alarm.
+
+- Setting an alarm to the exact current minute can schedule it for
+  tomorrow. If the clock ticks into the chosen minute between picking the
+  time and pressing Simpan, the "next occurrence" logic sees the time as
+  already past. Pick a time at least a minute ahead when testing.
+
+- REQUEST_IGNORE_BATTERY_OPTIMIZATIONS is declared in the manifest and has
+  a handler in MainActivity, but nothing calls it and there is no button
+  for it in the UI. Either wire it up or drop the permission before the
+  public release — declaring an unused sensitive permission invites
+  questions during review.
+
+- Password entries are protected by the Android app sandbox and the
+  unlock screen, not by encryption keyed to your PIN. CSV export writes
+  passwords in PLAIN TEXT so other managers can read them; delete the
+  file when you are done with it.
+
+- Currency conversion needs a network connection the first time. Rates
+  are cached afterwards, so offline use shows the last fetched rates with
+  a "last updated" note.
+
+- iOS has not been tested. Everything so far was verified on an Android
+  emulator (API 36, 1080x1920). The iOS bundle identifier and icons are
+  set, but no build has been run on an iOS device or simulator.
+
+- No online features, no sync, no backup — local device only. Uninstalling
+  removes all data.
+
+Please report any crashes, visual glitches, or wrong numbers.
