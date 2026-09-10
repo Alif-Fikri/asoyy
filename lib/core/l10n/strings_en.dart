@@ -188,6 +188,8 @@ class StringsEn extends AppStrings {
   @override String get pass_export_warning => 'Passwords will be exported as plain text. Keep the file in a secure location.';
   @override String get pass_import_title => 'Import Passwords';
   @override String get pass_import_empty => 'No valid passwords found in file';
+  @override String get pass_export_empty => 'No passwords to export';
+  @override String get generic_error => 'Something went wrong, try again';
   @override String get pass_import_error => 'Could not read file. Make sure it is a valid CSV.';
 
   @override String get auth_setup_title => 'Secure Password Manager';

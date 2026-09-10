@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/l10n/app_localizations.dart';
 import '../../../core/utils/csv_share.dart';
+import '../../../core/widgets/app_toast.dart';
 import '../data/auth_config_repository.dart';
 import '../services/csv_service.dart';
 import 'bloc/password_bloc.dart';
@@ -40,7 +41,10 @@ Future<void> exportPasswordsCsv(
   if (!ok || !context.mounted) return;
 
   final state = bloc.state;
-  if (state is! PasswordLoaded || state.all.isEmpty) return;
+  if (state is! PasswordLoaded || state.all.isEmpty) {
+    if (context.mounted) AppToast.show(context, s.pass_export_empty);
+    return;
+  }
 
   final confirm = await showDialog<bool>(
     context: context,
@@ -66,11 +70,7 @@ Future<void> exportPasswordsCsv(
     if (!context.mounted) return;
     await shareCsvSnackBar(context, file);
   } catch (_) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.pass_import_error)),
-      );
-    }
+    if (context.mounted) AppToast.show(context, s.pass_import_error);
   }
 }
 
@@ -96,9 +96,7 @@ Future<void> importPasswordsCsv(
   final passwords = CsvService().importFromBytes(result.files.single.bytes!);
 
   if (passwords.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(s.pass_import_empty)),
-    );
+    AppToast.show(context, s.pass_import_empty);
     return;
   }
 
@@ -126,13 +124,10 @@ Future<void> importPasswordsCsv(
   if (confirm != true || !context.mounted) return;
 
   bloc.add(ImportPasswordsRequested(passwords));
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(
-        isId
-            ? '${passwords.length} password diimport'
-            : '${passwords.length} password${passwords.length == 1 ? '' : 's'} imported',
-      ),
-    ),
+  AppToast.show(
+    context,
+    isId
+        ? '${passwords.length} password diimport'
+        : '${passwords.length} password${passwords.length == 1 ? '' : 's'} imported',
   );
 }

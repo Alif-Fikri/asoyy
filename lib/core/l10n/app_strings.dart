@@ -187,6 +187,8 @@ abstract class AppStrings {
   String get pass_export_warning;
   String get pass_import_title;
   String get pass_import_empty;
+  String get pass_export_empty;
+  String get generic_error;
   String get pass_import_error;
 
   String get auth_setup_title;

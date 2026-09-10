@@ -6,6 +6,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/csv_share.dart';
 import '../../../../core/widgets/app_button.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../services/finance_csv_service.dart';
 
@@ -78,9 +79,7 @@ class _FinanceExportDialogState extends State<FinanceExportDialog> {
     final s = context.strings;
     final isId = context.currentLocale.languageCode == 'id';
     if (txs.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.fin_export_empty)),
-      );
+      AppToast.show(context, s.fin_export_empty);
       return;
     }
     setState(() => _isExporting = true);
@@ -91,11 +90,7 @@ class _FinanceExportDialogState extends State<FinanceExportDialog> {
       Navigator.pop(context);
     } catch (_) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(isId ? 'Gagal menyimpan CSV' : 'Failed to save CSV'),
-          ),
-        );
+        AppToast.show(context, isId ? 'Gagal menyimpan CSV' : 'Failed to save CSV');
       }
     } finally {
       if (mounted) setState(() => _isExporting = false);

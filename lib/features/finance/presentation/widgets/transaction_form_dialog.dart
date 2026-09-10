@@ -8,6 +8,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../data/finance_category_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
 
@@ -297,9 +298,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
     );
     if (name == null || name.isEmpty || !mounted) return;
     if (all.contains(name)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(s.fin_category_exists)),
-      );
+      AppToast.show(context, s.fin_category_exists);
       return;
     }
     await widget.repo.add(widget.type, name);

@@ -188,6 +188,8 @@ class StringsId extends AppStrings {
   @override String get pass_export_warning => 'Password akan diekspor sebagai teks biasa. Simpan file di tempat yang aman.';
   @override String get pass_import_title => 'Import Password';
   @override String get pass_import_empty => 'Tidak ada password valid di file';
+  @override String get pass_export_empty => 'Tidak ada password untuk diexport';
+  @override String get generic_error => 'Terjadi kesalahan, coba lagi';
   @override String get pass_import_error => 'Gagal membaca file. Pastikan formatnya CSV yang valid.';
 
   @override String get auth_setup_title => 'Amankan Password Manager';

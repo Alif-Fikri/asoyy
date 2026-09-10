@@ -6,6 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../data/auth_config_repository.dart';
 import '../../domain/entities/auth_method.dart';
 import '../bloc/password_bloc.dart';
@@ -55,9 +56,12 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
       return _SetupPicker(
         onChosen: (method) async {
           if (method == AuthMethod.biometric) {
-
             final ok = await _verifyBiometric(context);
-            if (!ok || !mounted) return;
+            if (!mounted) return;
+            if (!ok) {
+              AppToast.show(context, context.strings.auth_biometric_unavailable);
+              return;
+            }
             await widget.repo.setMethod(AuthMethod.biometric);
             widget.onAuthenticated();
           } else {
@@ -145,7 +149,8 @@ class _PasswordAuthGateState extends State<PasswordAuthGate> {
       await widget.repo.clear();
       await widget.repo.clearPasswords();
     } catch (_) {
-
+      if (mounted) AppToast.show(context, s.generic_error);
+      return;
     }
     if (!mounted) return;
     context.read<PasswordBloc>().add(LoadPasswords());

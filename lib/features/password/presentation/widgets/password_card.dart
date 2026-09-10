@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../domain/entities/password_entity.dart';
 
@@ -28,9 +29,7 @@ class _PasswordCardState extends State<PasswordCard> {
 
   void _copy(String text, String msg) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(msg), duration: const Duration(seconds: 1)),
-    );
+    AppToast.show(context, msg);
   }
 
   @override
