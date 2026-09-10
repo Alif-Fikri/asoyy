@@ -23,6 +23,12 @@ class AlarmModel extends HiveObject {
   @HiveField(5)
   final bool isEnabled;
 
+  @HiveField(6)
+  final String? soundPath;
+
+  @HiveField(7)
+  final String? soundName;
+
   AlarmModel({
     required this.id,
     required this.label,
@@ -30,6 +36,8 @@ class AlarmModel extends HiveObject {
     required this.minute,
     required this.days,
     required this.isEnabled,
+    this.soundPath,
+    this.soundName,
   });
 
   factory AlarmModel.fromEntity(AlarmEntity e) => AlarmModel(
@@ -39,6 +47,8 @@ class AlarmModel extends HiveObject {
         minute: e.minute,
         days: List<int>.from(e.days),
         isEnabled: e.isEnabled,
+        soundPath: e.soundPath,
+        soundName: e.soundName,
       );
 
   AlarmEntity toEntity() => AlarmEntity(
@@ -48,5 +58,7 @@ class AlarmModel extends HiveObject {
         minute: minute,
         days: List<int>.from(days),
         isEnabled: isEnabled,
+        soundPath: soundPath,
+        soundName: soundName,
       );
 }

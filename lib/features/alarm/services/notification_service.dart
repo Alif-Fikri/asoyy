@@ -75,7 +75,7 @@ class NotificationService {
     return AlarmSettings(
       id: id,
       dateTime: nextOccurrence(alarm.hour, alarm.minute, null),
-      assetAudioPath: 'assets/audio/alarm.wav',
+      assetAudioPath: alarm.soundPath ?? 'assets/audio/alarm.wav',
       loopAudio: true,
       vibrate: true,
       androidFullScreenIntent: true,

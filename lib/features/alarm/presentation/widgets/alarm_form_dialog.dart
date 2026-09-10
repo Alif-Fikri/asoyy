@@ -7,6 +7,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../domain/entities/alarm_entity.dart';
+import '../../services/ringtone_picker.dart';
 
 class AlarmFormDialog extends StatefulWidget {
   final void Function(AlarmEntity) onSave;
@@ -20,8 +21,11 @@ class AlarmFormDialog extends StatefulWidget {
 class _AlarmFormDialogState extends State<AlarmFormDialog> {
   final _formKey = GlobalKey<FormState>();
   final _labelCtrl = TextEditingController(text: 'Alarm');
+  final _ringtonePicker = RingtonePicker();
   TimeOfDay _time = TimeOfDay.now();
   final Set<int> _selectedDays = {};
+  String? _soundPath;
+  String? _soundName;
 
   @override
   void dispose() {
@@ -34,6 +38,16 @@ class _AlarmFormDialogState extends State<AlarmFormDialog> {
     if (picked != null) setState(() => _time = picked);
   }
 
+  Future<void> _pickRingtone() async {
+    final picked = await _ringtonePicker.pick();
+    if (picked != null) {
+      setState(() {
+        _soundPath = picked.relativePath;
+        _soundName = picked.name;
+      });
+    }
+  }
+
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
     widget.onSave(AlarmEntity(
@@ -43,6 +57,8 @@ class _AlarmFormDialogState extends State<AlarmFormDialog> {
       minute: _time.minute,
       days: _selectedDays.toList()..sort(),
       isEnabled: true,
+      soundPath: _soundPath,
+      soundName: _soundName,
     ));
     Navigator.pop(context);
   }
@@ -161,6 +177,42 @@ class _AlarmFormDialogState extends State<AlarmFormDialog> {
                   ),
                 );
               }),
+            ),
+            const SizedBox(height: 16),
+            Text(s.alarm_ringtone, style: TextStyle(color: c.textSecondary, fontSize: 13)),
+            const SizedBox(height: 10),
+            GestureDetector(
+              onTap: _pickRingtone,
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                decoration: BoxDecoration(
+                  color: c.cardLight,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.border),
+                ),
+                child: Row(
+                  children: [
+                    Icon(CupertinoIcons.music_note, size: 18, color: c.textSecondary),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        _soundName ?? s.alarm_ringtone_default,
+                        style: TextStyle(color: c.textPrimary, fontSize: 15),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      s.alarm_ringtone_choose,
+                      style: const TextStyle(
+                        color: AppColors.alarmColor,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 24),
             AppButton(

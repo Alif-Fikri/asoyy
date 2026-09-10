@@ -1,6 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'alarm_model.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
   @override
@@ -9,12 +13,9 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
   @override
   AlarmModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{};
-    for (int i = 0; i < numOfFields; i++) {
-      final key = reader.readByte();
-      final value = reader.read();
-      fields[key] = value;
-    }
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
     return AlarmModel(
       id: fields[0] as String,
       label: fields[1] as String,
@@ -22,13 +23,15 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
       minute: fields[3] as int,
       days: (fields[4] as List).cast<int>(),
       isEnabled: fields[5] as bool,
+      soundPath: fields[6] as String?,
+      soundName: fields[7] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AlarmModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -40,7 +43,11 @@ class AlarmModelAdapter extends TypeAdapter<AlarmModel> {
       ..writeByte(4)
       ..write(obj.days)
       ..writeByte(5)
-      ..write(obj.isEnabled);
+      ..write(obj.isEnabled)
+      ..writeByte(6)
+      ..write(obj.soundPath)
+      ..writeByte(7)
+      ..write(obj.soundName);
   }
 
   @override

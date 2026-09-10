@@ -105,6 +105,9 @@ class StringsId extends AppStrings {
   @override String get alarm_disabled => 'Nonaktif';
   @override String get alarm_snooze => 'Tunda 5 Menit';
   @override String get alarm_ringing_now => 'Alarm berbunyi';
+  @override String get alarm_ringtone => 'Nada Dering';
+  @override String get alarm_ringtone_default => 'Default';
+  @override String get alarm_ringtone_choose => 'Pilih dari HP';
 
   @override String get calc_title => 'Kalkulator';
   @override String get search_title => 'Pencarian';

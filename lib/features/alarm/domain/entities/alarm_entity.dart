@@ -5,6 +5,8 @@ class AlarmEntity {
   final int minute;
   final List<int> days;
   final bool isEnabled;
+  final String? soundPath;
+  final String? soundName;
 
   const AlarmEntity({
     required this.id,
@@ -13,6 +15,8 @@ class AlarmEntity {
     required this.minute,
     required this.days,
     required this.isEnabled,
+    this.soundPath,
+    this.soundName,
   });
 
   String get timeString {
@@ -34,5 +38,7 @@ class AlarmEntity {
         minute: minute,
         days: days,
         isEnabled: isEnabled ?? this.isEnabled,
+        soundPath: soundPath,
+        soundName: soundName,
       );
 }

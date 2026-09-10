@@ -105,6 +105,9 @@ class StringsEn extends AppStrings {
   @override String get alarm_disabled => 'Disabled';
   @override String get alarm_snooze => 'Snooze 5 min';
   @override String get alarm_ringing_now => 'Alarm ringing';
+  @override String get alarm_ringtone => 'Ringtone';
+  @override String get alarm_ringtone_default => 'Default';
+  @override String get alarm_ringtone_choose => 'Choose from phone';
 
   @override String get calc_title => 'Calculator';
   @override String get search_title => 'Search';

@@ -1,6 +1,10 @@
-
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'event_model.dart';
+
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class EventModelAdapter extends TypeAdapter<EventModel> {
   @override
@@ -9,12 +13,9 @@ class EventModelAdapter extends TypeAdapter<EventModel> {
   @override
   EventModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
-    final fields = <int, dynamic>{};
-    for (int i = 0; i < numOfFields; i++) {
-      final key = reader.readByte();
-      final value = reader.read();
-      fields[key] = value;
-    }
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
     return EventModel(
       id: fields[0] as String,
       title: fields[1] as String,

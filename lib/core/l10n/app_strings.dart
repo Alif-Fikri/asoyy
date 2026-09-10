@@ -104,6 +104,9 @@ abstract class AppStrings {
   String get alarm_disabled;
   String get alarm_snooze;
   String get alarm_ringing_now;
+  String get alarm_ringtone;
+  String get alarm_ringtone_default;
+  String get alarm_ringtone_choose;
 
   String get calc_title;
   String get search_title;
