@@ -8,6 +8,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/hijri_converter.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -31,9 +32,10 @@ class CalendarPage extends StatelessWidget {
       builder:
           (_) => EventFormDialog(
             initialDate: date,
-            onSave:
-                (event) =>
-                    context.read<CalendarBloc>().add(AddEventRequested(event)),
+            onSave: (event) {
+              context.read<CalendarBloc>().add(AddEventRequested(event));
+              AppToast.show(context, context.strings.cal_event_added);
+            },
           ),
     );
   }
@@ -106,6 +108,7 @@ class CalendarPage extends StatelessWidget {
                             onPressed: () {
                               context.read<CalendarBloc>().add(SetPayday(null));
                               Navigator.pop(ctx);
+                              AppToast.show(context, s.cal_payday_cleared);
                             },
                             style: OutlinedButton.styleFrom(
                               foregroundColor: AppColors.alarmColor,
@@ -131,6 +134,9 @@ class CalendarPage extends StatelessWidget {
                             if (val != null && val >= 1 && val <= 31) {
                               context.read<CalendarBloc>().add(SetPayday(val));
                               Navigator.pop(ctx);
+                              AppToast.show(context, s.cal_payday_saved);
+                            } else {
+                              AppToast.show(context, s.cal_payday_invalid);
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -249,10 +255,12 @@ class CalendarPage extends StatelessWidget {
                     ...events.map(
                       (e) => EventListItem(
                         event: e,
-                        onDelete:
-                            () => context.read<CalendarBloc>().add(
-                              DeleteEventRequested(e.id),
-                            ),
+                        onDelete: () {
+                          context
+                              .read<CalendarBloc>()
+                              .add(DeleteEventRequested(e.id));
+                          AppToast.show(context, context.strings.cal_event_deleted);
+                        },
                       ),
                     ),
                   ],

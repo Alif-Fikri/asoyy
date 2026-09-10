@@ -27,6 +27,9 @@ Future<void> changeAuthMethod(
       ),
     ),
   );
+  if (context.mounted && repo.isConfigured) {
+    AppToast.show(context, context.strings.auth_method_updated);
+  }
 }
 
 Future<void> exportPasswordsCsv(

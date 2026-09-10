@@ -107,6 +107,22 @@ abstract class AppStrings {
   String get alarm_ringtone;
   String get alarm_ringtone_default;
   String get alarm_ringtone_choose;
+  String get alarm_added;
+  String get alarm_deleted;
+  String get cal_event_added;
+  String get cal_event_deleted;
+  String get cal_payday_saved;
+  String get cal_payday_cleared;
+  String get cal_payday_invalid;
+  String get fin_transaction_added;
+  String get fin_transaction_deleted;
+  String get fin_category_added;
+  String get fin_category_deleted;
+  String get fin_recurring_added;
+  String get fin_recurring_deleted;
+  String get pass_saved;
+  String get pass_deleted;
+  String get auth_method_updated;
 
   String get calc_title;
   String get search_title;

@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
@@ -38,6 +39,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
   }
 
   Future<void> _add() async {
+    var saved = false;
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -60,12 +62,14 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
             notes: notes,
           );
           await _repo.generateDueTransactions(di.sl<FinanceRepository>());
+          saved = true;
         },
       ),
     );
     setState(() => _items = _repo.getAll());
     await _reminderService.rescheduleAll();
     widget.onChanged();
+    if (saved && mounted) AppToast.show(context, context.strings.fin_recurring_added);
   }
 
   Future<void> _delete(String id) async {
@@ -74,6 +78,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
     await _repo.delete(id);
     await _reminderService.cancelReminder(id);
     setState(() => _items = _repo.getAll());
+    if (mounted) AppToast.show(context, context.strings.fin_recurring_deleted);
   }
 
   @override

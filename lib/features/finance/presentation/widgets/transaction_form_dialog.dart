@@ -304,6 +304,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
     await widget.repo.add(widget.type, name);
     if (!mounted) return;
     setState(() => _custom = widget.repo.getCustom(widget.type));
+    AppToast.show(context, s.fin_category_added);
     Navigator.pop(context, name);
   }
 
@@ -343,6 +344,7 @@ class _CategoryPickerSheetState extends State<_CategoryPickerSheet> {
         _selected = remaining.isNotEmpty ? remaining.first : '';
       }
     });
+    AppToast.show(context, s.fin_category_deleted);
     if (name == widget.selected && _selected != name) {
       Navigator.pop(context, _selected);
     }

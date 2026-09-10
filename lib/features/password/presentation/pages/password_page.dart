@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -32,8 +33,10 @@ class _PasswordPageState extends State<PasswordPage> {
       backgroundColor: Colors.transparent,
       builder: (_) => PasswordFormDialog(
         existing: existing,
-        onSave: (p) =>
-            context.read<PasswordBloc>().add(SavePasswordRequested(p)),
+        onSave: (p) {
+          context.read<PasswordBloc>().add(SavePasswordRequested(p));
+          AppToast.show(context, context.strings.pass_saved);
+        },
       ),
     );
   }
@@ -153,9 +156,12 @@ class _PasswordPageState extends State<PasswordPage> {
                     (p) => PasswordCard(
                       password: p,
                       onEdit: () => _showForm(context, existing: p),
-                      onDelete: () => context
-                          .read<PasswordBloc>()
-                          .add(DeletePasswordRequested(p.id)),
+                      onDelete: () {
+                        context
+                            .read<PasswordBloc>()
+                            .add(DeletePasswordRequested(p.id));
+                        AppToast.show(context, context.strings.pass_deleted);
+                      },
                     ),
                   )
                   .toList(),

@@ -108,6 +108,22 @@ class StringsId extends AppStrings {
   @override String get alarm_ringtone => 'Nada Dering';
   @override String get alarm_ringtone_default => 'Default';
   @override String get alarm_ringtone_choose => 'Pilih dari HP';
+  @override String get alarm_added => 'Alarm ditambahkan';
+  @override String get alarm_deleted => 'Alarm dihapus';
+  @override String get cal_event_added => 'Event ditambahkan';
+  @override String get cal_event_deleted => 'Event dihapus';
+  @override String get cal_payday_saved => 'Tanggal gajian disimpan';
+  @override String get cal_payday_cleared => 'Tanggal gajian dihapus';
+  @override String get cal_payday_invalid => 'Masukkan tanggal 1-31';
+  @override String get fin_transaction_added => 'Transaksi ditambahkan';
+  @override String get fin_transaction_deleted => 'Transaksi dihapus';
+  @override String get fin_category_added => 'Kategori ditambahkan';
+  @override String get fin_category_deleted => 'Kategori dihapus';
+  @override String get fin_recurring_added => 'Transaksi berulang ditambahkan';
+  @override String get fin_recurring_deleted => 'Transaksi berulang dihapus';
+  @override String get pass_saved => 'Password disimpan';
+  @override String get pass_deleted => 'Password dihapus';
+  @override String get auth_method_updated => 'Metode keamanan diperbarui';
 
   @override String get calc_title => 'Kalkulator';
   @override String get search_title => 'Pencarian';

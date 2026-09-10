@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -22,9 +23,12 @@ class AlarmPage extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => AlarmFormDialog(
-        onSave: (alarm) => context.read<AlarmBloc>().add(
-              AddAlarmRequested(alarm, stopButtonText: context.strings.alarm_stop),
-            ),
+        onSave: (alarm) {
+          context.read<AlarmBloc>().add(
+                AddAlarmRequested(alarm, stopButtonText: context.strings.alarm_stop),
+              );
+          AppToast.show(context, context.strings.alarm_added);
+        },
       ),
     );
   }
@@ -50,6 +54,11 @@ class AlarmPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _deleteAlarm(BuildContext context, String id) {
+    context.read<AlarmBloc>().add(DeleteAlarmRequested(id));
+    AppToast.show(context, context.strings.alarm_deleted);
   }
 
   Widget _buildBody(BuildContext context, AlarmState state) {
@@ -99,9 +108,7 @@ class AlarmPage extends StatelessWidget {
                           stopButtonText: context.strings.alarm_stop,
                         ),
                       ),
-                      onDelete: () => context
-                          .read<AlarmBloc>()
-                          .add(DeleteAlarmRequested(a.id)),
+                      onDelete: () => _deleteAlarm(context, a.id),
                     ),
                   )
                   .toList(),
@@ -119,9 +126,7 @@ class AlarmPage extends StatelessWidget {
                           stopButtonText: context.strings.alarm_stop,
                         ),
                       ),
-                      onDelete: () => context
-                          .read<AlarmBloc>()
-                          .add(DeleteAlarmRequested(a.id)),
+                      onDelete: () => _deleteAlarm(context, a.id),
                     ),
                   )
                   .toList(),

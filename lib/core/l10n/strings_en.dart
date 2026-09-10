@@ -108,6 +108,22 @@ class StringsEn extends AppStrings {
   @override String get alarm_ringtone => 'Ringtone';
   @override String get alarm_ringtone_default => 'Default';
   @override String get alarm_ringtone_choose => 'Choose from phone';
+  @override String get alarm_added => 'Alarm added';
+  @override String get alarm_deleted => 'Alarm deleted';
+  @override String get cal_event_added => 'Event added';
+  @override String get cal_event_deleted => 'Event deleted';
+  @override String get cal_payday_saved => 'Payday date saved';
+  @override String get cal_payday_cleared => 'Payday date cleared';
+  @override String get cal_payday_invalid => 'Enter a day between 1-31';
+  @override String get fin_transaction_added => 'Transaction added';
+  @override String get fin_transaction_deleted => 'Transaction deleted';
+  @override String get fin_category_added => 'Category added';
+  @override String get fin_category_deleted => 'Category deleted';
+  @override String get fin_recurring_added => 'Recurring transaction added';
+  @override String get fin_recurring_deleted => 'Recurring transaction deleted';
+  @override String get pass_saved => 'Password saved';
+  @override String get pass_deleted => 'Password deleted';
+  @override String get auth_method_updated => 'Security method updated';
 
   @override String get calc_title => 'Calculator';
   @override String get search_title => 'Search';

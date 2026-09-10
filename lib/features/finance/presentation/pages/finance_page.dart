@@ -7,6 +7,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/app_chip.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -32,8 +33,10 @@ class FinancePage extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => TransactionFormDialog(
-        onSave: (tx) =>
-            context.read<FinanceBloc>().add(AddTransactionRequested(tx)),
+        onSave: (tx) {
+          context.read<FinanceBloc>().add(AddTransactionRequested(tx));
+          AppToast.show(context, context.strings.fin_transaction_added);
+        },
       ),
     );
   }
@@ -45,7 +48,10 @@ class FinancePage extends StatelessWidget {
   void _showQuickAdd(BuildContext context) {
     showQuickAddSheet(
       context,
-      (tx) => context.read<FinanceBloc>().add(AddTransactionRequested(tx)),
+      (tx) {
+        context.read<FinanceBloc>().add(AddTransactionRequested(tx));
+        AppToast.show(context, context.strings.fin_transaction_added);
+      },
     );
   }
 
@@ -189,9 +195,12 @@ class FinancePage extends StatelessWidget {
                   .map(
                     (tx) => TransactionCard(
                       transaction: tx,
-                      onDelete: () => context
-                          .read<FinanceBloc>()
-                          .add(DeleteTransactionRequested(tx.id)),
+                      onDelete: () {
+                        context
+                            .read<FinanceBloc>()
+                            .add(DeleteTransactionRequested(tx.id));
+                        AppToast.show(context, context.strings.fin_transaction_deleted);
+                      },
                     ),
                   )
                   .toList(),
