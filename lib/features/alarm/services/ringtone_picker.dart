@@ -8,7 +8,7 @@ class RingtonePickResult {
 }
 
 class RingtonePicker {
-  static const _channel = MethodChannel('com.example.asoyy/ringtone');
+  static const _channel = MethodChannel('id.co.alchemist.beres/ringtone');
 
   Future<RingtonePickResult?> pick() async {
     try {

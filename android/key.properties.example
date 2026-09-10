@@ -1,0 +1,11 @@
+# Copy to android/key.properties and fill in the real values.
+# That copy is gitignored; this template is not.
+#
+# The same Alchemist keystore signs every Alchemist app. It lives outside
+# the repo on purpose. Losing it means never being able to update this app
+# on Play again — back it up somewhere other than this machine.
+
+storeFile=/absolute/path/to/alchemist.jks
+storePassword=
+keyAlias=alchemist
+keyPassword=

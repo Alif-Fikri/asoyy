@@ -1,4 +1,4 @@
-package com.example.asoyy
+package id.co.alchemist.beres
 
 import android.app.Activity
 import android.content.Intent
@@ -14,8 +14,8 @@ import java.io.File
 
 class MainActivity : FlutterFragmentActivity() {
 
-    private val batteryChannel = "com.example.asoyy/battery"
-    private val ringtoneChannel = "com.example.asoyy/ringtone"
+    private val batteryChannel = "id.co.alchemist.beres/battery"
+    private val ringtoneChannel = "id.co.alchemist.beres/ringtone"
     private val ringtonePickerRequestCode = 4271
 
     private var pendingRingtoneResult: MethodChannel.Result? = null

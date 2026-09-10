@@ -106,6 +106,9 @@ First release of Beres!
 ## Catatan pengisian Play Console
 
 ### App info
+- Package name: `id.co.alchemist.beres` — Android `applicationId`,
+  Android `namespace`, iOS/macOS `PRODUCT_BUNDLE_IDENTIFIER` dan Linux
+  `APPLICATION_ID` semuanya sudah sama
 - Launcher label: `Beres`
 - Version: `1.0.0+1` (`pubspec.yaml`) — naikkan build number tiap upload
 - Icon listing 512x512: `store_assets/play_store_icon_512.png`
@@ -152,32 +155,46 @@ Beberapa izin di `AndroidManifest.xml` akan ditanyakan Play Console:
 - `USE_FULL_SCREEN_INTENT` — layar alarm berbunyi. Alasannya sama: alarm
   yang dijadwalkan pengguna. Kalau ditolak reviewer, alarm masih berbunyi,
   tapi hanya lewat notifikasi biasa, bukan layar penuh.
-- `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` — hanya diminta saat pengguna
-  menekan tombolnya sendiri di halaman Profil, untuk menjaga alarm tetap
-  akurat. Jangan pernah panggil otomatis saat app dibuka; Play melarangnya.
+- `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` — **saat ini dideklarasikan tapi
+  tidak dipakai.** Handler-nya ada di `MainActivity.kt` (channel
+  `id.co.alchemist.beres/battery`), tapi tidak ada satu pun kode Dart yang
+  memanggilnya dan tidak ada tombolnya di UI. Pilih salah satu sebelum
+  rilis: hapus izin ini dari manifest beserta handler-nya, atau tambahkan
+  tombol di halaman Profil yang memanggilnya. Mendeklarasikan izin
+  sensitif yang tidak terpakai berisiko dipertanyakan saat review.
+  Kalau dipakai, panggil hanya saat pengguna menekan tombolnya sendiri —
+  Play melarang pemanggilan otomatis saat app dibuka.
 - `POST_NOTIFICATIONS`, `VIBRATE`, `WAKE_LOCK`, `RECEIVE_BOOT_COMPLETED`,
   `FOREGROUND_SERVICE*`, `USE_BIOMETRIC` — pendukung alarm dan penguncian
   password manager.
 
 ### PENTING sebelum submit ke production
 
-1. **`applicationId` masih `com.example.asoyy`.** Play Console **menolak**
-   package yang diawali `com.example`. Ini wajib diganti (mis.
-   `id.co.alchemist.beres`) di `android/app/build.gradle.kts`
-   (`namespace` + `applicationId`), direktori
-   `android/app/src/main/kotlin/...`, dan `PRODUCT_BUNDLE_IDENTIFIER` iOS.
-   **Package name tidak bisa diubah lagi setelah rilis pertama**, jadi
-   pastikan final sebelum upload.
+1. ~~`applicationId` masih `com.example.asoyy`~~ — **sudah diganti** ke
+   `id.co.alchemist.beres` di semua platform. **Package name tidak bisa
+   diubah lagi setelah rilis pertama**, jadi pastikan ini memang final
+   sebelum upload pertama.
 2. **Privacy Policy URL wajib diisi** untuk semua aplikasi. Draft ada di
    `store_assets/PRIVACY_POLICY.md` — publish ke URL publik (GitHub Pages
    atau hosting apa pun), lalu tempel URL-nya di Play Console
    (App content → Privacy policy) dan App Store Connect (App Privacy).
-3. **Keystore upload** ada di `~/AndroidKeystores/`. Backup file `.jks` dan
-   kredensialnya di tempat lain — kehilangan keystore berarti tidak bisa
-   update app selamanya.
-4. Build rilis pakai `flutter build appbundle --release`, lalu cek sekali
-   di perangkat asli bahwa alarm tetap berbunyi setelah app ditutup dan
-   konversi mata uang berhasil menarik kurs.
+3. **Signing release sudah disetel** memakai keystore Alchemist yang sama
+   dengan project lain: `~/AndroidKeystores/alchemist-release.jks`, alias
+   `alchemist`. Kredensialnya ada di `android/key.properties` yang
+   **gitignored**; templatnya ada di `android/key.properties.example`.
+   Build release yang sudah diverifikasi memakai sertifikat
+   `CN=Alif Fikri, OU=Suiten`. Backup file `.jks` dan kredensialnya di
+   tempat lain — kehilangan keystore berarti tidak bisa update app
+   selamanya. Tanpa `key.properties`, build tetap jalan tapi jatuh ke
+   debug key, yang akan ditolak Play.
+4. Build rilis pakai `flutter build appbundle --release`. R8 (`minify` +
+   `shrinkResources`) aktif, dengan keep rules di
+   `android/app/proguard-rules.pro` untuk Flutter,
+   `flutter_local_notifications`/Gson, dan plugin `alarm`. Build release
+   sudah diuji di emulator: app jalan, ringtone picker native terbuka,
+   dan alarm benar-benar terdaftar di AlarmManager. Tetap cek sekali di
+   perangkat asli bahwa alarm berbunyi setelah app ditutup dan konversi
+   mata uang berhasil menarik kurs.
 
 ### Screenshots
 
