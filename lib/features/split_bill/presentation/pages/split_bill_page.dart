@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
@@ -46,7 +45,16 @@ class SplitBillPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: c.background,
-      appBar: NexusAppBar(title: s.splitbill_title),
+      appBar: NexusAppBar(
+        title: s.splitbill_title,
+        extraActions: [
+          IconButton(
+            icon: const Icon(CupertinoIcons.add_circled),
+            onPressed: () => _openForm(context),
+            tooltip: s.splitbill_new_bill,
+          ),
+        ],
+      ),
       body: SafeArea(
         child: BlocConsumer<SplitBillBloc, SplitBillState>(
           listener: (context, state) {
@@ -86,11 +94,6 @@ class SplitBillPage extends StatelessWidget {
             return const SizedBox();
           },
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.splitBillColor,
-        onPressed: () => _openForm(context),
-        child: const Icon(CupertinoIcons.add, color: Colors.white),
       ),
     );
   }
