@@ -31,8 +31,10 @@ import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
 import '../../features/finance/domain/usecases/add_transaction.dart';
 import '../../features/finance/domain/usecases/delete_transaction.dart';
+import '../../features/finance/domain/usecases/get_finance_summary.dart';
 import '../../features/finance/domain/usecases/get_transactions.dart';
 import '../../features/finance/presentation/bloc/finance_bloc.dart';
+import '../../features/finance/services/finance_widget_service.dart';
 
 import '../../features/password/data/datasources/password_local_datasource.dart';
 import '../../features/password/data/repositories/password_repository_impl.dart';
@@ -96,9 +98,12 @@ Future<void> init() async {
   sl.registerLazySingleton(() => RecurringTransactionRepository());
   await sl<RecurringTransactionRepository>()
       .generateDueTransactions(sl<FinanceRepository>());
+  sl.registerLazySingleton(
+      () => FinanceWidgetService(GetFinanceSummary(sl<FinanceRepository>())));
   sl.registerFactory(() => FinanceBloc(
         getTransactions: GetTransactions(sl()),
         addTransaction: AddTransaction(sl()),
         deleteTransaction: DeleteTransaction(sl()),
+        financeWidgetService: sl<FinanceWidgetService>(),
       ));
 }

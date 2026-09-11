@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_transactions.dart';
 import '../../domain/usecases/add_transaction.dart';
 import '../../domain/usecases/delete_transaction.dart';
 import '../../../../core/usecase/usecase.dart';
+import '../../services/finance_widget_service.dart';
 import 'finance_event.dart';
 import 'finance_state.dart';
 
@@ -10,11 +13,13 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
   final GetTransactions getTransactions;
   final AddTransaction addTransaction;
   final DeleteTransaction deleteTransaction;
+  final FinanceWidgetService financeWidgetService;
 
   FinanceBloc({
     required this.getTransactions,
     required this.addTransaction,
     required this.deleteTransaction,
+    required this.financeWidgetService,
   }) : super(FinanceInitial()) {
     on<LoadTransactions>(_onLoad);
     on<AddTransactionRequested>(_onAdd);
@@ -41,6 +46,7 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
     await addTransaction(event.transaction);
     final updated = [event.transaction, ...current.all];
     emit(current.copyWith(all: updated));
+    unawaited(financeWidgetService.updateWidget());
   }
 
   Future<void> _onDelete(DeleteTransactionRequested event, Emitter<FinanceState> emit) async {
@@ -48,6 +54,7 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
     final current = state as FinanceLoaded;
     await deleteTransaction(event.id);
     emit(current.copyWith(all: current.all.where((t) => t.id != event.id).toList()));
+    unawaited(financeWidgetService.updateWidget());
   }
 
   void _onFilter(FilterChanged event, Emitter<FinanceState> emit) {

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
@@ -11,6 +13,7 @@ import 'features/alarm/data/models/alarm_model.dart';
 import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/data/models/event_model.dart';
 import 'features/finance/data/models/transaction_model.dart';
+import 'features/finance/services/finance_widget_service.dart';
 import 'features/finance/services/recurring_reminder_service.dart';
 import 'features/password/data/models/password_model.dart';
 import 'app.dart';
@@ -47,6 +50,7 @@ void main() async {
   ]);
 
   await di.init();
+  unawaited(di.sl<FinanceWidgetService>().updateWidget());
 
   await NotificationService().init();
   await RecurringReminderService().rescheduleAll();
