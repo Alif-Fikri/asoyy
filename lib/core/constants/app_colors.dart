@@ -20,6 +20,7 @@ abstract class AppColors {
   static const Color financeColor = Color(0xFFF97316);
   static const Color converterColor = Color(0xFF14B8A6);
   static const Color splitBillColor = Color(0xFFEC4899);
+  static const Color debtColor = Color(0xFF06B6D4);
 
   static const Color income = Color(0xFF10B981);
   static const Color expense = Color(0xFFEF4444);

@@ -45,6 +45,22 @@ class StringsId extends AppStrings {
   @override String get splitbill_empty_subtitle => 'Buat tagihan patungan pertamamu dan bagi ke teman-teman.';
   @override String get splitbill_min_participants => 'Minimal 2 peserta';
   @override String get splitbill_settled => 'Lunas Semua';
+
+  @override String get nav_debt => 'Utang Piutang';
+  @override String get debt_title => 'Utang Piutang';
+  @override String get debt_new => 'Catat Utang';
+  @override String get debt_person_name => 'Nama Orang';
+  @override String get debt_amount => 'Jumlah (Rp)';
+  @override String get debt_i_owe => 'Aku Berutang';
+  @override String get debt_owed_to_me => 'Berutang ke Aku';
+  @override String get debt_note => 'Catatan';
+  @override String get debt_due_date => 'Jatuh Tempo';
+  @override String get debt_overdue => 'Lewat jatuh tempo';
+  @override String get debt_settled => 'Lunas';
+  @override String get debt_mark_settled => 'Tandai Lunas';
+  @override String get debt_empty_title => 'Belum Ada Catatan';
+  @override String get debt_empty_subtitle => 'Catat utang piutang biar gak lupa siapa berutang apa.';
+  @override String get notif_kind_debt => 'Utang Piutang';
   @override String get notif_group_today => 'Hari Ini';
   @override String get notif_group_tomorrow => 'Besok';
   @override String get notif_group_upcoming => 'Mendatang';

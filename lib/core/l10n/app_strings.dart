@@ -44,6 +44,22 @@ abstract class AppStrings {
   String get splitbill_empty_subtitle;
   String get splitbill_min_participants;
   String get splitbill_settled;
+
+  String get nav_debt;
+  String get debt_title;
+  String get debt_new;
+  String get debt_person_name;
+  String get debt_amount;
+  String get debt_i_owe;
+  String get debt_owed_to_me;
+  String get debt_note;
+  String get debt_due_date;
+  String get debt_overdue;
+  String get debt_settled;
+  String get debt_mark_settled;
+  String get debt_empty_title;
+  String get debt_empty_subtitle;
+  String get notif_kind_debt;
   String get notif_group_today;
   String get notif_group_tomorrow;
   String get notif_group_upcoming;

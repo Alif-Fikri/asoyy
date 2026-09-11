@@ -3,10 +3,13 @@ import '../../alarm/domain/entities/alarm_entity.dart';
 import '../../alarm/services/alarm_schedule.dart';
 import '../../calendar/domain/entities/event_entity.dart';
 import '../../calendar/domain/entities/holiday_entity.dart';
+import '../../debt/domain/entities/debt_entity.dart';
+import '../../debt/domain/utils/debt_reminder_schedule.dart';
 import '../../finance/domain/entities/recurring_transaction_entity.dart';
 import '../../finance/domain/utils/recurring_schedule.dart';
+import '../../split_bill/domain/entities/bill_entity.dart';
 
-enum ReminderKind { alarm, event, holiday, payday, recurringBill }
+enum ReminderKind { alarm, event, holiday, payday, recurringBill, debt }
 
 class ReminderItem {
   final ReminderKind kind;
@@ -55,11 +58,14 @@ List<ReminderItem> buildReminders({
   required List<HolidayEntity> holidays,
   required int? paydayDay,
   required List<RecurringTransactionEntity> recurringBills,
+  required List<BillEntity> splitBills,
+  required List<DebtEntity> debts,
   required DateTime now,
   required Color alarmColor,
   required Color holidayColor,
   required Color paydayColor,
   required Color recurringBillColor,
+  required Color debtColor,
   required String paydayLabel,
   required bool isId,
   Set<String> mutedIds = const {},
@@ -131,6 +137,38 @@ List<ReminderItem> buildReminders({
       when: reminderAt,
       color: recurringBillColor,
       enabled: !mutedIds.contains(bill.id),
+    ));
+  }
+
+  for (final bill in splitBills) {
+    for (final p in bill.participants) {
+      if (p.isPaid) continue;
+      final reminderAt = nextDebtReminderTime(bill.date, now);
+      if (reminderAt.isAfter(horizon)) continue;
+      final id = 'bill-${bill.id}-${p.id}';
+      items.add(ReminderItem(
+        kind: ReminderKind.debt,
+        id: id,
+        title: '${p.name} · ${bill.title}',
+        when: reminderAt,
+        color: debtColor,
+        enabled: !mutedIds.contains(id),
+      ));
+    }
+  }
+
+  for (final debt in debts) {
+    if (debt.isSettled) continue;
+    final reminderAt = nextDebtReminderTime(debt.reminderAnchor, now);
+    if (reminderAt.isAfter(horizon)) continue;
+    final id = 'debt-${debt.id}';
+    items.add(ReminderItem(
+      kind: ReminderKind.debt,
+      id: id,
+      title: debt.personName,
+      when: reminderAt,
+      color: debtColor,
+      enabled: !mutedIds.contains(id),
     ));
   }
 

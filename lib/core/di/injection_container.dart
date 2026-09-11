@@ -53,6 +53,16 @@ import '../../features/split_bill/domain/usecases/get_bills.dart';
 import '../../features/split_bill/domain/usecases/update_bill.dart';
 import '../../features/split_bill/presentation/bloc/split_bill_bloc.dart';
 
+import '../../features/debt/data/datasources/debt_local_datasource.dart';
+import '../../features/debt/data/repositories/debt_repository_impl.dart';
+import '../../features/debt/domain/repositories/debt_repository.dart';
+import '../../features/debt/domain/usecases/add_debt.dart';
+import '../../features/debt/domain/usecases/delete_debt.dart';
+import '../../features/debt/domain/usecases/get_debts.dart';
+import '../../features/debt/domain/usecases/update_debt.dart';
+import '../../features/debt/presentation/bloc/debt_bloc.dart';
+import '../../features/debt/services/debt_reminder_service.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -120,10 +130,25 @@ Future<void> init() async {
   sl.registerSingleton<SplitBillLocalDatasource>(splitBillDs);
   sl.registerSingleton<SplitBillRepository>(
       SplitBillRepositoryImpl(sl<SplitBillLocalDatasource>()));
+
+  final debtDs = await DebtLocalDatasourceImpl.create();
+  sl.registerSingleton<DebtLocalDatasource>(debtDs);
+  sl.registerSingleton<DebtRepository>(DebtRepositoryImpl(sl<DebtLocalDatasource>()));
+  sl.registerLazySingleton(() => DebtReminderService());
+
   sl.registerFactory(() => SplitBillBloc(
         getBills: GetBills(sl()),
         addBill: AddBill(sl()),
         updateBill: UpdateBill(sl()),
         deleteBill: DeleteBill(sl()),
+        reminderService: sl<DebtReminderService>(),
+      ));
+
+  sl.registerFactory(() => DebtBloc(
+        getDebts: GetDebts(sl()),
+        addDebt: AddDebt(sl()),
+        updateDebt: UpdateDebt(sl()),
+        deleteDebt: DeleteDebt(sl()),
+        reminderService: sl<DebtReminderService>(),
       ));
 }

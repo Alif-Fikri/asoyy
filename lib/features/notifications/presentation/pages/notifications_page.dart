@@ -21,6 +21,13 @@ import '../../../finance/presentation/bloc/finance_bloc.dart';
 import '../../../finance/presentation/bloc/finance_event.dart';
 import '../../../finance/presentation/pages/recurring_transactions_page.dart';
 import '../../../finance/services/recurring_reminder_service.dart';
+import '../../../split_bill/presentation/bloc/split_bill_bloc.dart';
+import '../../../split_bill/presentation/bloc/split_bill_state.dart';
+import '../../../split_bill/presentation/pages/split_bill_page.dart';
+import '../../../debt/presentation/bloc/debt_bloc.dart';
+import '../../../debt/presentation/bloc/debt_state.dart';
+import '../../../debt/presentation/pages/debt_page.dart';
+import '../../../debt/services/debt_reminder_service.dart';
 import '../../data/notification_mute_repository.dart';
 import '../../domain/reminder_item.dart';
 
@@ -34,6 +41,7 @@ class NotificationsPage extends StatefulWidget {
 class _NotificationsPageState extends State<NotificationsPage> {
   final _recurringRepo = RecurringTransactionRepository();
   final _reminderService = RecurringReminderService();
+  final _debtReminderService = DebtReminderService();
   final _muteRepo = NotificationMuteRepository();
 
   Future<void> _toggle(ReminderItem item, bool enabled) async {
@@ -60,6 +68,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
       } else {
         await _reminderService.cancelReminder(item.id);
       }
+    } else if (item.kind == ReminderKind.debt) {
+      if (enabled) {
+        await _debtReminderService.rescheduleAll();
+      } else {
+        await _debtReminderService.cancelReminder(item.id);
+      }
     }
     setState(() {});
   }
@@ -72,6 +86,15 @@ class _NotificationsPageState extends State<NotificationsPage> {
       ReminderKind.recurringBill => RecurringTransactionsPage(
           onChanged: () => context.read<FinanceBloc>().add(LoadTransactions()),
         ),
+      ReminderKind.debt => item.id.startsWith('bill-')
+          ? BlocProvider.value(
+              value: context.read<SplitBillBloc>(),
+              child: const SplitBillPage(),
+            )
+          : BlocProvider.value(
+              value: context.read<DebtBloc>(),
+              child: const DebtPage(),
+            ),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
@@ -88,6 +111,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
         builder: (context, alarmState) {
           return BlocBuilder<CalendarBloc, CalendarState>(
             builder: (context, calendarState) {
+              return BlocBuilder<SplitBillBloc, SplitBillState>(
+                builder: (context, splitBillState) {
+                  return BlocBuilder<DebtBloc, DebtState>(
+                    builder: (context, debtState) {
               final isId = context.currentLocale.languageCode == 'id';
               final now = DateTime.now();
 
@@ -105,11 +132,16 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ? calendarState.paydayDay
                     : null,
                 recurringBills: _recurringRepo.getAll(),
+                splitBills: splitBillState is SplitBillLoaded
+                    ? splitBillState.bills
+                    : const [],
+                debts: debtState is DebtLoaded ? debtState.debts : const [],
                 now: now,
                 alarmColor: AppColors.alarmColor,
                 holidayColor: AppColors.calendarColor,
                 paydayColor: AppColors.income,
                 recurringBillColor: AppColors.financeColor,
+                debtColor: AppColors.debtColor,
                 paydayLabel: s.cal_payday,
                 isId: isId,
                 mutedIds: _muteRepo.getMuted(),
@@ -166,6 +198,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ),
                 ],
               );
+                    },
+                  );
+                },
+              );
             },
           );
         },
@@ -197,6 +233,7 @@ class _ReminderRow extends StatelessWidget {
         ReminderKind.holiday => CupertinoIcons.flag,
         ReminderKind.payday => CupertinoIcons.money_dollar_circle,
         ReminderKind.recurringBill => CupertinoIcons.repeat,
+        ReminderKind.debt => CupertinoIcons.person_2,
       };
 
   String _kindLabel(AppStrings s) => switch (item.kind) {
@@ -205,6 +242,7 @@ class _ReminderRow extends StatelessWidget {
         ReminderKind.holiday => s.notif_kind_holiday,
         ReminderKind.payday => s.notif_kind_payday,
         ReminderKind.recurringBill => s.notif_kind_recurring_bill,
+        ReminderKind.debt => s.notif_kind_debt,
       };
 
   @override

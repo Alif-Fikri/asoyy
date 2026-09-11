@@ -45,6 +45,22 @@ class StringsEn extends AppStrings {
   @override String get splitbill_empty_subtitle => 'Create your first split bill and share it with friends.';
   @override String get splitbill_min_participants => 'At least 2 participants required';
   @override String get splitbill_settled => 'Fully Settled';
+
+  @override String get nav_debt => 'Debts';
+  @override String get debt_title => 'Debts';
+  @override String get debt_new => 'Record Debt';
+  @override String get debt_person_name => 'Person Name';
+  @override String get debt_amount => 'Amount (Rp)';
+  @override String get debt_i_owe => 'I Owe';
+  @override String get debt_owed_to_me => 'Owed To Me';
+  @override String get debt_note => 'Note';
+  @override String get debt_due_date => 'Due Date';
+  @override String get debt_overdue => 'Overdue';
+  @override String get debt_settled => 'Settled';
+  @override String get debt_mark_settled => 'Mark as Settled';
+  @override String get debt_empty_title => 'No Records Yet';
+  @override String get debt_empty_subtitle => 'Track who owes what so you never forget.';
+  @override String get notif_kind_debt => 'Debt';
   @override String get notif_group_today => 'Today';
   @override String get notif_group_tomorrow => 'Tomorrow';
   @override String get notif_group_upcoming => 'Upcoming';
