@@ -223,6 +223,12 @@ class StringsId extends AppStrings {
   @override String get loan_calc_total_interest => 'Total Bunga';
   @override String get loan_calc_total_payment => 'Total Pembayaran';
   @override String get loan_calc_disclaimer => 'Hasil perhitungan bersifat estimasi, bisa berbeda dari perhitungan resmi bank/leasing.';
+  @override String get loan_calc_mode => 'Mode';
+  @override String get loan_calc_mode_installment => 'Hitung Cicilan';
+  @override String get loan_calc_mode_rate => 'Cari Bunga (%)';
+  @override String get loan_calc_known_installment => 'Cicilan per Bulan yang Ditawarkan';
+  @override String get loan_calc_estimated_rate => 'Estimasi Bunga per Tahun';
+  @override String get loan_calc_rate_not_found => 'Cicilan terlalu kecil untuk melunasi pinjaman ini dalam tenor tersebut.';
   @override String get search_title => 'Pencarian';
   @override String get search_hint => 'Cari transaksi, event, password, alarm...';
   @override String get search_prompt_title => 'Cari apa saja';

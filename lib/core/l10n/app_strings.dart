@@ -221,6 +221,12 @@ abstract class AppStrings {
   String get loan_calc_total_interest;
   String get loan_calc_total_payment;
   String get loan_calc_disclaimer;
+  String get loan_calc_mode;
+  String get loan_calc_mode_installment;
+  String get loan_calc_mode_rate;
+  String get loan_calc_known_installment;
+  String get loan_calc_estimated_rate;
+  String get loan_calc_rate_not_found;
   String get search_title;
   String get search_hint;
   String get search_prompt_title;

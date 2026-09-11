@@ -223,6 +223,12 @@ class StringsEn extends AppStrings {
   @override String get loan_calc_total_interest => 'Total Interest';
   @override String get loan_calc_total_payment => 'Total Payment';
   @override String get loan_calc_disclaimer => 'Results are estimates and may differ from official bank/leasing calculations.';
+  @override String get loan_calc_mode => 'Mode';
+  @override String get loan_calc_mode_installment => 'Calculate Installment';
+  @override String get loan_calc_mode_rate => 'Find Rate (%)';
+  @override String get loan_calc_known_installment => 'Offered Monthly Installment';
+  @override String get loan_calc_estimated_rate => 'Estimated Annual Rate';
+  @override String get loan_calc_rate_not_found => 'The installment is too low to pay off this loan within that tenor.';
   @override String get search_title => 'Search';
   @override String get search_hint => 'Search transactions, events, passwords, alarms...';
   @override String get search_prompt_title => 'Search anything';
