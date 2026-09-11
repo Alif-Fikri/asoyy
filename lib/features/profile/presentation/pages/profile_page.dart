@@ -126,15 +126,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 showChevron: true,
                 onTap: () => exportPasswordsCsv(context, _authRepo),
               ),
-              IosRow(
-                leading: const MenuIconImage(
-                  asset: 'assets/images/menu_upload.png',
-                  size: Sizes.iconTile,
-                ),
-                title: s.profile_import_password,
-                showChevron: true,
-                onTap: () => importPasswordsCsv(context, _authRepo),
-              ),
             ],
           ),
         ],
