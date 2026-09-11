@@ -23,6 +23,20 @@ final recurringReminderIosCategory = DarwinNotificationCategory(
 int notificationIdForRecurring(String recurringId) =>
     recurringId.hashCode.abs() % 100000;
 
+(String, String) _reminderText(RecurringTransactionEntity item) {
+  final amount = item.amount.toStringAsFixed(0);
+  if (item.isSubscription) {
+    return (
+      'Langganan Segera Diperpanjang',
+      '${item.title} sebesar Rp$amount akan diperpanjang dalam 3 hari. Batalkan sekarang kalau tidak mau lanjut.',
+    );
+  }
+  return (
+    'Tagihan Berulang Besok',
+    '${item.title} sebesar Rp$amount akan otomatis tercatat besok.',
+  );
+}
+
 class RecurringReminderService {
   final _repo = RecurringTransactionRepository();
   final _muteRepo = NotificationMuteRepository();
@@ -37,10 +51,11 @@ class RecurringReminderService {
     final reminderTime = nextReminderTime(item, now);
     if (reminderTime.isBefore(now)) return;
 
+    final (title, body) = _reminderText(item);
     await NotificationService.fln.zonedSchedule(
       id,
-      'Tagihan Berulang Besok',
-      '${item.title} sebesar Rp${item.amount.toStringAsFixed(0)} akan otomatis tercatat besok.',
+      title,
+      body,
       tz.TZDateTime.from(reminderTime, tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(
@@ -99,10 +114,11 @@ Future<void> _handleAction(NotificationResponse response) async {
   } else if (actionId == _actionSnooze) {
     final id = notificationIdForRecurring(recurringId);
     final snoozeTime = DateTime.now().add(const Duration(hours: 4));
+    final (title, body) = _reminderText(item);
     await NotificationService.fln.zonedSchedule(
       id,
-      'Tagihan Berulang Besok',
-      '${item.title} sebesar Rp${item.amount.toStringAsFixed(0)} akan otomatis tercatat besok.',
+      title,
+      body,
       tz.TZDateTime.from(snoozeTime, tz.local),
       NotificationDetails(
         android: AndroidNotificationDetails(

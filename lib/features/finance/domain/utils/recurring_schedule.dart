@@ -17,5 +17,6 @@ DateTime nextDueDate(RecurringTransactionEntity item, DateTime now) {
 
 DateTime nextReminderTime(RecurringTransactionEntity item, DateTime now) {
   final due = nextDueDate(item, now);
-  return DateTime(due.year, due.month, due.day - 1, 9);
+  final leadDays = item.isSubscription ? 3 : 1;
+  return DateTime(due.year, due.month, due.day - leadDays, 9);
 }
