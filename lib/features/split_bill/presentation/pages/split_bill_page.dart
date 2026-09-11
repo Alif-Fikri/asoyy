@@ -7,6 +7,7 @@ import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../../../core/widgets/reminder_hint_banner.dart';
 import '../bloc/split_bill_bloc.dart';
 import '../bloc/split_bill_state.dart';
 import '../widgets/bill_card.dart';
@@ -81,9 +82,12 @@ class SplitBillPage extends StatelessWidget {
                   Insets.lg,
                   MediaQuery.of(context).padding.bottom + Insets.xxl,
                 ),
-                itemCount: state.bills.length,
+                itemCount: state.bills.length + 1,
                 itemBuilder: (context, i) {
-                  final bill = state.bills[i];
+                  if (i == 0) {
+                    return ReminderHintBanner(text: s.splitbill_reminder_hint);
+                  }
+                  final bill = state.bills[i - 1];
                   return BillCard(
                     bill: bill,
                     onTap: () => _openDetail(context, bill.id),

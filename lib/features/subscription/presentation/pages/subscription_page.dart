@@ -9,6 +9,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../../../core/widgets/reminder_hint_banner.dart';
 import '../../../finance/data/recurring_transaction_repository.dart';
 import '../../../finance/domain/entities/recurring_transaction_entity.dart';
 import '../../../finance/services/recurring_reminder_service.dart';
@@ -86,6 +87,7 @@ class _SubscriptionPageState extends State<SubscriptionPage> {
                   MediaQuery.of(context).padding.bottom + Insets.xxl,
                 ),
                 children: [
+                  ReminderHintBanner(text: s.subscription_reminder_hint),
                   Container(
                     padding: const EdgeInsets.all(Insets.lg),
                     decoration: BoxDecoration(

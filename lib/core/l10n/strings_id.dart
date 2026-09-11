@@ -74,6 +74,10 @@ class StringsId extends AppStrings {
   @override String get subscription_empty_title => 'Belum Ada Langganan';
   @override String get subscription_empty_subtitle => 'Catat langganan seperti Netflix atau Spotify biar gak lupa dan kebobolan tagihan.';
   @override String get subscription_added => 'Langganan ditambahkan';
+  @override String get subscription_reminder_hint => 'Kamu akan diingatkan 3 hari sebelum setiap langganan diperpanjang, biar masih sempat cancel.';
+  @override String get splitbill_reminder_hint => 'Peserta yang belum bayar akan diingatkan otomatis secara berkala sampai lunas.';
+  @override String get debt_reminder_hint => 'Utang yang belum lunas akan diingatkan otomatis secara berkala sampai ditandai lunas.';
+  @override String get fin_recurring_reminder_hint => 'Kamu akan diingatkan sehari sebelum tagihan berulang otomatis tercatat.';
   @override String get notif_group_today => 'Hari Ini';
   @override String get notif_group_tomorrow => 'Besok';
   @override String get notif_group_upcoming => 'Mendatang';

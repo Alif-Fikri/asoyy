@@ -73,6 +73,10 @@ abstract class AppStrings {
   String get subscription_empty_title;
   String get subscription_empty_subtitle;
   String get subscription_added;
+  String get subscription_reminder_hint;
+  String get splitbill_reminder_hint;
+  String get debt_reminder_hint;
+  String get fin_recurring_reminder_hint;
   String get notif_group_today;
   String get notif_group_tomorrow;
   String get notif_group_upcoming;

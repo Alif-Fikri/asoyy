@@ -74,6 +74,10 @@ class StringsEn extends AppStrings {
   @override String get subscription_empty_title => 'No Subscriptions Yet';
   @override String get subscription_empty_subtitle => 'Track things like Netflix or Spotify so you never get charged by surprise.';
   @override String get subscription_added => 'Subscription added';
+  @override String get subscription_reminder_hint => 'You\'ll be reminded 3 days before each subscription renews, so you still have time to cancel.';
+  @override String get splitbill_reminder_hint => 'Participants who haven\'t paid will be reminded automatically until settled.';
+  @override String get debt_reminder_hint => 'Unpaid debts will be reminded automatically until marked as settled.';
+  @override String get fin_recurring_reminder_hint => 'You\'ll be reminded a day before a recurring bill is automatically recorded.';
   @override String get notif_group_today => 'Today';
   @override String get notif_group_tomorrow => 'Tomorrow';
   @override String get notif_group_upcoming => 'Upcoming';

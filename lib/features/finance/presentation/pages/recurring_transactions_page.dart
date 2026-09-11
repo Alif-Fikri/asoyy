@@ -10,6 +10,7 @@ import '../../../../core/widgets/delete_confirm_dialog.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../../../core/widgets/reminder_hint_banner.dart';
 import '../../../../core/di/injection_container.dart' as di;
 import '../../data/recurring_transaction_repository.dart';
 import '../../domain/entities/recurring_transaction_entity.dart';
@@ -110,6 +111,10 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
             : ListView(
                 padding: const EdgeInsets.fromLTRB(0, Insets.sm, 0, Insets.xl),
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Insets.lg),
+                    child: ReminderHintBanner(text: s.fin_recurring_reminder_hint),
+                  ),
                   IosSection(
                     children: _items.map((item) {
                       final fmt = NumberFormat.decimalPattern('id_ID');

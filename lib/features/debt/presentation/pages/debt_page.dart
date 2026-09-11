@@ -7,6 +7,7 @@ import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../../../core/widgets/reminder_hint_banner.dart';
 import '../bloc/debt_bloc.dart';
 import '../bloc/debt_state.dart';
 import '../widgets/debt_card.dart';
@@ -81,9 +82,12 @@ class DebtPage extends StatelessWidget {
                   Insets.lg,
                   MediaQuery.of(context).padding.bottom + Insets.xxl,
                 ),
-                itemCount: state.debts.length,
+                itemCount: state.debts.length + 1,
                 itemBuilder: (context, i) {
-                  final debt = state.debts[i];
+                  if (i == 0) {
+                    return ReminderHintBanner(text: s.debt_reminder_hint);
+                  }
+                  final debt = state.debts[i - 1];
                   return DebtCard(
                     debt: debt,
                     onTap: () => _openDetail(context, debt.id),
