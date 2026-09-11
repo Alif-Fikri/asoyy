@@ -5,6 +5,7 @@ import '../../../core/constants/app_constants.dart';
 import '../domain/entities/recurring_transaction_entity.dart';
 import '../domain/entities/transaction_entity.dart';
 import '../domain/repositories/finance_repository.dart';
+import '../domain/utils/recurring_schedule.dart';
 
 class RecurringTransactionRepository {
   static const _key = 'fin_recurring_transactions';
@@ -20,6 +21,13 @@ class RecurringTransactionRepository {
         .toList();
   }
 
+  List<RecurringTransactionEntity> getSubscriptions() {
+    final now = DateTime.now();
+    final items = getAll().where((e) => e.isSubscription).toList();
+    items.sort((a, b) => nextDueDate(a, now).compareTo(nextDueDate(b, now)));
+    return items;
+  }
+
   Future<void> _saveAll(List<RecurringTransactionEntity> items) async {
     await _box.put(_key, jsonEncode(items.map((e) => e.toJson()).toList()));
   }
@@ -32,6 +40,7 @@ class RecurringTransactionRepository {
     required int dayOfMonth,
     String? notes,
     bool startNextMonth = false,
+    bool isSubscription = false,
   }) async {
     final now = DateTime.now();
     final currentMonthKey =
@@ -45,6 +54,7 @@ class RecurringTransactionRepository {
       dayOfMonth: dayOfMonth,
       notes: notes,
       lastGeneratedMonth: startNextMonth ? currentMonthKey : null,
+      isSubscription: isSubscription,
     );
     await _saveAll([...getAll(), entity]);
     return entity;

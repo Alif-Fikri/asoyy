@@ -27,7 +27,7 @@ abstract class FinanceCategories {
     'Gaji', 'Freelance', 'Investasi', 'Bonus', 'Hadiah', 'Lainnya',
   ];
   static const List<String> expense = [
-    'Makan', 'Transport', 'Belanja', 'Tagihan', 'Kesehatan',
+    'Makan', 'Transport', 'Belanja', 'Tagihan', 'Langganan', 'Kesehatan',
     'Hiburan', 'Pendidikan', 'Lainnya',
   ];
 }

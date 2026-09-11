@@ -61,6 +61,19 @@ class StringsEn extends AppStrings {
   @override String get debt_empty_title => 'No Records Yet';
   @override String get debt_empty_subtitle => 'Track who owes what so you never forget.';
   @override String get notif_kind_debt => 'Debt';
+
+  @override String get nav_subscription => 'Subscriptions';
+  @override String get subscription_title => 'Subscriptions';
+  @override String get subscription_new => 'Add Subscription';
+  @override String get subscription_service_name => 'Service Name';
+  @override String get subscription_amount => 'Amount (Rp)';
+  @override String get subscription_renewal_day => 'Renewal Date';
+  @override String get subscription_notes => 'Notes';
+  @override String get subscription_monthly_total => 'Monthly Total';
+  @override String get subscription_next_renewal => 'Next renewal';
+  @override String get subscription_empty_title => 'No Subscriptions Yet';
+  @override String get subscription_empty_subtitle => 'Track things like Netflix or Spotify so you never get charged by surprise.';
+  @override String get subscription_added => 'Subscription added';
   @override String get notif_group_today => 'Today';
   @override String get notif_group_tomorrow => 'Tomorrow';
   @override String get notif_group_upcoming => 'Upcoming';

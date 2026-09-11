@@ -9,6 +9,7 @@ class RecurringTransactionEntity {
   final int dayOfMonth;
   final String? notes;
   final String? lastGeneratedMonth;
+  final bool isSubscription;
 
   const RecurringTransactionEntity({
     required this.id,
@@ -19,6 +20,7 @@ class RecurringTransactionEntity {
     required this.dayOfMonth,
     this.notes,
     this.lastGeneratedMonth,
+    this.isSubscription = false,
   });
 
   bool get isIncome => type == TransactionType.income;
@@ -33,6 +35,7 @@ class RecurringTransactionEntity {
         dayOfMonth: dayOfMonth,
         notes: notes,
         lastGeneratedMonth: lastGeneratedMonth ?? this.lastGeneratedMonth,
+        isSubscription: isSubscription,
       );
 
   Map<String, dynamic> toJson() => {
@@ -44,6 +47,7 @@ class RecurringTransactionEntity {
         'dayOfMonth': dayOfMonth,
         'notes': notes,
         'lastGeneratedMonth': lastGeneratedMonth,
+        'isSubscription': isSubscription,
       };
 
   factory RecurringTransactionEntity.fromJson(Map<String, dynamic> json) =>
@@ -58,5 +62,6 @@ class RecurringTransactionEntity {
         dayOfMonth: json['dayOfMonth'] as int,
         notes: json['notes'] as String?,
         lastGeneratedMonth: json['lastGeneratedMonth'] as String?,
+        isSubscription: json['isSubscription'] as bool? ?? false,
       );
 }

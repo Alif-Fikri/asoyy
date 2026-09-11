@@ -61,6 +61,19 @@ class StringsId extends AppStrings {
   @override String get debt_empty_title => 'Belum Ada Catatan';
   @override String get debt_empty_subtitle => 'Catat utang piutang biar gak lupa siapa berutang apa.';
   @override String get notif_kind_debt => 'Utang Piutang';
+
+  @override String get nav_subscription => 'Langganan';
+  @override String get subscription_title => 'Langganan';
+  @override String get subscription_new => 'Tambah Langganan';
+  @override String get subscription_service_name => 'Nama Layanan';
+  @override String get subscription_amount => 'Jumlah (Rp)';
+  @override String get subscription_renewal_day => 'Tanggal Perpanjangan';
+  @override String get subscription_notes => 'Catatan';
+  @override String get subscription_monthly_total => 'Total per Bulan';
+  @override String get subscription_next_renewal => 'Perpanjangan berikutnya';
+  @override String get subscription_empty_title => 'Belum Ada Langganan';
+  @override String get subscription_empty_subtitle => 'Catat langganan seperti Netflix atau Spotify biar gak lupa dan kebobolan tagihan.';
+  @override String get subscription_added => 'Langganan ditambahkan';
   @override String get notif_group_today => 'Hari Ini';
   @override String get notif_group_tomorrow => 'Besok';
   @override String get notif_group_upcoming => 'Mendatang';

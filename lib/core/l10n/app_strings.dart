@@ -60,6 +60,19 @@ abstract class AppStrings {
   String get debt_empty_title;
   String get debt_empty_subtitle;
   String get notif_kind_debt;
+
+  String get nav_subscription;
+  String get subscription_title;
+  String get subscription_new;
+  String get subscription_service_name;
+  String get subscription_amount;
+  String get subscription_renewal_day;
+  String get subscription_notes;
+  String get subscription_monthly_total;
+  String get subscription_next_renewal;
+  String get subscription_empty_title;
+  String get subscription_empty_subtitle;
+  String get subscription_added;
   String get notif_group_today;
   String get notif_group_tomorrow;
   String get notif_group_upcoming;
