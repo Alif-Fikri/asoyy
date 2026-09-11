@@ -46,16 +46,7 @@ class SplitBillPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: c.background,
-      appBar: NexusAppBar(
-        title: s.splitbill_title,
-        extraActions: [
-          IconButton(
-            icon: const Icon(CupertinoIcons.add_circled),
-            onPressed: () => _openForm(context),
-            tooltip: s.splitbill_new_bill,
-          ),
-        ],
-      ),
+      appBar: NexusAppBar(title: s.splitbill_title),
       body: SafeArea(
         child: BlocConsumer<SplitBillBloc, SplitBillState>(
           listener: (context, state) {
