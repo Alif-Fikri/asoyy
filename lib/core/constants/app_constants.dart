@@ -6,6 +6,7 @@ abstract class AppConstants {
   static const String passwordsBox = 'passwords_box';
   static const String transactionsBox = 'transactions_box';
   static const String settingsBox = 'settings_box';
+  static const String billsBox = 'bills_box';
 
   static const String masterPinKey = 'master_pin';
   static const String themeKey = 'theme_mode';
@@ -14,6 +15,8 @@ abstract class AppConstants {
   static const int alarmTypeId = 1;
   static const int passwordTypeId = 2;
   static const int transactionTypeId = 3;
+  static const int billTypeId = 4;
+  static const int participantTypeId = 5;
 
   static const String notificationChannelId = 'nexus_alarm_channel';
   static const String notificationChannelName = 'Nexus Alarms';

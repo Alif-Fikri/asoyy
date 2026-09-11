@@ -44,6 +44,15 @@ import '../../features/password/domain/usecases/get_passwords.dart';
 import '../../features/password/domain/usecases/save_password.dart';
 import '../../features/password/presentation/bloc/password_bloc.dart';
 
+import '../../features/split_bill/data/datasources/split_bill_local_datasource.dart';
+import '../../features/split_bill/data/repositories/split_bill_repository_impl.dart';
+import '../../features/split_bill/domain/repositories/split_bill_repository.dart';
+import '../../features/split_bill/domain/usecases/add_bill.dart';
+import '../../features/split_bill/domain/usecases/delete_bill.dart';
+import '../../features/split_bill/domain/usecases/get_bills.dart';
+import '../../features/split_bill/domain/usecases/update_bill.dart';
+import '../../features/split_bill/presentation/bloc/split_bill_bloc.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
@@ -105,5 +114,16 @@ Future<void> init() async {
         addTransaction: AddTransaction(sl()),
         deleteTransaction: DeleteTransaction(sl()),
         financeWidgetService: sl<FinanceWidgetService>(),
+      ));
+
+  final splitBillDs = await SplitBillLocalDatasourceImpl.create();
+  sl.registerSingleton<SplitBillLocalDatasource>(splitBillDs);
+  sl.registerSingleton<SplitBillRepository>(
+      SplitBillRepositoryImpl(sl<SplitBillLocalDatasource>()));
+  sl.registerFactory(() => SplitBillBloc(
+        getBills: GetBills(sl()),
+        addBill: AddBill(sl()),
+        updateBill: UpdateBill(sl()),
+        deleteBill: DeleteBill(sl()),
       ));
 }

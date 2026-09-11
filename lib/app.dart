@@ -28,6 +28,8 @@ import 'features/notifications/presentation/pages/notifications_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/password/presentation/bloc/password_bloc.dart';
 import 'features/password/presentation/bloc/password_event.dart';
+import 'features/split_bill/presentation/bloc/split_bill_bloc.dart';
+import 'features/split_bill/presentation/bloc/split_bill_event.dart';
 
 class NexusApp extends StatelessWidget {
   const NexusApp({super.key});
@@ -59,6 +61,9 @@ class NexusApp extends StatelessWidget {
                   BlocProvider(
                     create:
                         (_) => di.sl<FinanceBloc>()..add(LoadTransactions()),
+                  ),
+                  BlocProvider(
+                    create: (_) => di.sl<SplitBillBloc>()..add(LoadBills()),
                   ),
                 ],
                 child: MaterialApp(

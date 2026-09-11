@@ -16,6 +16,8 @@ import 'features/finance/data/models/transaction_model.dart';
 import 'features/finance/services/finance_widget_service.dart';
 import 'features/finance/services/recurring_reminder_service.dart';
 import 'features/password/data/models/password_model.dart';
+import 'features/split_bill/data/models/bill_model.dart';
+import 'features/split_bill/data/models/participant_model.dart';
 import 'app.dart';
 
 void main() async {
@@ -43,6 +45,8 @@ void main() async {
   Hive.registerAdapter(AlarmModelAdapter());
   Hive.registerAdapter(PasswordModelAdapter());
   Hive.registerAdapter(TransactionModelAdapter());
+  Hive.registerAdapter(ParticipantModelAdapter());
+  Hive.registerAdapter(BillModelAdapter());
 
   await Future.wait([
     initializeDateFormatting('id_ID', null),
