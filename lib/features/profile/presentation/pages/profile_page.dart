@@ -14,6 +14,7 @@ import '../../../finance/presentation/bloc/finance_state.dart';
 import '../../../finance/presentation/widgets/finance_export_dialog.dart';
 import '../../../password/data/auth_config_repository.dart';
 import '../../../password/presentation/password_actions.dart';
+import '../../../backup/presentation/pages/backup_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -125,6 +126,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 title: s.profile_export_password,
                 showChevron: true,
                 onTap: () => exportPasswordsCsv(context, _authRepo),
+              ),
+              IosRow(
+                leading: const MenuIconImage(
+                  asset: 'assets/images/menu_backup.png',
+                  size: Sizes.iconTile,
+                ),
+                title: s.backup_title,
+                showChevron: true,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const BackupPage()),
+                ),
               ),
             ],
           ),

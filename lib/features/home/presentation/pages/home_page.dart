@@ -21,7 +21,6 @@ import '../../../search/presentation/pages/search_page.dart';
 import '../../../split_bill/presentation/pages/split_bill_page.dart';
 import '../../../debt/presentation/pages/debt_page.dart';
 import '../../../subscription/presentation/pages/subscription_page.dart';
-import '../../../backup/presentation/pages/backup_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -369,11 +368,6 @@ class _FeatureMenu extends StatelessWidget {
         asset: 'assets/images/menu_subscription.png',
         label: s.nav_subscription,
         onTap: () => openFeature(context, const SubscriptionPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_backup.png',
-        label: s.nav_backup,
-        onTap: () => openFeature(context, const BackupPage()),
       ),
     ];
 
