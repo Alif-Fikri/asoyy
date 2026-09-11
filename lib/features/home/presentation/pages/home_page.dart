@@ -347,7 +347,7 @@ class _FeatureMenu extends StatelessWidget {
       ),
       _MenuItemData(
         asset: 'assets/images/menu_loan.png',
-        label: s.loan_calc_title,
+        label: s.nav_loan_calc,
         onTap: () => openFeature(context, const LoanCalculatorPage()),
       ),
       _MenuItemData(

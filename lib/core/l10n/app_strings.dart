@@ -207,6 +207,7 @@ abstract class AppStrings {
   String fin_budget_near(String category);
 
   String get calc_title;
+  String get nav_loan_calc;
   String get loan_calc_title;
   String get loan_calc_amount;
   String get loan_calc_rate;

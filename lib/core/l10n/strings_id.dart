@@ -209,6 +209,7 @@ class StringsId extends AppStrings {
   @override String fin_budget_near(String category) => 'Budget $category hampir habis';
 
   @override String get calc_title => 'Kalkulator';
+  @override String get nav_loan_calc => 'Cicilan/KPR';
   @override String get loan_calc_title => 'Kalkulator Cicilan/KPR';
   @override String get loan_calc_amount => 'Jumlah Pinjaman';
   @override String get loan_calc_rate => 'Bunga per Tahun (%)';

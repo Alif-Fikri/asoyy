@@ -209,6 +209,7 @@ class StringsEn extends AppStrings {
   @override String fin_budget_near(String category) => 'Budget for $category is almost used up';
 
   @override String get calc_title => 'Calculator';
+  @override String get nav_loan_calc => 'Loan/KPR';
   @override String get loan_calc_title => 'Loan/Mortgage Calculator';
   @override String get loan_calc_amount => 'Loan Amount';
   @override String get loan_calc_rate => 'Annual Interest Rate (%)';
