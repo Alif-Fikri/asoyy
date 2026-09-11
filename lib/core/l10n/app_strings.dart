@@ -77,6 +77,23 @@ abstract class AppStrings {
   String get splitbill_reminder_hint;
   String get debt_reminder_hint;
   String get fin_recurring_reminder_hint;
+
+  String get nav_backup;
+  String get backup_title;
+  String get backup_now;
+  String get backup_restore;
+  String get backup_passphrase;
+  String get backup_passphrase_confirm;
+  String get backup_passphrase_mismatch;
+  String get backup_passphrase_too_short;
+  String get backup_passphrase_hint;
+  String get backup_success;
+  String get backup_restore_success;
+  String get backup_restore_failed;
+  String get backup_restart_required;
+  String get backup_close_app;
+  String get backup_warning_hint;
+  String get backup_pick_file_hint;
   String get notif_group_today;
   String get notif_group_tomorrow;
   String get notif_group_upcoming;

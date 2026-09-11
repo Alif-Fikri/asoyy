@@ -78,6 +78,23 @@ class StringsId extends AppStrings {
   @override String get splitbill_reminder_hint => 'Peserta yang belum bayar akan diingatkan otomatis secara berkala sampai lunas.';
   @override String get debt_reminder_hint => 'Utang yang belum lunas akan diingatkan otomatis secara berkala sampai ditandai lunas.';
   @override String get fin_recurring_reminder_hint => 'Kamu akan diingatkan sehari sebelum tagihan berulang otomatis tercatat.';
+
+  @override String get nav_backup => 'Backup & Restore';
+  @override String get backup_title => 'Backup & Restore';
+  @override String get backup_now => 'Backup Sekarang';
+  @override String get backup_restore => 'Pulihkan dari Backup';
+  @override String get backup_passphrase => 'Kata Sandi Backup';
+  @override String get backup_passphrase_confirm => 'Ulangi Kata Sandi';
+  @override String get backup_passphrase_mismatch => 'Kata sandi tidak sama';
+  @override String get backup_passphrase_too_short => 'Kata sandi minimal 6 karakter';
+  @override String get backup_passphrase_hint => 'Simpan kata sandi ini baik-baik. Tanpa itu, file backup tidak bisa dipulihkan.';
+  @override String get backup_success => 'Backup berhasil dibuat';
+  @override String get backup_restore_success => 'Data berhasil dipulihkan';
+  @override String get backup_restore_failed => 'Gagal memulihkan data';
+  @override String get backup_restart_required => 'Data berhasil dipulihkan. Tutup dan buka lagi aplikasi untuk melihat perubahannya.';
+  @override String get backup_close_app => 'Tutup Aplikasi';
+  @override String get backup_warning_hint => 'Backup mencakup semua data di aplikasi ini (Keuangan, Patungan, Utang Piutang, Langganan, Password, dll) dalam satu file terenkripsi. File ini hanya bisa dibuka dengan kata sandi yang sama.';
+  @override String get backup_pick_file_hint => 'Pilih file backup (.bkp)';
   @override String get notif_group_today => 'Hari Ini';
   @override String get notif_group_tomorrow => 'Besok';
   @override String get notif_group_upcoming => 'Mendatang';

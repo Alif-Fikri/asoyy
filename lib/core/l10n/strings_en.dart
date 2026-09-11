@@ -78,6 +78,23 @@ class StringsEn extends AppStrings {
   @override String get splitbill_reminder_hint => 'Participants who haven\'t paid will be reminded automatically until settled.';
   @override String get debt_reminder_hint => 'Unpaid debts will be reminded automatically until marked as settled.';
   @override String get fin_recurring_reminder_hint => 'You\'ll be reminded a day before a recurring bill is automatically recorded.';
+
+  @override String get nav_backup => 'Backup & Restore';
+  @override String get backup_title => 'Backup & Restore';
+  @override String get backup_now => 'Back Up Now';
+  @override String get backup_restore => 'Restore From Backup';
+  @override String get backup_passphrase => 'Backup Passphrase';
+  @override String get backup_passphrase_confirm => 'Confirm Passphrase';
+  @override String get backup_passphrase_mismatch => 'Passphrases don\'t match';
+  @override String get backup_passphrase_too_short => 'Passphrase must be at least 6 characters';
+  @override String get backup_passphrase_hint => 'Keep this passphrase safe. Without it, the backup file can\'t be restored.';
+  @override String get backup_success => 'Backup created';
+  @override String get backup_restore_success => 'Data restored successfully';
+  @override String get backup_restore_failed => 'Failed to restore data';
+  @override String get backup_restart_required => 'Data restored. Close and reopen the app to see the changes.';
+  @override String get backup_close_app => 'Close App';
+  @override String get backup_warning_hint => 'Backup covers all data in this app (Finance, Split Bill, Debts, Subscriptions, Password, etc.) in one encrypted file. It can only be opened with the same passphrase.';
+  @override String get backup_pick_file_hint => 'Choose a backup file (.bkp)';
   @override String get notif_group_today => 'Today';
   @override String get notif_group_tomorrow => 'Tomorrow';
   @override String get notif_group_upcoming => 'Upcoming';
