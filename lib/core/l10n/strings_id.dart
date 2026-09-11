@@ -291,6 +291,9 @@ class StringsId extends AppStrings {
   @override String get fin_recurring_empty_title => 'Belum Ada Transaksi Berulang';
   @override String get fin_recurring_empty_subtitle => 'Tambahkan tagihan bulanan agar otomatis tercatat setiap bulan';
   @override String get fin_recurring_day_label => 'Setiap Tanggal';
+  @override String get fin_recurring_start_label => 'Mulai Kapan';
+  @override String get fin_recurring_start_this_month => 'Bulan Ini';
+  @override String get fin_recurring_start_next_month => 'Bulan Depan';
   @override String fin_recurring_day_value(int day) => 'Tanggal $day';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'Dari';

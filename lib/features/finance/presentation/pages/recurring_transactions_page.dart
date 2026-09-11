@@ -52,6 +52,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
           required category,
           required dayOfMonth,
           notes,
+          required startNextMonth,
         }) async {
           await _repo.add(
             title: title,
@@ -60,6 +61,7 @@ class _RecurringTransactionsPageState extends State<RecurringTransactionsPage> {
             category: category,
             dayOfMonth: dayOfMonth,
             notes: notes,
+            startNextMonth: startNextMonth,
           );
           await _repo.generateDueTransactions(di.sl<FinanceRepository>());
           saved = true;

@@ -31,7 +31,11 @@ class RecurringTransactionRepository {
     required String category,
     required int dayOfMonth,
     String? notes,
+    bool startNextMonth = false,
   }) async {
+    final now = DateTime.now();
+    final currentMonthKey =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}';
     final entity = RecurringTransactionEntity(
       id: const Uuid().v4(),
       title: title,
@@ -40,6 +44,7 @@ class RecurringTransactionRepository {
       category: category,
       dayOfMonth: dayOfMonth,
       notes: notes,
+      lastGeneratedMonth: startNextMonth ? currentMonthKey : null,
     );
     await _saveAll([...getAll(), entity]);
     return entity;

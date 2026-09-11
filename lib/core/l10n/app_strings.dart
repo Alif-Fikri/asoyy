@@ -289,6 +289,9 @@ abstract class AppStrings {
   String get fin_recurring_empty_title;
   String get fin_recurring_empty_subtitle;
   String get fin_recurring_day_label;
+  String get fin_recurring_start_label;
+  String get fin_recurring_start_this_month;
+  String get fin_recurring_start_next_month;
   String fin_recurring_day_value(int day);
   String get fin_export;
   String get fin_export_from;

@@ -291,6 +291,9 @@ class StringsEn extends AppStrings {
   @override String get fin_recurring_empty_title => 'No Recurring Transactions Yet';
   @override String get fin_recurring_empty_subtitle => 'Add a monthly bill so it gets recorded automatically every month';
   @override String get fin_recurring_day_label => 'Every Day of Month';
+  @override String get fin_recurring_start_label => 'Start From';
+  @override String get fin_recurring_start_this_month => 'This Month';
+  @override String get fin_recurring_start_next_month => 'Next Month';
   @override String fin_recurring_day_value(int day) => 'Day $day';
   @override String get fin_export => 'Export CSV';
   @override String get fin_export_from => 'From';

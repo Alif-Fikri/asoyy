@@ -19,6 +19,7 @@ class RecurringFormDialog extends StatefulWidget {
     required String category,
     required int dayOfMonth,
     String? notes,
+    required bool startNextMonth,
   }) onSave;
 
   const RecurringFormDialog({super.key, required this.onSave});
@@ -34,6 +35,7 @@ class _RecurringFormDialogState extends State<RecurringFormDialog> {
   final _categoryRepo = FinanceCategoryRepository();
   TransactionType _type = TransactionType.expense;
   int _dayOfMonth = 1;
+  bool _startNextMonth = false;
   late String _category;
   bool _categoryInitialized = false;
 
@@ -71,6 +73,7 @@ class _RecurringFormDialogState extends State<RecurringFormDialog> {
       type: _type,
       category: _category,
       dayOfMonth: _dayOfMonth,
+      startNextMonth: _startNextMonth,
     );
     if (mounted) Navigator.pop(context);
   }
@@ -248,6 +251,43 @@ class _RecurringFormDialogState extends State<RecurringFormDialog> {
                           color: c.textSecondary, size: 16),
                     ],
                   ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(s.fin_recurring_start_label,
+                  style: TextStyle(color: c.textSecondary, fontSize: 13)),
+              const SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: c.card,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.border),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => setState(() => _startNextMonth = false),
+                        child: _TypeTabContent(
+                          label: s.fin_recurring_start_this_month,
+                          icon: CupertinoIcons.calendar_today,
+                          isSelected: !_startNextMonth,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => setState(() => _startNextMonth = true),
+                        child: _TypeTabContent(
+                          label: s.fin_recurring_start_next_month,
+                          icon: CupertinoIcons.arrow_right_circle,
+                          isSelected: _startNextMonth,
+                          color: color,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: 24),
