@@ -209,6 +209,19 @@ class StringsEn extends AppStrings {
   @override String fin_budget_near(String category) => 'Budget for $category is almost used up';
 
   @override String get calc_title => 'Calculator';
+  @override String get loan_calc_title => 'Loan/Mortgage Calculator';
+  @override String get loan_calc_amount => 'Loan Amount';
+  @override String get loan_calc_rate => 'Annual Interest Rate (%)';
+  @override String get loan_calc_rate_hint => 'e.g. 6.5';
+  @override String get loan_calc_tenor => 'Tenor (months)';
+  @override String get loan_calc_tenor_hint => 'e.g. 60';
+  @override String get loan_calc_method => 'Interest Method';
+  @override String get loan_calc_method_annuity => 'Annuity/Effective';
+  @override String get loan_calc_method_flat => 'Flat';
+  @override String get loan_calc_monthly_installment => 'Monthly Installment';
+  @override String get loan_calc_total_interest => 'Total Interest';
+  @override String get loan_calc_total_payment => 'Total Payment';
+  @override String get loan_calc_disclaimer => 'Results are estimates and may differ from official bank/leasing calculations.';
   @override String get search_title => 'Search';
   @override String get search_hint => 'Search transactions, events, passwords, alarms...';
   @override String get search_prompt_title => 'Search anything';

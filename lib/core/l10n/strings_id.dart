@@ -209,6 +209,19 @@ class StringsId extends AppStrings {
   @override String fin_budget_near(String category) => 'Budget $category hampir habis';
 
   @override String get calc_title => 'Kalkulator';
+  @override String get loan_calc_title => 'Kalkulator Cicilan/KPR';
+  @override String get loan_calc_amount => 'Jumlah Pinjaman';
+  @override String get loan_calc_rate => 'Bunga per Tahun (%)';
+  @override String get loan_calc_rate_hint => 'Contoh: 6.5';
+  @override String get loan_calc_tenor => 'Tenor (bulan)';
+  @override String get loan_calc_tenor_hint => 'Contoh: 60';
+  @override String get loan_calc_method => 'Metode Bunga';
+  @override String get loan_calc_method_annuity => 'Anuitas/Efektif';
+  @override String get loan_calc_method_flat => 'Flat';
+  @override String get loan_calc_monthly_installment => 'Cicilan per Bulan';
+  @override String get loan_calc_total_interest => 'Total Bunga';
+  @override String get loan_calc_total_payment => 'Total Pembayaran';
+  @override String get loan_calc_disclaimer => 'Hasil perhitungan bersifat estimasi, bisa berbeda dari perhitungan resmi bank/leasing.';
   @override String get search_title => 'Pencarian';
   @override String get search_hint => 'Cari transaksi, event, password, alarm...';
   @override String get search_prompt_title => 'Cari apa saja';

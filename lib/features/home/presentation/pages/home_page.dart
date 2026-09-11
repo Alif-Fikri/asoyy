@@ -13,6 +13,7 @@ import '../../../alarm/presentation/pages/alarm_page.dart';
 import '../../../calculator/presentation/pages/calculator_page.dart';
 import '../../../calendar/presentation/pages/calendar_page.dart';
 import '../../../converter/presentation/pages/converter_page.dart';
+import '../../../loan_calculator/presentation/pages/loan_calculator_page.dart';
 import '../../../finance/presentation/bloc/finance_bloc.dart';
 import '../../../finance/presentation/bloc/finance_state.dart';
 import '../../../finance/presentation/pages/finance_page.dart';
@@ -343,6 +344,11 @@ class _FeatureMenu extends StatelessWidget {
         asset: 'assets/images/menu_converter.png',
         label: s.convert_title,
         onTap: () => openFeature(context, const ConverterPage()),
+      ),
+      _MenuItemData(
+        asset: 'assets/images/menu_loan.png',
+        label: s.loan_calc_title,
+        onTap: () => openFeature(context, const LoanCalculatorPage()),
       ),
       _MenuItemData(
         asset: 'assets/images/menu_finance.png',

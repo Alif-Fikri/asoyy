@@ -23,6 +23,7 @@ abstract class AppColors {
   static const Color debtColor = Color(0xFF06B6D4);
   static const Color subscriptionColor = Color(0xFF6366F1);
   static const Color backupColor = Color(0xFF64748B);
+  static const Color loanCalcColor = Color(0xFF0EA5E9);
 
   static const Color income = Color(0xFF10B981);
   static const Color expense = Color(0xFFEF4444);

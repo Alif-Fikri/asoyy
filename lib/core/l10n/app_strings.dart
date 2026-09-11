@@ -207,6 +207,19 @@ abstract class AppStrings {
   String fin_budget_near(String category);
 
   String get calc_title;
+  String get loan_calc_title;
+  String get loan_calc_amount;
+  String get loan_calc_rate;
+  String get loan_calc_rate_hint;
+  String get loan_calc_tenor;
+  String get loan_calc_tenor_hint;
+  String get loan_calc_method;
+  String get loan_calc_method_annuity;
+  String get loan_calc_method_flat;
+  String get loan_calc_monthly_installment;
+  String get loan_calc_total_interest;
+  String get loan_calc_total_payment;
+  String get loan_calc_disclaimer;
   String get search_title;
   String get search_hint;
   String get search_prompt_title;
