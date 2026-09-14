@@ -113,6 +113,22 @@ void main() {
     }
   });
 
+  test('migration marks the vault encrypted before dropping its safety copy',
+      () async {
+    final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+    await plain.put('a', sample('a', 'rahasia-a'));
+    await plain.close();
+
+    expect(isVaultEncrypted(), isFalse);
+    await migratePlaintextVault(cipher);
+    expect(isVaultEncrypted(), isTrue);
+
+    await ensureVaultEncrypted(cipher);
+    final restored = await readEncrypted();
+    expect(restored, hasLength(1));
+    expect(restored.single.password, 'rahasia-a');
+  });
+
   test('Hive opens an encrypted box without a cipher as empty, not an error',
       () async {
     final box = await Hive.openBox<PasswordModel>(
@@ -208,6 +224,80 @@ void main() {
       final box = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
       expect(box.values, isEmpty);
       await box.close();
+    });
+  });
+
+  group('crash safety', () {
+    String boxPath() => '${dir.path}/${AppConstants.passwordsBox}.hive';
+    File holding() => File('${boxPath()}.pre_encrypt');
+
+    test('no holding file is left behind after a clean migration', () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'rahasia-a'));
+      await plain.close();
+
+      await migratePlaintextVault(cipher);
+
+      expect(holding().existsSync(), isFalse);
+      expect(await readEncrypted(), hasLength(1));
+    });
+
+    test('recovers when the app died right after the file was moved aside',
+        () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.putAll({
+        'a': sample('a', 'rahasia-a'),
+        'b': sample('b', 'rahasia-b'),
+      });
+      await plain.close();
+
+      await File(boxPath()).rename(holding().path);
+      expect(File(boxPath()).existsSync(), isFalse,
+          reason: 'this is the crash window: the live file is gone');
+
+      await migratePlaintextVault(cipher);
+
+      final restored = await readEncrypted();
+      expect(restored, hasLength(2));
+      expect(
+        restored.map((p) => p.password).toSet(),
+        {'rahasia-a', 'rahasia-b'},
+      );
+      expect(holding().existsSync(), isFalse);
+    });
+
+    test('recovers when the app died with an empty box already created',
+        () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'rahasia-a'));
+      await plain.close();
+
+      await File(boxPath()).rename(holding().path);
+      final stub = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await stub.close();
+
+      await migratePlaintextVault(cipher);
+
+      final restored = await readEncrypted();
+      expect(restored, hasLength(1));
+      expect(restored.single.password, 'rahasia-a');
+    });
+
+    test('the secret survives the whole crash and recovery cycle', () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'JANGAN-HILANG'));
+      await plain.close();
+
+      await File(boxPath()).rename(holding().path);
+      await ensureVaultEncrypted(cipher);
+      await ensureVaultEncrypted(cipher);
+
+      final restored = await readEncrypted();
+      expect(restored.single.password, 'JANGAN-HILANG');
+      expect(
+        String.fromCharCodes(File(boxPath()).readAsBytesSync()),
+        isNot(contains('JANGAN-HILANG')),
+      );
     });
   });
 }

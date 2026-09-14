@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:hive/hive.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../services/vault_key_store.dart';
@@ -63,7 +64,6 @@ Future<void> setVaultEncrypted(bool value) =>
 Future<void> ensureVaultEncrypted(HiveAesCipher cipher) async {
   if (isVaultEncrypted()) return;
   await migratePlaintextVault(cipher);
-  await setVaultEncrypted(true);
 }
 
 Future<Box<PasswordModel>> openVaultBox() async {
@@ -105,20 +105,47 @@ PasswordModel _detach(PasswordModel p) => PasswordModel(
       createdAt: p.createdAt,
     );
 
-Future<void> migratePlaintextVault(HiveAesCipher cipher) async {
+Future<void> _closeVaultBox() async {
   if (Hive.isBoxOpen(AppConstants.passwordsBox)) {
     await Hive.box<PasswordModel>(AppConstants.passwordsBox).close();
   }
+}
 
-  final List<PasswordModel> rescued;
+Future<List<PasswordModel>> _readPlaintextVault() async {
+  final box = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+  final entries = box.values.map(_detach).toList(growable: false);
+  await box.close();
+  return entries;
+}
+
+Future<void> migratePlaintextVault(HiveAesCipher cipher) async {
+  await _closeVaultBox();
+
+  final String? boxPath;
+  List<PasswordModel> rescued;
   try {
-    final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
-    rescued = plain.values.map(_detach).toList(growable: false);
-    await plain.close();
+    final probe = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+    boxPath = probe.path;
+    rescued = probe.values.map(_detach).toList(growable: false);
+    await probe.close();
   } catch (_) {
     return;
   }
+  if (boxPath == null) return;
 
+  final live = File(boxPath);
+  final holding = File('$boxPath.pre_encrypt');
+
+  if (rescued.isEmpty && holding.existsSync()) {
+    if (live.existsSync()) await live.delete();
+    await holding.rename(boxPath);
+    rescued = await _readPlaintextVault();
+  }
+
+  if (live.existsSync()) {
+    if (holding.existsSync()) await holding.delete();
+    await live.rename(holding.path);
+  }
   await Hive.deleteBoxFromDisk(AppConstants.passwordsBox);
 
   final encrypted = await Hive.openBox<PasswordModel>(
@@ -127,5 +154,15 @@ Future<void> migratePlaintextVault(HiveAesCipher cipher) async {
   );
   await encrypted.putAll({for (final p in rescued) p.id: p});
   await encrypted.flush();
+  final written = encrypted.length;
   await encrypted.close();
+
+  if (written != rescued.length) {
+    await Hive.deleteBoxFromDisk(AppConstants.passwordsBox);
+    if (holding.existsSync()) await holding.rename(boxPath);
+    throw StateError('vault migration wrote $written of ${rescued.length}');
+  }
+
+  await setVaultEncrypted(true);
+  if (holding.existsSync()) await holding.delete();
 }
