@@ -68,6 +68,7 @@ class _PinInputState extends State<PinInput> {
                 const SizedBox(height: 12),
                 Text(
                   widget.errorText!,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: AppColors.alarmColor,
                     fontSize: 13,

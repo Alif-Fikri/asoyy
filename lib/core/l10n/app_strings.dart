@@ -206,6 +206,10 @@ abstract class AppStrings {
   String fin_budget_exceeded(String category);
   String fin_budget_near(String category);
 
+  String get auth_locked_title;
+  String auth_locked_retry(String time);
+  String auth_attempts_left(int count);
+
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);
   String fin_insight_spending_down(String percent);

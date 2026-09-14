@@ -208,6 +208,10 @@ class StringsEn extends AppStrings {
   @override String fin_budget_exceeded(String category) => 'Budget for $category has been exceeded';
   @override String fin_budget_near(String category) => 'Budget for $category is almost used up';
 
+  @override String get auth_locked_title => 'Too many attempts';
+  @override String auth_locked_retry(String time) => 'Try again in $time';
+  @override String auth_attempts_left(int count) => '$count attempts left before lockout';
+
   @override String get fin_insights_title => 'Insights';
   @override String fin_insight_spending_up(String percent) => 'You spent $percent more this month than your 3-month average';
   @override String fin_insight_spending_down(String percent) => 'You spent $percent less this month than your 3-month average';

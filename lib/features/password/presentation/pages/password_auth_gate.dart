@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,8 @@ import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../data/auth_config_repository.dart';
+import '../../data/auth_throttle_repository.dart';
+import '../../domain/auth_throttle.dart';
 import '../../domain/entities/auth_method.dart';
 import '../bloc/password_bloc.dart';
 import '../bloc/password_event.dart';
@@ -548,18 +552,49 @@ class _LockScreen extends StatefulWidget {
 }
 
 class _LockScreenState extends State<_LockScreen> {
+  final _throttle = AuthThrottleRepository();
   String? _error;
   int _resetToken = 0;
   bool _biometricAttempting = false;
+  Timer? _lockoutTicker;
+  Duration _lockoutLeft = Duration.zero;
 
   @override
   void initState() {
     super.initState();
+    _syncLockout();
 
     if (widget.method == AuthMethod.biometric) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _tryBiometric());
     }
   }
+
+  @override
+  void dispose() {
+    _lockoutTicker?.cancel();
+    super.dispose();
+  }
+
+  void _syncLockout() {
+    _lockoutLeft = _throttle.remainingLockout(DateTime.now());
+    _lockoutTicker?.cancel();
+    if (_lockoutLeft == Duration.zero) return;
+
+    _lockoutTicker = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+      final left = _throttle.remainingLockout(DateTime.now());
+      setState(() => _lockoutLeft = left);
+      if (left == Duration.zero) {
+        timer.cancel();
+        setState(() => _error = null);
+      }
+    });
+  }
+
+  bool get _lockedOut => _lockoutLeft > Duration.zero;
 
   Future<void> _tryBiometric() async {
     if (_biometricAttempting) return;
@@ -575,17 +610,27 @@ class _LockScreenState extends State<_LockScreen> {
   }
 
   Future<void> _verify(String secret) async {
+    if (_lockedOut) return;
+
     if (await widget.repo.verify(secret)) {
+      await _throttle.reset();
       widget.onSuccess();
-    } else {
-      if (!mounted) return;
-      setState(() {
-        _error = widget.method == AuthMethod.pin
-            ? context.strings.auth_pin_mismatch
-            : context.strings.auth_pattern_mismatch;
-        _resetToken++;
-      });
+      return;
     }
+    if (!mounted) return;
+
+    await _throttle.registerFailure(DateTime.now());
+    if (!mounted) return;
+
+    final s = context.strings;
+    final left = attemptsLeftBeforeLockout(_throttle.failures);
+    setState(() {
+      _error = left > 0
+          ? '${widget.method == AuthMethod.pin ? s.auth_pin_mismatch : s.auth_pattern_mismatch} · ${s.auth_attempts_left(left)}'
+          : s.auth_locked_title;
+      _resetToken++;
+    });
+    _syncLockout();
   }
 
   @override
@@ -622,8 +667,14 @@ class _LockScreenState extends State<_LockScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            _hintForMethod(s),
-            style: TextStyle(color: c.textSecondary, fontSize: 14),
+            _lockedOut
+                ? s.auth_locked_retry(formatLockout(_lockoutLeft))
+                : _hintForMethod(s),
+            style: TextStyle(
+              color: _lockedOut ? AppColors.alarmColor : c.textSecondary,
+              fontSize: 14,
+              fontWeight: _lockedOut ? FontWeight.w600 : FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 36),
           Expanded(
@@ -660,6 +711,30 @@ class _LockScreenState extends State<_LockScreen> {
   }
 
   Widget _buildInput() {
+    if (_lockedOut) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              CupertinoIcons.clock,
+              size: 44,
+              color: AppColors.alarmColor,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              formatLockout(_lockoutLeft),
+              style: const TextStyle(
+                color: AppColors.alarmColor,
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     switch (widget.method) {
       case AuthMethod.biometric:
         return _BiometricRetry(
@@ -774,22 +849,41 @@ class _VerifyDialog extends StatefulWidget {
 }
 
 class _VerifyDialogState extends State<_VerifyDialog> {
+  final _throttle = AuthThrottleRepository();
   String? _error;
   int _resetToken = 0;
 
   Future<void> _onSecret(String secret) async {
+    if (_throttle.isLockedOut(DateTime.now())) {
+      setState(() => _error = context.strings.auth_locked_retry(
+            formatLockout(_throttle.remainingLockout(DateTime.now())),
+          ));
+      return;
+    }
+
     if (await widget.repo.verify(secret)) {
+      await _throttle.reset();
       if (!mounted) return;
       Navigator.of(context).pop(true);
-    } else {
-      if (!mounted) return;
-      setState(() {
-        _error = widget.method == AuthMethod.pin
-            ? context.strings.auth_pin_mismatch
-            : context.strings.auth_pattern_mismatch;
-        _resetToken++;
-      });
+      return;
     }
+    if (!mounted) return;
+
+    await _throttle.registerFailure(DateTime.now());
+    if (!mounted) return;
+
+    final s = context.strings;
+    final left = attemptsLeftBeforeLockout(_throttle.failures);
+    setState(() {
+      _error = left > 0
+          ? (widget.method == AuthMethod.pin
+              ? s.auth_pin_mismatch
+              : s.auth_pattern_mismatch)
+          : s.auth_locked_retry(
+              formatLockout(_throttle.remainingLockout(DateTime.now())),
+            );
+      _resetToken++;
+    });
   }
 
   Future<void> _onForgot() async {

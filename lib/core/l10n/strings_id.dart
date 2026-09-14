@@ -208,6 +208,10 @@ class StringsId extends AppStrings {
   @override String fin_budget_exceeded(String category) => 'Budget $category sudah terlampaui';
   @override String fin_budget_near(String category) => 'Budget $category hampir habis';
 
+  @override String get auth_locked_title => 'Terlalu banyak percobaan';
+  @override String auth_locked_retry(String time) => 'Coba lagi dalam $time';
+  @override String auth_attempts_left(int count) => 'Sisa $count percobaan sebelum terkunci';
+
   @override String get fin_insights_title => 'Insight';
   @override String fin_insight_spending_up(String percent) => 'Pengeluaran bulan ini $percent lebih tinggi dari rata-rata 3 bulan terakhir';
   @override String fin_insight_spending_down(String percent) => 'Pengeluaran bulan ini $percent lebih hemat dari rata-rata 3 bulan terakhir';
