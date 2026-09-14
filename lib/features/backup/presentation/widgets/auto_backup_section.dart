@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
@@ -11,6 +12,8 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../domain/auto_backup_schedule.dart';
 import '../../services/auto_backup_runner.dart';
 import '../../services/auto_backup_settings.dart';
+import '../../../password/data/auth_config_repository.dart';
+import '../../../password/presentation/pages/password_auth_gate.dart';
 
 String frequencyLabel(BackupFrequency frequency, AppStrings s) {
   switch (frequency) {
@@ -64,6 +67,67 @@ class _AutoBackupSectionState extends State<AutoBackupSection> {
     if (path == null || !mounted) return;
     await _settings.setFolder(path);
     if (mounted) setState(() {});
+  }
+
+  Future<void> _showPassphrase() async {
+    final s = context.strings;
+    final repo = AuthConfigRepository();
+    if (repo.isConfigured) {
+      final ok = await verifyCurrentAuth(context, repo);
+      if (!ok || !mounted) return;
+    }
+
+    final stored = await _settings.readPassphrase();
+    if (stored == null || !mounted) return;
+
+    await showDialog<void>(
+      context: context,
+      builder: (ctx) {
+        final c = ctx.colors;
+        return AlertDialog(
+          backgroundColor: c.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            s.auto_backup_view_title,
+            style: TextStyle(color: c.textPrimary),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SelectableText(
+                stored,
+                style: AppType.title.copyWith(color: c.textPrimary),
+              ),
+              const SizedBox(height: Insets.md),
+              Text(
+                s.auto_backup_view_hint,
+                style: AppType.caption.copyWith(
+                  color: c.textSecondary,
+                  height: 1.4,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(s.close),
+            ),
+            TextButton(
+              onPressed: () async {
+                await Clipboard.setData(ClipboardData(text: stored));
+                if (ctx.mounted) Navigator.pop(ctx);
+                if (mounted) AppToast.show(context, s.auto_backup_copied);
+              },
+              child: Text(s.copy),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _setPassphrase() async {
@@ -195,11 +259,19 @@ class _AutoBackupSectionState extends State<AutoBackupSection> {
               _Row(
                 label: s.auto_backup_passphrase,
                 value: _hasPassphrase
-                    ? s.auto_backup_passphrase_set
+                    ? s.auto_backup_change_passphrase
                     : s.auto_backup_passphrase_none,
                 onTap: _setPassphrase,
                 highlight: !_hasPassphrase,
               ),
+              if (_hasPassphrase) ...[
+                Divider(height: 1, color: c.divider),
+                _Row(
+                  label: s.auto_backup_view_passphrase,
+                  value: '',
+                  onTap: _showPassphrase,
+                ),
+              ],
               Divider(height: 1, color: c.divider),
               _Row(
                 label: s.auto_backup_last_run,

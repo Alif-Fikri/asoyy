@@ -289,6 +289,12 @@ class StringsId extends AppStrings {
   @override String auto_backup_kept(int count) => 'Menyimpan $count backup terakhir';
   @override String get auto_backup_failed => 'Backup otomatis gagal';
   @override String get auto_backup_done => 'Backup otomatis tersimpan';
+  @override String get auto_backup_view_passphrase => 'Lihat passphrase';
+  @override String get auto_backup_view_title => 'Passphrase backup kamu';
+  @override String get auto_backup_view_hint => 'Catat di tempat aman. Kalau HP ini hilang, passphrase-nya ikut hilang dan file backup tidak bisa dibuka lagi.';
+  @override String get auto_backup_copied => 'Passphrase disalin';
+  @override String get auto_backup_change_passphrase => 'Ganti passphrase';
+  @override String get copy => 'Salin';
 
 
   @override String get fin_insights_title => 'Insight';

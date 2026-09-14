@@ -289,6 +289,12 @@ class StringsEn extends AppStrings {
   @override String auto_backup_kept(int count) => 'Keeps the last $count backups';
   @override String get auto_backup_failed => 'Automatic backup failed';
   @override String get auto_backup_done => 'Automatic backup saved';
+  @override String get auto_backup_view_passphrase => 'Show passphrase';
+  @override String get auto_backup_view_title => 'Your backup passphrase';
+  @override String get auto_backup_view_hint => 'Write it down somewhere safe. If this phone is lost the passphrase goes with it and the backup file cannot be opened again.';
+  @override String get auto_backup_copied => 'Passphrase copied';
+  @override String get auto_backup_change_passphrase => 'Change passphrase';
+  @override String get copy => 'Copy';
 
 
   @override String get fin_insights_title => 'Insights';

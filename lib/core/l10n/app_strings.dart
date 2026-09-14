@@ -287,6 +287,12 @@ abstract class AppStrings {
   String auto_backup_kept(int count);
   String get auto_backup_failed;
   String get auto_backup_done;
+  String get auto_backup_view_passphrase;
+  String get auto_backup_view_title;
+  String get auto_backup_view_hint;
+  String get auto_backup_copied;
+  String get auto_backup_change_passphrase;
+  String get copy;
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);
