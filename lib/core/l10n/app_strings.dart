@@ -248,6 +248,11 @@ abstract class AppStrings {
   String get acc_delete_anyway_desc;
   String get acc_delete_needs_target;
   String acc_moved(int count);
+  String get scan_receipt;
+  String get scan_camera;
+  String get scan_gallery;
+  String get scan_nothing_found;
+  String get scan_check_result;
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);

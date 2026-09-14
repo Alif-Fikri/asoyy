@@ -250,6 +250,11 @@ class StringsId extends AppStrings {
   @override String get acc_delete_anyway_desc => 'Transaksinya tetap ada tapi tanpa dompet';
   @override String get acc_delete_needs_target => 'Tambah dompet lain dulu untuk memindahkan';
   @override String acc_moved(int count) => '$count transaksi dipindahkan';
+  @override String get scan_receipt => 'Scan struk';
+  @override String get scan_camera => 'Foto struk';
+  @override String get scan_gallery => 'Pilih dari galeri';
+  @override String get scan_nothing_found => 'Struk tidak terbaca, isi manual ya';
+  @override String get scan_check_result => 'Hasil scan terisi, periksa dulu sebelum simpan';
 
 
   @override String get fin_insights_title => 'Insight';

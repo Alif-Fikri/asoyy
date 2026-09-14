@@ -250,6 +250,11 @@ class StringsEn extends AppStrings {
   @override String get acc_delete_anyway_desc => 'The transactions stay but without a wallet';
   @override String get acc_delete_needs_target => 'Add another wallet first to move them';
   @override String acc_moved(int count) => '$count transactions moved';
+  @override String get scan_receipt => 'Scan receipt';
+  @override String get scan_camera => 'Take a photo';
+  @override String get scan_gallery => 'Pick from gallery';
+  @override String get scan_nothing_found => 'Could not read the receipt, fill it in manually';
+  @override String get scan_check_result => 'Filled from the receipt, check it before saving';
 
 
   @override String get fin_insights_title => 'Insights';

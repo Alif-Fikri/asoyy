@@ -14,6 +14,8 @@ import '../../data/account_repository.dart';
 import '../../data/finance_category_repository.dart';
 import '../../domain/entities/account_entity.dart';
 import '../../domain/entities/transaction_entity.dart';
+import '../../../../core/widgets/action_sheet.dart';
+import '../../services/receipt_scanner.dart';
 import 'account_picker.dart';
 
 class TransactionFormDialog extends StatefulWidget {
@@ -46,6 +48,62 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   String? _accountId;
   String? _toAccountId;
   String? _accountError;
+  DateTime? _scannedDate;
+  bool _scanning = false;
+
+  Future<void> _scanReceipt() async {
+    final s = context.strings;
+    final source = await showActionSheet<bool>(
+      context,
+      title: s.scan_receipt,
+      actions: [
+        SheetAction(
+          value: true,
+          icon: CupertinoIcons.camera,
+          color: AppColors.primary,
+          label: s.scan_camera,
+        ),
+        SheetAction(
+          value: false,
+          icon: CupertinoIcons.photo,
+          color: AppColors.calendarColor,
+          label: s.scan_gallery,
+        ),
+      ],
+    );
+    if (source == null || !mounted) return;
+
+    setState(() => _scanning = true);
+    try {
+      final scan = await ReceiptScanner().scan(fromCamera: source);
+      if (!mounted) return;
+      if (scan == null) return;
+
+      if (scan.isEmpty) {
+        AppToast.show(context, s.scan_nothing_found);
+        return;
+      }
+
+      setState(() {
+        _type = TransactionType.expense;
+        if (scan.total != null) {
+          _amountCtrl.text =
+              NumberFormat.decimalPattern('id_ID').format(scan.total);
+        }
+        if (scan.merchant != null) _titleCtrl.text = scan.merchant!;
+        if (scan.category != null) {
+          _category = scan.category!;
+          _categoryInitialized = true;
+        }
+        _scannedDate = scan.date;
+      });
+      AppToast.show(context, s.scan_check_result);
+    } catch (_) {
+      if (mounted) AppToast.show(context, s.scan_nothing_found);
+    } finally {
+      if (mounted) setState(() => _scanning = false);
+    }
+  }
 
   @override
   void initState() {
@@ -161,7 +219,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
       amount: double.parse(_amountCtrl.text.replaceAll('.', '')),
       type: _type,
       category: _type == TransactionType.transfer ? transferCategory : _category,
-      date: widget.existing?.date ?? DateTime.now(),
+      date: widget.existing?.date ?? _scannedDate ?? DateTime.now(),
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       accountId: _accountId,
       toAccountId: _type == TransactionType.transfer ? _toAccountId : null,
@@ -210,11 +268,29 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(widget.existing == null ? s.fin_add : s.fin_edit,
-                  style: TextStyle(
-                      color: c.textPrimary,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700)),
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(widget.existing == null ? s.fin_add : s.fin_edit,
+                        style: TextStyle(
+                            color: c.textPrimary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                  if (widget.existing == null)
+                    _scanning
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : TextButton.icon(
+                            onPressed: _scanReceipt,
+                            icon: const Icon(CupertinoIcons.camera, size: 18),
+                            label: Text(s.scan_receipt),
+                          ),
+                ],
+              ),
               const SizedBox(height: 16),
 
               Container(

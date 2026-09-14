@@ -75,5 +75,9 @@
 		</array>
 		<key>UIStatusBarHidden</key>
 		<false/>
-	</dict>
+		<key>NSCameraUsageDescription</key>
+	<string>Kamera dipakai untuk memotret struk belanja agar transaksi terisi otomatis.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Galeri dipakai untuk memilih foto struk agar transaksi terisi otomatis.</string>
+</dict>
 </plist>
