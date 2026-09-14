@@ -1,9 +1,12 @@
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../domain/utils/receipt_parser.dart';
 
 class ReceiptScanner {
+  static const _channel =
+      MethodChannel('id.co.alchemist.beres/text_recognition');
+
   final ImagePicker _picker = ImagePicker();
 
   Future<ReceiptScan?> scan({required bool fromCamera}) async {
@@ -12,26 +15,25 @@ class ReceiptScanner {
       imageQuality: 90,
     );
     if (image == null) return null;
+    return parseReceipt(groupIntoVisualRows(await recognizeLines(image.path)));
+  }
 
-    final recognizer = TextRecognizer(script: TextRecognitionScript.latin);
-    try {
-      final result =
-          await recognizer.processImage(InputImage.fromFilePath(image.path));
-      final scanned = <ScannedLine>[];
-      for (final block in result.blocks) {
-        for (final line in block.lines) {
-          final box = line.boundingBox;
-          scanned.add(ScannedLine(
-            text: line.text,
-            top: box.top.toDouble(),
-            bottom: box.bottom.toDouble(),
-            left: box.left.toDouble(),
-          ));
-        }
-      }
-      return parseReceipt(groupIntoVisualRows(scanned));
-    } finally {
-      await recognizer.close();
-    }
+  static Future<List<ScannedLine>> recognizeLines(String path) async {
+    final raw = await _channel.invokeListMethod<dynamic>(
+      'recognize',
+      {'path': path},
+    );
+    if (raw == null) return const [];
+
+    return raw
+        .whereType<Map<dynamic, dynamic>>()
+        .map((entry) => ScannedLine(
+              text: entry['text'] as String? ?? '',
+              top: (entry['top'] as num?)?.toDouble() ?? 0,
+              bottom: (entry['bottom'] as num?)?.toDouble() ?? 0,
+              left: (entry['left'] as num?)?.toDouble() ?? 0,
+            ))
+        .where((line) => line.text.isNotEmpty)
+        .toList(growable: false);
   }
 }

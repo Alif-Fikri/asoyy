@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 
@@ -12,6 +13,8 @@ class FinanceWidgetService {
   FinanceWidgetService(this.getFinanceSummary);
 
   Future<void> updateWidget() async {
+    if (!Platform.isAndroid) return;
+
     final summary = await getFinanceSummary(const NoParams());
     final fmt = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 

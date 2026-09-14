@@ -7,7 +7,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.net.Uri as AndroidUri
 import android.view.WindowManager
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -18,6 +22,7 @@ class MainActivity : FlutterFragmentActivity() {
     private val batteryChannel = "id.co.alchemist.beres/battery"
     private val ringtoneChannel = "id.co.alchemist.beres/ringtone"
     private val secureScreenChannel = "id.co.alchemist.beres/secure_screen"
+    private val textRecognitionChannel = "id.co.alchemist.beres/text_recognition"
     private val ringtonePickerRequestCode = 4271
 
     private var pendingRingtoneResult: MethodChannel.Result? = null
@@ -64,6 +69,54 @@ class MainActivity : FlutterFragmentActivity() {
                 }
                 else -> result.notImplemented()
             }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            textRecognitionChannel,
+        ).setMethodCallHandler { call, result ->
+            if (call.method == "recognize") {
+                val path = call.argument<String>("path")
+                if (path == null) {
+                    result.error("NO_PATH", "path is required", null)
+                } else {
+                    recognizeText(path, result)
+                }
+            } else {
+                result.notImplemented()
+            }
+        }
+    }
+
+    private fun recognizeText(path: String, result: MethodChannel.Result) {
+        try {
+            val image = InputImage.fromFilePath(this, AndroidUri.fromFile(File(path)))
+            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            recognizer.process(image)
+                .addOnSuccessListener { visionText ->
+                    val lines = mutableListOf<Map<String, Any>>()
+                    for (block in visionText.textBlocks) {
+                        for (line in block.lines) {
+                            val box = line.boundingBox
+                            lines.add(
+                                mapOf(
+                                    "text" to line.text,
+                                    "top" to (box?.top ?: 0).toDouble(),
+                                    "bottom" to (box?.bottom ?: 0).toDouble(),
+                                    "left" to (box?.left ?: 0).toDouble(),
+                                ),
+                            )
+                        }
+                    }
+                    recognizer.close()
+                    result.success(lines)
+                }
+                .addOnFailureListener { error ->
+                    recognizer.close()
+                    result.error("RECOGNITION_FAILED", error.message, null)
+                }
+        } catch (e: Exception) {
+            result.error("RECOGNITION_FAILED", e.message, null)
         }
     }
 
