@@ -4,12 +4,25 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import '../domain/entities/password_entity.dart';
 
-Future<Directory> _passwordDir() async {
-  if (Platform.isAndroid) {
-    final ext = await getExternalStorageDirectory();
-    if (ext != null) return ext;
+Future<Directory> _passwordDir() => getTemporaryDirectory();
+
+Future<void> purgeStalePasswordExports() async {
+  final candidates = <Directory?>[
+    if (Platform.isAndroid) await getExternalStorageDirectory(),
+    await getApplicationDocumentsDirectory(),
+    await getTemporaryDirectory(),
+  ];
+  for (final dir in candidates) {
+    if (dir == null) continue;
+    final file = File('${dir.path}/beres_passwords.csv');
+    if (await file.exists()) {
+      try {
+        await file.delete();
+      } catch (_) {
+        continue;
+      }
+    }
   }
-  return getApplicationDocumentsDirectory();
 }
 
 class CsvService {

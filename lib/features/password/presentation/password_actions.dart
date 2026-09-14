@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/l10n/app_localizations.dart';
-import '../../../core/utils/csv_share.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../data/auth_config_repository.dart';
 import '../services/csv_service.dart';
@@ -68,12 +70,28 @@ Future<void> exportPasswordsCsv(
   );
   if (confirm != true || !context.mounted) return;
 
+  final screenSize = MediaQuery.of(context).size;
+  File? file;
   try {
-    final file = await CsvService().exportToFile(state.all);
-    if (!context.mounted) return;
-    await shareCsvSnackBar(context, file);
+    await purgeStalePasswordExports();
+    file = await CsvService().exportToFile(state.all);
+    await Share.shareXFiles(
+      [XFile(file.path, mimeType: 'text/csv')],
+      sharePositionOrigin: Rect.fromLTWH(
+        0,
+        screenSize.height - 100,
+        screenSize.width,
+        100,
+      ),
+    );
   } catch (_) {
     if (context.mounted) AppToast.show(context, s.pass_import_error);
+  } finally {
+    if (file != null && await file.exists()) {
+      try {
+        await file.delete();
+      } catch (_) {}
+    }
   }
 }
 
