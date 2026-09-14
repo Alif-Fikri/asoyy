@@ -6,13 +6,16 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/widgets/action_sheet.dart';
 import '../../../../core/widgets/app_chip.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../data/account_repository.dart';
 import '../../data/budget_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
+import '../../domain/utils/account_balance.dart';
 import '../../domain/utils/finance_insights.dart';
 import '../bloc/finance_bloc.dart';
 import '../bloc/finance_event.dart';
@@ -25,6 +28,7 @@ import '../widgets/finance_summary.dart';
 import '../widgets/quick_add_dialog.dart';
 import '../widgets/transaction_card.dart';
 import '../widgets/transaction_form_dialog.dart';
+import 'accounts_page.dart';
 import 'budget_page.dart';
 import 'recurring_transactions_page.dart';
 
@@ -79,6 +83,63 @@ class FinancePage extends StatelessWidget {
     } else if (spent >= limit * 0.8) {
       AppToast.show(context, s.fin_budget_near(tx.category));
     }
+  }
+
+  Future<void> _showMore(BuildContext context, FinanceState state) async {
+    final s = context.strings;
+    final loaded = state is FinanceLoaded ? state : null;
+    final choice = await showActionSheet<String>(
+      context,
+      title: s.more,
+      actions: [
+        if (loaded != null) ...[
+          SheetAction(
+            value: 'accounts',
+            icon: CupertinoIcons.creditcard,
+            color: AppColors.primary,
+            label: s.acc_title,
+          ),
+          SheetAction(
+            value: 'budget',
+            icon: CupertinoIcons.chart_pie,
+            color: AppColors.income,
+            label: s.fin_budget_title,
+          ),
+          SheetAction(
+            value: 'export',
+            icon: CupertinoIcons.arrow_down_to_line,
+            color: AppColors.calendarColor,
+            label: s.fin_export,
+          ),
+        ],
+        SheetAction(
+          value: 'recurring',
+          icon: CupertinoIcons.repeat,
+          color: AppColors.passwordColor,
+          label: s.fin_recurring,
+        ),
+      ],
+    );
+    if (choice == null || !context.mounted) return;
+    switch (choice) {
+      case 'accounts':
+        if (loaded != null) _openAccounts(context, loaded);
+      case 'budget':
+        if (loaded != null) _openBudget(context, loaded);
+      case 'export':
+        if (loaded != null) _showExportDialog(context, loaded);
+      case 'recurring':
+        _openRecurring(context);
+    }
+  }
+
+  void _openAccounts(BuildContext context, FinanceLoaded state) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => AccountsPage(
+        transactions: state.all,
+        onChanged: () => context.read<FinanceBloc>().add(LoadTransactions()),
+      ),
+    ));
   }
 
   void _openBudget(BuildContext context, FinanceLoaded state) {
@@ -138,22 +199,10 @@ class FinancePage extends StatelessWidget {
           appBar: NexusAppBar(
             title: context.strings.fin_title,
             extraActions: [
-              if (state is FinanceLoaded) ...[
-                IconButton(
-                  icon: const Icon(CupertinoIcons.chart_pie),
-                  onPressed: () => _openBudget(context, state),
-                  tooltip: context.strings.fin_budget_title,
-                ),
-                IconButton(
-                  icon: const Icon(CupertinoIcons.arrow_down_to_line),
-                  onPressed: () => _showExportDialog(context, state),
-                  tooltip: context.strings.fin_export,
-                ),
-              ],
               IconButton(
-                icon: const Icon(CupertinoIcons.repeat),
-                onPressed: () => _openRecurring(context),
-                tooltip: context.strings.fin_recurring,
+                icon: const Icon(CupertinoIcons.ellipsis_circle),
+                onPressed: () => _showMore(context, state),
+                tooltip: context.strings.more,
               ),
               IconButton(
                 icon: const Icon(CupertinoIcons.sparkles),
@@ -208,7 +257,7 @@ class FinancePage extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
             children: [
               FinanceSummary(
-                balance: state.balance,
+                balance: totalBalance(AccountRepository().getAll(), state.all),
                 income: state.totalIncome,
                 expense: state.totalExpense,
               ),

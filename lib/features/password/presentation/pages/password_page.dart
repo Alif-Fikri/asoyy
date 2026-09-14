@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
+import '../../../../core/widgets/action_sheet.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
@@ -67,30 +68,10 @@ class _PasswordPageState extends State<PasswordPage> {
                 onPressed: _changeAuthMethod,
                 tooltip: s.auth_change_method,
               ),
-              PopupMenuButton<String>(
-                icon: const Icon(CupertinoIcons.ellipsis_vertical),
-                onSelected: (value) {
-                  if (value == 'export') _exportCsv();
-                  if (value == 'import') _importCsv();
-                },
-                itemBuilder: (_) => [
-                  PopupMenuItem(
-                    value: 'export',
-                    child: Row(children: [
-                      const Icon(CupertinoIcons.arrow_down_to_line, size: 18),
-                      const SizedBox(width: 10),
-                      Text(s.pass_export),
-                    ]),
-                  ),
-                  PopupMenuItem(
-                    value: 'import',
-                    child: Row(children: [
-                      const Icon(CupertinoIcons.arrow_up_circle, size: 18),
-                      const SizedBox(width: 10),
-                      Text(s.pass_import),
-                    ]),
-                  ),
-                ],
+              IconButton(
+                icon: const Icon(CupertinoIcons.ellipsis_circle),
+                onPressed: _showMore,
+                tooltip: s.more,
               ),
               IconButton(
                 icon: const Icon(CupertinoIcons.plus_circle),
@@ -103,6 +84,31 @@ class _PasswordPageState extends State<PasswordPage> {
         );
       },
     );
+  }
+
+  Future<void> _showMore() async {
+    final s = context.strings;
+    final choice = await showActionSheet<String>(
+      context,
+      title: s.more,
+      actions: [
+        SheetAction(
+          value: 'export',
+          icon: CupertinoIcons.arrow_down_to_line,
+          color: AppColors.calendarColor,
+          label: s.pass_export,
+        ),
+        SheetAction(
+          value: 'import',
+          icon: CupertinoIcons.arrow_up_circle,
+          color: AppColors.income,
+          label: s.pass_import,
+        ),
+      ],
+    );
+    if (choice == null || !mounted) return;
+    if (choice == 'export') _exportCsv();
+    if (choice == 'import') _importCsv();
   }
 
   Widget _buildBody(BuildContext context, PasswordState state) {

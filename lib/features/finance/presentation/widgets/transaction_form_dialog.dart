@@ -9,8 +9,11 @@ import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/app_toast.dart';
+import '../../data/account_repository.dart';
 import '../../data/finance_category_repository.dart';
+import '../../domain/entities/account_entity.dart';
 import '../../domain/entities/transaction_entity.dart';
+import 'account_picker.dart';
 
 class TransactionFormDialog extends StatefulWidget {
   final void Function(TransactionEntity) onSave;
@@ -32,9 +35,45 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   final _amountCtrl = TextEditingController();
   final _notesCtrl = TextEditingController();
   final _categoryRepo = FinanceCategoryRepository();
+  final _accountRepo = AccountRepository();
   TransactionType _type = TransactionType.expense;
   late String _category;
   bool _categoryInitialized = false;
+  late List<AccountEntity> _accounts;
+  String? _accountId;
+  String? _toAccountId;
+  String? _accountError;
+
+  @override
+  void initState() {
+    super.initState();
+    _accounts = _accountRepo.getAll();
+    _accountId = _accounts.isNotEmpty ? _accounts.first.id : null;
+  }
+
+  AccountEntity? _accountById(String? id) {
+    for (final a in _accounts) {
+      if (a.id == id) return a;
+    }
+    return null;
+  }
+
+  Future<void> _pickAccount({required bool target}) async {
+    final picked = await showAccountPicker(
+      context,
+      _accounts,
+      target ? _toAccountId : _accountId,
+    );
+    if (picked == null || !mounted) return;
+    setState(() {
+      if (target) {
+        _toAccountId = picked.id;
+      } else {
+        _accountId = picked.id;
+      }
+      _accountError = null;
+    });
+  }
 
   @override
   void dispose() {
@@ -85,14 +124,26 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
+
+    if (_type == TransactionType.transfer) {
+      if (_accountId == null ||
+          _toAccountId == null ||
+          _accountId == _toAccountId) {
+        setState(() => _accountError = context.strings.fin_transfer_same_account);
+        return;
+      }
+    }
+
     widget.onSave(TransactionEntity(
       id: const Uuid().v4(),
       title: _titleCtrl.text.trim(),
       amount: double.parse(_amountCtrl.text.replaceAll('.', '')),
       type: _type,
-      category: _category,
+      category: _type == TransactionType.transfer ? transferCategory : _category,
       date: DateTime.now(),
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
+      accountId: _accountId,
+      toAccountId: _type == TransactionType.transfer ? _toAccountId : null,
     ));
     Navigator.pop(context);
   }
@@ -101,8 +152,11 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   Widget build(BuildContext context) {
     final c = context.colors;
     final s = context.strings;
-    final isIncome = _type == TransactionType.income;
-    final color = isIncome ? AppColors.income : AppColors.expense;
+    final color = switch (_type) {
+      TransactionType.income => AppColors.income,
+      TransactionType.expense => AppColors.expense,
+      TransactionType.transfer => AppColors.primary,
+    };
     final categories = _categories(s);
 
     if (!_categoryInitialized) {
@@ -170,6 +224,16 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                         _category = _incomeCategories(s).first;
                       }),
                     ),
+                    _TypeTab(
+                      label: s.fin_transfer,
+                      icon: CupertinoIcons.arrow_right_arrow_left,
+                      isSelected: _type == TransactionType.transfer,
+                      color: AppColors.primary,
+                      onTap: () => setState(() {
+                        _type = TransactionType.transfer;
+                        _accountError = null;
+                      }),
+                    ),
                   ],
                 ),
               ),
@@ -193,6 +257,34 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                   return null;
                 },
               ),
+              const SizedBox(height: 12),
+              if (_type == TransactionType.transfer) ...[
+                AccountField(
+                  label: s.fin_from,
+                  account: _accountById(_accountId),
+                  onTap: () => _pickAccount(target: false),
+                ),
+                const SizedBox(height: 12),
+                AccountField(
+                  label: s.fin_to,
+                  account: _accountById(_toAccountId),
+                  onTap: () => _pickAccount(target: true),
+                ),
+              ] else
+                AccountField(
+                  label: s.fin_account,
+                  account: _accountById(_accountId),
+                  onTap: () => _pickAccount(target: false),
+                ),
+              if (_accountError != null) ...[
+                const SizedBox(height: 8),
+                Text(
+                  _accountError!,
+                  style: const TextStyle(
+                      color: AppColors.alarmColor, fontSize: 13),
+                ),
+              ],
+              if (_type != TransactionType.transfer) ...[
               const SizedBox(height: 12),
               Text(s.fin_category, style: TextStyle(color: c.textSecondary, fontSize: 13)),
               const SizedBox(height: 8),
@@ -222,6 +314,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                   ),
                 ),
               ),
+              ],
               const SizedBox(height: 12),
               AppTextField(
                 label: s.fin_notes,

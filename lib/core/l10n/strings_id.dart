@@ -217,6 +217,32 @@ class StringsId extends AppStrings {
   @override String get vault_missing_reset => 'Reset vault';
   @override String get vault_missing_reset_confirm => 'Semua password yang tersimpan akan dihapus permanen dan tidak bisa dikembalikan. Lanjutkan?';
 
+  @override String get acc_title => 'Dompet';
+  @override String get acc_add => 'Tambah Dompet';
+  @override String get acc_edit => 'Ubah Dompet';
+  @override String get acc_name => 'Nama dompet';
+  @override String get acc_type => 'Jenis';
+  @override String get acc_initial_balance => 'Saldo awal';
+  @override String get acc_type_cash => 'Tunai';
+  @override String get acc_type_bank => 'Bank';
+  @override String get acc_type_ewallet => 'E-Wallet';
+  @override String get acc_type_other => 'Lainnya';
+  @override String get acc_total => 'Total saldo';
+  @override String get acc_empty_title => 'Belum Ada Dompet';
+  @override String get acc_empty_subtitle => 'Tambahkan dompet untuk melacak uangmu ada di mana';
+  @override String get acc_saved => 'Dompet disimpan';
+  @override String get acc_deleted => 'Dompet dihapus';
+  @override String acc_delete_blocked(int count) => 'Dompet ini dipakai di $count transaksi';
+  @override String get acc_select => 'Pilih dompet';
+  @override String get fin_account => 'Dompet';
+  @override String get fin_transfer => 'Transfer';
+  @override String get fin_from => 'Dari';
+  @override String get fin_to => 'Ke';
+  @override String get fin_transfer_same_account => 'Pilih dompet yang berbeda';
+  @override String get nav_accounts => 'Dompet';
+  @override String get more => 'Lainnya';
+
+
   @override String get fin_insights_title => 'Insight';
   @override String fin_insight_spending_up(String percent) => 'Pengeluaran bulan ini $percent lebih tinggi dari rata-rata 3 bulan terakhir';
   @override String fin_insight_spending_down(String percent) => 'Pengeluaran bulan ini $percent lebih hemat dari rata-rata 3 bulan terakhir';

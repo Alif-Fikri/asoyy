@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_constants.dart';
@@ -115,8 +114,10 @@ Future<void> init() async {
 
   await AccountRepository.open();
   final financeDs = await FinanceLocalDatasourceImpl.create();
+  final appLocale =
+      Hive.box(AppConstants.settingsBox).get('locale', defaultValue: 'id');
   await migrateTransactionsToDefaultAccount(
-    PlatformDispatcher.instance.locale.languageCode == 'id' ? 'Tunai' : 'Cash',
+    appLocale == 'id' ? 'Tunai' : 'Cash',
   );
   sl.registerSingleton<FinanceLocalDatasource>(financeDs);
   sl.registerSingleton<FinanceRepository>(

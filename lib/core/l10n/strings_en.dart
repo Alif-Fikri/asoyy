@@ -217,6 +217,32 @@ class StringsEn extends AppStrings {
   @override String get vault_missing_reset => 'Reset vault';
   @override String get vault_missing_reset_confirm => 'Every saved password will be permanently deleted and cannot be recovered. Continue?';
 
+  @override String get acc_title => 'Wallets';
+  @override String get acc_add => 'Add wallet';
+  @override String get acc_edit => 'Edit wallet';
+  @override String get acc_name => 'Wallet name';
+  @override String get acc_type => 'Type';
+  @override String get acc_initial_balance => 'Opening balance';
+  @override String get acc_type_cash => 'Cash';
+  @override String get acc_type_bank => 'Bank';
+  @override String get acc_type_ewallet => 'E-Wallet';
+  @override String get acc_type_other => 'Other';
+  @override String get acc_total => 'Total balance';
+  @override String get acc_empty_title => 'No wallets yet';
+  @override String get acc_empty_subtitle => 'Add a wallet to track where your money sits';
+  @override String get acc_saved => 'Wallet saved';
+  @override String get acc_deleted => 'Wallet deleted';
+  @override String acc_delete_blocked(int count) => 'This wallet is used by $count transactions';
+  @override String get acc_select => 'Select wallet';
+  @override String get fin_account => 'Wallet';
+  @override String get fin_transfer => 'Transfer';
+  @override String get fin_from => 'From';
+  @override String get fin_to => 'To';
+  @override String get fin_transfer_same_account => 'Pick a different wallet';
+  @override String get nav_accounts => 'Wallets';
+  @override String get more => 'More';
+
+
   @override String get fin_insights_title => 'Insights';
   @override String fin_insight_spending_up(String percent) => 'You spent $percent more this month than your 3-month average';
   @override String fin_insight_spending_down(String percent) => 'You spent $percent less this month than your 3-month average';

@@ -17,6 +17,8 @@ import '../../../loan_calculator/presentation/pages/loan_calculator_page.dart';
 import '../../../finance/presentation/bloc/finance_bloc.dart';
 import '../../../finance/presentation/bloc/finance_state.dart';
 import '../../../finance/presentation/pages/finance_page.dart';
+import '../../../finance/data/account_repository.dart';
+import '../../../finance/domain/utils/account_balance.dart';
 import '../../../password/presentation/pages/password_flow_page.dart';
 import '../../../search/presentation/pages/search_page.dart';
 import '../../../split_bill/presentation/pages/split_bill_page.dart';
@@ -206,7 +208,9 @@ class _BalanceCard extends StatelessWidget {
     return BlocBuilder<FinanceBloc, FinanceState>(
       builder: (context, state) {
         final loaded = state is FinanceLoaded ? state : null;
-        final balance = loaded?.balance ?? 0;
+        final balance = loaded == null
+            ? 0.0
+            : totalBalance(AccountRepository().getAll(), loaded.all);
         final income = loaded?.totalIncome ?? 0;
         final expense = loaded?.totalExpense ?? 0;
         final fmt = NumberFormat.decimalPattern('id_ID');

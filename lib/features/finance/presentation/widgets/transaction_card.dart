@@ -21,7 +21,10 @@ class TransactionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final isIncome = transaction.isIncome;
-    final color = isIncome ? AppColors.income : AppColors.expense;
+    final isTransfer = transaction.isTransfer;
+    final color = isTransfer
+        ? AppColors.primary
+        : (isIncome ? AppColors.income : AppColors.expense);
     final fmt = NumberFormat.currency(
       locale: 'id_ID',
       symbol: 'Rp ',
@@ -53,9 +56,11 @@ class TransactionCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(Radii.sm + 2),
                 ),
                 child: Icon(
-                  isIncome
-                      ? CupertinoIcons.arrow_down
-                      : CupertinoIcons.arrow_up,
+                  isTransfer
+                      ? CupertinoIcons.arrow_right_arrow_left
+                      : (isIncome
+                          ? CupertinoIcons.arrow_down
+                          : CupertinoIcons.arrow_up),
                   color: color,
                   size: Sizes.iconSm,
                 ),
@@ -85,7 +90,7 @@ class TransactionCard extends StatelessWidget {
               ),
               const SizedBox(width: Insets.md),
               Text(
-                '${isIncome ? '+' : '-'}${fmt.format(transaction.amount)}',
+                '${isTransfer ? '' : (isIncome ? '+' : '-')}${fmt.format(transaction.amount)}',
                 style: AppType.bodyStrong.copyWith(color: color),
               ),
             ],

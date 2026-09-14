@@ -215,6 +215,31 @@ abstract class AppStrings {
   String get vault_missing_reset;
   String get vault_missing_reset_confirm;
 
+  String get acc_title;
+  String get acc_add;
+  String get acc_edit;
+  String get acc_name;
+  String get acc_type;
+  String get acc_initial_balance;
+  String get acc_type_cash;
+  String get acc_type_bank;
+  String get acc_type_ewallet;
+  String get acc_type_other;
+  String get acc_total;
+  String get acc_empty_title;
+  String get acc_empty_subtitle;
+  String get acc_saved;
+  String get acc_deleted;
+  String acc_delete_blocked(int count);
+  String get acc_select;
+  String get fin_account;
+  String get fin_transfer;
+  String get fin_from;
+  String get fin_to;
+  String get fin_transfer_same_account;
+  String get nav_accounts;
+  String get more;
+
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);
   String fin_insight_spending_down(String percent);

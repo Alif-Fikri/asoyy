@@ -48,5 +48,4 @@ double totalBalance(
 Map<String, double> balanceByAccount(
   Iterable<AccountEntity> accounts,
   Iterable<TransactionEntity> transactions,
-) =>
-    {for (final a in accounts) a.id: accountBalance(a, transactions)};
+) => {for (final a in accounts) a.id: accountBalance(a, transactions)};
