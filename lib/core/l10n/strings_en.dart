@@ -208,6 +208,15 @@ class StringsEn extends AppStrings {
   @override String fin_budget_exceeded(String category) => 'Budget for $category has been exceeded';
   @override String fin_budget_near(String category) => 'Budget for $category is almost used up';
 
+  @override String get fin_insights_title => 'Insights';
+  @override String fin_insight_spending_up(String percent) => 'You spent $percent more this month than your 3-month average';
+  @override String fin_insight_spending_down(String percent) => 'You spent $percent less this month than your 3-month average';
+  @override String fin_insight_category_up(String category, String percent) => '$category is up $percent from usual';
+  @override String fin_insight_budget_days(int days) => 'At this pace, your remaining budget lasts $days more days';
+  @override String fin_insight_budget_today(String amount) => '$amount budget left, not enough to reach the end of the month';
+  @override String fin_insight_budget_over(String amount) => 'You are $amount over budget this month';
+  @override String fin_insight_top_category(String category, String percent) => '$category takes $percent of this month\'s spending';
+
   @override String get calc_title => 'Calculator';
   @override String get nav_loan_calc => 'Loan/KPR';
   @override String get loan_calc_title => 'Loan/Mortgage Calculator';

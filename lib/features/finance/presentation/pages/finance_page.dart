@@ -13,12 +13,14 @@ import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../data/budget_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
+import '../../domain/utils/finance_insights.dart';
 import '../bloc/finance_bloc.dart';
 import '../bloc/finance_event.dart';
 import '../bloc/finance_state.dart';
 import '../widgets/finance_category_chart.dart';
 import '../widgets/finance_chart.dart';
 import '../widgets/finance_export_dialog.dart';
+import '../widgets/finance_insights_card.dart';
 import '../widgets/finance_summary.dart';
 import '../widgets/quick_add_dialog.dart';
 import '../widgets/transaction_card.dart';
@@ -188,6 +190,11 @@ class FinancePage extends StatelessWidget {
     }
     if (state is FinanceLoaded) {
       final txs = state.filtered;
+      final insights = buildFinanceInsights(
+        transactions: state.all,
+        budgets: BudgetRepository().getAll(),
+        now: DateTime.now(),
+      );
       return ListView(
         padding: EdgeInsets.fromLTRB(
           0,
@@ -207,6 +214,13 @@ class FinancePage extends StatelessWidget {
               ),
             ],
           ),
+
+          if (insights.isNotEmpty)
+            IosSection(
+              header: s.fin_insights_title,
+              margin: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              children: [FinanceInsightsCard(insights: insights)],
+            ),
 
           IosSection(
             header: isId ? 'Grafik 6 Bulan' : '6 Month Chart',

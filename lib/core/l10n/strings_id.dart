@@ -208,6 +208,15 @@ class StringsId extends AppStrings {
   @override String fin_budget_exceeded(String category) => 'Budget $category sudah terlampaui';
   @override String fin_budget_near(String category) => 'Budget $category hampir habis';
 
+  @override String get fin_insights_title => 'Insight';
+  @override String fin_insight_spending_up(String percent) => 'Pengeluaran bulan ini $percent lebih tinggi dari rata-rata 3 bulan terakhir';
+  @override String fin_insight_spending_down(String percent) => 'Pengeluaran bulan ini $percent lebih hemat dari rata-rata 3 bulan terakhir';
+  @override String fin_insight_category_up(String category, String percent) => 'Kategori $category naik $percent dari biasanya';
+  @override String fin_insight_budget_days(int days) => 'Dengan pola sekarang, sisa budget cukup untuk $days hari lagi';
+  @override String fin_insight_budget_today(String amount) => 'Sisa budget $amount, tapi belum cukup untuk sampai akhir bulan';
+  @override String fin_insight_budget_over(String amount) => 'Budget bulan ini lewat $amount';
+  @override String fin_insight_top_category(String category, String percent) => '$category menyerap $percent pengeluaran bulan ini';
+
   @override String get calc_title => 'Kalkulator';
   @override String get nav_loan_calc => 'Cicilan/KPR';
   @override String get loan_calc_title => 'Kalkulator Cicilan/KPR';

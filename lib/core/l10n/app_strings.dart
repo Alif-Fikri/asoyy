@@ -206,6 +206,15 @@ abstract class AppStrings {
   String fin_budget_exceeded(String category);
   String fin_budget_near(String category);
 
+  String get fin_insights_title;
+  String fin_insight_spending_up(String percent);
+  String fin_insight_spending_down(String percent);
+  String fin_insight_category_up(String category, String percent);
+  String fin_insight_budget_days(int days);
+  String fin_insight_budget_today(String amount);
+  String fin_insight_budget_over(String amount);
+  String fin_insight_top_category(String category, String percent);
+
   String get calc_title;
   String get nav_loan_calc;
   String get loan_calc_title;
