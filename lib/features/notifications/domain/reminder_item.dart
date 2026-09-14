@@ -4,6 +4,7 @@ import '../../alarm/services/alarm_schedule.dart';
 import '../../calendar/domain/entities/event_entity.dart';
 import '../../calendar/domain/entities/holiday_entity.dart';
 import '../../debt/domain/entities/debt_entity.dart';
+import '../../debt/domain/utils/bill_debt_link.dart';
 import '../../debt/domain/utils/debt_reminder_schedule.dart';
 import '../../finance/domain/entities/recurring_transaction_entity.dart';
 import '../../finance/domain/utils/recurring_schedule.dart';
@@ -143,6 +144,7 @@ List<ReminderItem> buildReminders({
   for (final bill in splitBills) {
     for (final p in bill.participants) {
       if (p.isPaid) continue;
+      if (debtForParticipant(debts, bill.id, p.id) != null) continue;
       final reminderAt = nextDebtReminderTime(bill.date, now);
       if (reminderAt.isAfter(horizon)) continue;
       final id = 'bill-${bill.id}-${p.id}';
@@ -162,16 +164,26 @@ List<ReminderItem> buildReminders({
     final reminderAt = nextDebtReminderTime(debt.reminderAnchor, now);
     if (reminderAt.isAfter(horizon)) continue;
     final id = 'debt-${debt.id}';
+    final note = debt.note;
     items.add(ReminderItem(
       kind: ReminderKind.debt,
       id: id,
-      title: debt.personName,
+      title: note == null || note.isEmpty
+          ? debt.personName
+          : '${debt.personName} · $note',
       when: reminderAt,
       color: debtColor,
       enabled: !mutedIds.contains(id),
     ));
   }
 
+  items.removeWhere((item) => _hasPassed(item, now, today));
   items.sort((a, b) => a.when.compareTo(b.when));
   return items;
+}
+
+bool _hasPassed(ReminderItem item, DateTime now, DateTime today) {
+  if (item.hasTime) return item.when.isBefore(now);
+  final day = DateTime(item.when.year, item.when.month, item.when.day);
+  return day.isBefore(today);
 }
