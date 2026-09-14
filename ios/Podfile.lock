@@ -42,7 +42,14 @@ PODS:
     - Flutter
   - flutter_native_splash (2.4.3):
     - Flutter
+  - flutter_secure_storage_darwin (10.0.0):
+    - Flutter
+    - FlutterMacOS
   - flutter_timezone (0.0.1):
+    - Flutter
+  - home_widget (0.0.1):
+    - Flutter
+  - integration_test (0.0.1):
     - Flutter
   - local_auth_darwin (0.0.1):
     - Flutter
@@ -64,7 +71,10 @@ DEPENDENCIES:
   - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+  - flutter_secure_storage_darwin (from `.symlinks/plugins/flutter_secure_storage_darwin/darwin`)
   - flutter_timezone (from `.symlinks/plugins/flutter_timezone/ios`)
+  - home_widget (from `.symlinks/plugins/home_widget/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - local_auth_darwin (from `.symlinks/plugins/local_auth_darwin/darwin`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
@@ -89,8 +99,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
+  flutter_secure_storage_darwin:
+    :path: ".symlinks/plugins/flutter_secure_storage_darwin/darwin"
   flutter_timezone:
     :path: ".symlinks/plugins/flutter_timezone/ios"
+  home_widget:
+    :path: ".symlinks/plugins/home_widget/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
   local_auth_darwin:
     :path: ".symlinks/plugins/local_auth_darwin/darwin"
   share_plus:
@@ -107,7 +123,10 @@ SPEC CHECKSUMS:
   flutter_fgbg: e791a8b5d5fab97ad42771e692108dc7869e2651
   flutter_local_notifications: ad39620c743ea4c15127860f4b5641649a988100
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
+  flutter_secure_storage_darwin: acdb3f316ed05a3e68f856e0353b133eec373a23
   flutter_timezone: 7c838e17ffd4645d261e87037e5bebf6d38fe544
+  home_widget: f169fc41fd807b4d46ab6615dc44d62adbf9f64f
+  integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   local_auth_darwin: c3ee6cce0a8d56be34c8ccb66ba31f7f180aaebb
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   share_plus: 50da8cb520a8f0f65671c6c6a99b3617ed10a58a
