@@ -255,6 +255,19 @@ class StringsEn extends AppStrings {
   @override String get scan_gallery => 'Pick from gallery';
   @override String get scan_nothing_found => 'Could not read the receipt, fill it in manually';
   @override String get scan_check_result => 'Filled from the receipt, check it before saving';
+  @override String get link_make_receivable => 'Track as receivable';
+  @override String link_receivable_created(int count) => '$count receivables created';
+  @override String get link_receivable_none => 'Every participant already has one';
+  @override String get link_record_income_title => 'Record as income?';
+  @override String link_record_income_desc(String name, String amount) => '$name paid you back $amount. Add it to Finance?';
+  @override String get link_record_expense_title => 'Record as expense?';
+  @override String link_record_expense_desc(String name, String amount) => 'You paid $amount back to $name. Add it to Finance?';
+  @override String get link_record_yes => 'Yes, record it';
+  @override String get link_record_no => 'No thanks';
+  @override String link_settlement_in(String name) => 'Paid back by $name';
+  @override String link_settlement_out(String name) => 'Paid back to $name';
+  @override String get link_transaction_recorded => 'Added to Finance';
+  @override String get link_from_bill => 'From a split bill';
 
 
   @override String get fin_insights_title => 'Insights';

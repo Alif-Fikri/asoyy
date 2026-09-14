@@ -15,6 +15,13 @@ class AddDebtRequested extends DebtBlocEvent {
   List<Object?> get props => [debt.id];
 }
 
+class AddDebtsRequested extends DebtBlocEvent {
+  final List<DebtEntity> debts;
+  AddDebtsRequested(this.debts);
+  @override
+  List<Object?> get props => [debts.map((d) => d.id).toList()];
+}
+
 class UpdateDebtRequested extends DebtBlocEvent {
   final DebtEntity debt;
   UpdateDebtRequested(this.debt);

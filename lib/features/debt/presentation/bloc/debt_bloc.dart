@@ -24,6 +24,7 @@ class DebtBloc extends Bloc<DebtBlocEvent, DebtState> {
   }) : super(DebtInitial()) {
     on<LoadDebts>(_onLoad);
     on<AddDebtRequested>(_onAdd);
+    on<AddDebtsRequested>(_onAddMany);
     on<UpdateDebtRequested>(_onUpdate);
     on<DeleteDebtRequested>(_onDelete);
   }
@@ -44,6 +45,18 @@ class DebtBloc extends Bloc<DebtBlocEvent, DebtState> {
     final current = state as DebtLoaded;
     await addDebt(event.debt);
     emit(current.copyWith(debts: [event.debt, ...current.debts]));
+    await reminderService.rescheduleAll();
+  }
+
+  Future<void> _onAddMany(
+      AddDebtsRequested event, Emitter<DebtState> emit) async {
+    if (state is! DebtLoaded) return;
+    if (event.debts.isEmpty) return;
+    final current = state as DebtLoaded;
+    for (final debt in event.debts) {
+      await addDebt(debt);
+    }
+    emit(current.copyWith(debts: [...event.debts.reversed, ...current.debts]));
     await reminderService.rescheduleAll();
   }
 

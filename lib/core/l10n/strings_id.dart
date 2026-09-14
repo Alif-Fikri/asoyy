@@ -255,6 +255,19 @@ class StringsId extends AppStrings {
   @override String get scan_gallery => 'Pilih dari galeri';
   @override String get scan_nothing_found => 'Struk tidak terbaca, isi manual ya';
   @override String get scan_check_result => 'Hasil scan terisi, periksa dulu sebelum simpan';
+  @override String get link_make_receivable => 'Jadikan piutang';
+  @override String link_receivable_created(int count) => '$count piutang dibuat';
+  @override String get link_receivable_none => 'Semua peserta sudah punya piutang';
+  @override String get link_record_income_title => 'Catat sebagai pemasukan?';
+  @override String link_record_income_desc(String name, String amount) => '$name melunasi $amount. Masukkan ke Keuangan?';
+  @override String get link_record_expense_title => 'Catat sebagai pengeluaran?';
+  @override String link_record_expense_desc(String name, String amount) => 'Kamu melunasi $amount ke $name. Masukkan ke Keuangan?';
+  @override String get link_record_yes => 'Ya, catat';
+  @override String get link_record_no => 'Tidak usah';
+  @override String link_settlement_in(String name) => 'Pelunasan dari $name';
+  @override String link_settlement_out(String name) => 'Bayar utang ke $name';
+  @override String get link_transaction_recorded => 'Tercatat di Keuangan';
+  @override String get link_from_bill => 'Dari patungan';
 
 
   @override String get fin_insights_title => 'Insight';

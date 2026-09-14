@@ -253,6 +253,19 @@ abstract class AppStrings {
   String get scan_gallery;
   String get scan_nothing_found;
   String get scan_check_result;
+  String get link_make_receivable;
+  String link_receivable_created(int count);
+  String get link_receivable_none;
+  String get link_record_income_title;
+  String link_record_income_desc(String name, String amount);
+  String get link_record_expense_title;
+  String link_record_expense_desc(String name, String amount);
+  String get link_record_yes;
+  String get link_record_no;
+  String link_settlement_in(String name);
+  String link_settlement_out(String name);
+  String get link_transaction_recorded;
+  String get link_from_bill;
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);

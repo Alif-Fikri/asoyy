@@ -8,6 +8,14 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import 'package:uuid/uuid.dart';
+import '../../../../core/widgets/app_toast.dart';
+import '../../../debt/domain/entities/debt_entity.dart';
+import '../../../debt/domain/utils/bill_debt_link.dart';
+import '../../../debt/presentation/bloc/debt_bloc.dart';
+import '../../../debt/presentation/bloc/debt_event.dart';
+import '../../../debt/presentation/bloc/debt_state.dart';
+import '../../../debt/presentation/settlement_prompt.dart';
 import '../../domain/entities/bill_entity.dart';
 import '../bloc/split_bill_bloc.dart';
 import '../bloc/split_bill_event.dart';
@@ -19,13 +27,46 @@ class SplitBillDetailPage extends StatelessWidget {
 
   const SplitBillDetailPage({super.key, required this.billId});
 
-  void _togglePaid(BuildContext context, BillEntity bill, String participantId, bool isPaid) {
+  List<DebtEntity> _debts(BuildContext context) {
+    final state = context.read<DebtBloc>().state;
+    return state is DebtLoaded ? state.debts : const [];
+  }
+
+  Future<void> _togglePaid(BuildContext context, BillEntity bill,
+      String participantId, bool isPaid) async {
     final updatedParticipants = bill.participants
         .map((p) => p.id == participantId ? p.copyWith(isPaid: isPaid) : p)
         .toList();
     context.read<SplitBillBloc>().add(
           UpdateBillRequested(bill.copyWith(participants: updatedParticipants)),
         );
+    if (!isPaid) return;
+
+    final linked = debtForParticipant(_debts(context), bill.id, participantId);
+    if (linked == null || linked.isSettled || !context.mounted) return;
+
+    context
+        .read<DebtBloc>()
+        .add(UpdateDebtRequested(linked.copyWith(isSettled: true)));
+    if (!context.mounted) return;
+    await offerToRecordSettlement(context, linked);
+  }
+
+  Future<void> _makeReceivables(BuildContext context, BillEntity bill) async {
+    final s = context.strings;
+    final created = debtsFromBill(
+      bill,
+      _debts(context),
+      idFor: (_) => const Uuid().v4(),
+    );
+
+    if (created.isEmpty) {
+      AppToast.show(context, s.link_receivable_none);
+      return;
+    }
+
+    context.read<DebtBloc>().add(AddDebtsRequested(created));
+    AppToast.show(context, s.link_receivable_created(created.length));
   }
 
   void _share(BuildContext context, BillEntity bill) {
@@ -170,7 +211,38 @@ class SplitBillDetailPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: Insets.xl),
+                const SizedBox(height: Insets.lg),
+                BlocBuilder<DebtBloc, DebtState>(
+                  builder: (context, debtState) {
+                    final debts = debtState is DebtLoaded
+                        ? debtState.debts
+                        : const <DebtEntity>[];
+                    if (participantsWithoutDebt(b, debts).isEmpty) {
+                      return const SizedBox(height: Insets.md);
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: Insets.md),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () => _makeReceivables(context, b),
+                          icon: const Icon(CupertinoIcons.arrow_right_arrow_left,
+                              size: 18),
+                          label: Text(s.link_make_receivable),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppColors.primary,
+                            side: const BorderSide(color: AppColors.primary),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: Insets.md),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(Radii.lg),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 ...b.participants.map(
                   (p) => ParticipantTile(
                     participant: p,

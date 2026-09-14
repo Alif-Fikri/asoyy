@@ -8,6 +8,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../domain/entities/debt_entity.dart';
+import '../settlement_prompt.dart';
 import '../bloc/debt_bloc.dart';
 import '../bloc/debt_event.dart';
 import '../bloc/debt_state.dart';
@@ -17,10 +18,13 @@ class DebtDetailPage extends StatelessWidget {
 
   const DebtDetailPage({super.key, required this.debtId});
 
-  void _toggleSettled(BuildContext context, DebtEntity debt) {
+  Future<void> _toggleSettled(BuildContext context, DebtEntity debt) async {
+    final settling = !debt.isSettled;
     context.read<DebtBloc>().add(
-          UpdateDebtRequested(debt.copyWith(isSettled: !debt.isSettled)),
+          UpdateDebtRequested(debt.copyWith(isSettled: settling)),
         );
+    if (!settling || !context.mounted) return;
+    await offerToRecordSettlement(context, debt);
   }
 
   void _confirmDelete(BuildContext context, String id) {
