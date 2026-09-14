@@ -574,10 +574,11 @@ class _LockScreenState extends State<_LockScreen> {
     }
   }
 
-  void _verify(String secret) {
-    if (widget.repo.verify(secret)) {
+  Future<void> _verify(String secret) async {
+    if (await widget.repo.verify(secret)) {
       widget.onSuccess();
     } else {
+      if (!mounted) return;
       setState(() {
         _error = widget.method == AuthMethod.pin
             ? context.strings.auth_pin_mismatch
@@ -776,10 +777,12 @@ class _VerifyDialogState extends State<_VerifyDialog> {
   String? _error;
   int _resetToken = 0;
 
-  void _onSecret(String secret) {
-    if (widget.repo.verify(secret)) {
+  Future<void> _onSecret(String secret) async {
+    if (await widget.repo.verify(secret)) {
+      if (!mounted) return;
       Navigator.of(context).pop(true);
     } else {
+      if (!mounted) return;
       setState(() {
         _error = widget.method == AuthMethod.pin
             ? context.strings.auth_pin_mismatch

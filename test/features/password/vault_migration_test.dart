@@ -113,8 +113,6 @@ void main() {
 
   test('Hive opens an encrypted box without a cipher as empty, not an error',
       () async {
-    // This is why migration is gated on a stored flag instead of probing:
-    // a probe would look like an empty plaintext vault and wipe real data.
     final box = await Hive.openBox<PasswordModel>(
       AppConstants.passwordsBox,
       encryptionCipher: cipher,
@@ -144,8 +142,6 @@ void main() {
       AppConstants.passwordsBox,
       encryptionCipher: wrong,
     );
-    // Hive surfaces an unreadable vault as empty rather than throwing; what
-    // matters here is that the wrong key yields no secrets.
     expect(box.values, isEmpty);
     await box.close();
   });

@@ -32,7 +32,6 @@ FinanceInsight? find(List<FinanceInsight> list, FinanceInsightType type) {
 }
 
 void main() {
-  // 15 June 2026: half the month elapsed, 30-day month.
   final now = DateTime(2026, 6, 15);
 
   group('monthlyExpenseTotal', () {
@@ -114,7 +113,6 @@ void main() {
     });
 
     test('only averages over months that actually had spending', () {
-      // Only May has history, so the baseline is May alone, not May/3.
       final insights = buildFinanceInsights(
         transactions: [
           expense(1000000, DateTime(2026, 5, 10)),
@@ -128,7 +126,6 @@ void main() {
     });
 
     test('ignores months older than the baseline window', () {
-      // February is 4 months back and must not count.
       final insights = buildFinanceInsights(
         transactions: [
           expense(9000000, DateTime(2026, 2, 10)),
@@ -212,7 +209,6 @@ void main() {
           expense(1000, DateTime(2026, month, 11), category: 'Hiburan'),
         ],
         expense(1000000, DateTime(2026, 6, 2), category: 'Makan'),
-        // tripled, but still under 10% of the month
         expense(3000, DateTime(2026, 6, 3), category: 'Hiburan'),
       ];
       expect(
@@ -243,7 +239,6 @@ void main() {
 
   group('budget pace', () {
     test('remaining budget outlasts the month', () {
-      // 1jt limit, 200rb spent by day 15 -> pace 13.3rb/day, 800rb left
       final i = find(
         buildFinanceInsights(
           transactions: [expense(200000, DateTime(2026, 6, 3))],
@@ -254,11 +249,10 @@ void main() {
       )!;
       expect(i.sentiment, InsightSentiment.good);
       expect(i.amount, closeTo(800000, 0.01));
-      expect(i.days, 60); // 800000 / (200000/15)
+      expect(i.days, 60);
     });
 
     test('warns when the pace outruns the remaining days', () {
-      // 1jt limit, 900rb spent by day 15 -> 100rb left, pace 60rb/day
       final i = find(
         buildFinanceInsights(
           transactions: [expense(900000, DateTime(2026, 6, 3))],
@@ -281,7 +275,6 @@ void main() {
       final i = find(insights, FinanceInsightType.budgetOver)!;
       expect(i.sentiment, InsightSentiment.warning);
       expect(i.amount, closeTo(200000, 0.01));
-      // pace and over-budget are mutually exclusive
       expect(find(insights, FinanceInsightType.budgetPace), isNull);
     });
 
@@ -358,7 +351,6 @@ void main() {
       final txs = [
         for (final month in [3, 4, 5])
           expense(1000000, DateTime(2026, month, 10), category: 'Makan'),
-        // spending well below average (good) + a budget still on track (good)
         expense(200000, DateTime(2026, 6, 2), category: 'Makan'),
       ];
       final insights = buildFinanceInsights(
@@ -376,7 +368,6 @@ void main() {
           expense(1000000, DateTime(2026, month, 10), category: 'Makan'),
         expense(500000, DateTime(2026, 6, 2), category: 'Makan'),
       ];
-      // spending is down (good) but the budget is already blown (warning)
       final insights = buildFinanceInsights(
         transactions: txs,
         budgets: {'Makan': 400000},

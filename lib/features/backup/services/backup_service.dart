@@ -166,11 +166,6 @@ class BackupService {
     await _restoreVault(entries[_vaultKeyEntry]);
   }
 
-  /// Re-points the vault at the restored data.
-  ///
-  /// A v2 archive carries the key the restored box file was encrypted with, so
-  /// the vault stays readable on a different device. A v1 archive holds a
-  /// plaintext box, which is encrypted on the spot instead.
   Future<void> _restoreVault(Uint8List? backedUpKey) async {
     if (!Hive.isBoxOpen(AppConstants.settingsBox)) {
       await Hive.openBox(AppConstants.settingsBox);

@@ -39,7 +39,6 @@ void main() {
     });
 
     test('matches the PBKDF2-HMAC-SHA256 reference vector', () {
-      // RFC-style vector: P="password", S="salt", c=10000, dkLen=32
       final key = deriveKey('password', Uint8List.fromList(utf8.encode('salt')));
       expect(
         key.map((b) => b.toRadixString(16).padLeft(2, '0')).join(),
@@ -80,7 +79,6 @@ void main() {
       try {
         restored = decryptBytes(cipher, wrongKey, iv);
       } catch (_) {
-        // padding check rejected it, which is the outcome we want
       }
       expect(restored, isNot(equals(plain)));
     });

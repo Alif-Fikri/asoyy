@@ -37,10 +37,6 @@ bool isVaultEncrypted() =>
 Future<void> setVaultEncrypted(bool value) =>
     Hive.box(AppConstants.settingsBox).put(vaultEncryptedFlag, value);
 
-/// Migrates the vault exactly once, then records that it is encrypted.
-///
-/// The flag is what makes this safe to call on every launch: [migratePlaintextVault]
-/// is destructive if the vault is already encrypted, so it must never run twice.
 Future<void> ensureVaultEncrypted(HiveAesCipher cipher) async {
   if (isVaultEncrypted()) return;
   await migratePlaintextVault(cipher);
@@ -70,11 +66,6 @@ PasswordModel _detach(PasswordModel p) => PasswordModel(
       createdAt: p.createdAt,
     );
 
-/// Rewrites a plaintext vault as an encrypted one.
-///
-/// Only ever call this when the vault is known to still be plaintext: Hive
-/// opens an encrypted box without a cipher as an *empty* box rather than
-/// failing, so probing would silently destroy an already encrypted vault.
 Future<void> migratePlaintextVault(HiveAesCipher cipher) async {
   if (Hive.isBoxOpen(AppConstants.passwordsBox)) {
     await Hive.box<PasswordModel>(AppConstants.passwordsBox).close();

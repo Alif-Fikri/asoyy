@@ -58,7 +58,6 @@ void main() {
     });
 
     test('day 31 in a 30-day month normalizes into the next month', () {
-      // DateTime(2026, 4, 31) overflows to 2026-05-01 by design.
       final due = nextDueDate(item(dayOfMonth: 31), DateTime(2026, 4, 10));
       expect(due, DateTime(2026, 5, 1));
     });
@@ -91,7 +90,6 @@ void main() {
         item(dayOfMonth: 2, isSubscription: true),
         DateTime(2026, 3, 10),
       );
-      // due 2026-04-02, minus 3 days
       expect(t, DateTime(2026, 3, 30, 9));
     });
   });

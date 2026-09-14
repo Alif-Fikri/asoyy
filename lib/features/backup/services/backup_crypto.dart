@@ -6,7 +6,7 @@ import 'package:encrypt/encrypt.dart' as enc;
 
 const int backupSaltLength = 16;
 const int backupIvLength = 16;
-const int _pbkdf2Iterations = 10000;
+const int backupPbkdf2Iterations = 10000;
 const int _keyLength = 32;
 
 Uint8List randomBytes(int length) {
@@ -14,7 +14,11 @@ Uint8List randomBytes(int length) {
   return Uint8List.fromList(List<int>.generate(length, (_) => rand.nextInt(256)));
 }
 
-Uint8List deriveKey(String passphrase, Uint8List salt) {
+Uint8List deriveKey(
+  String passphrase,
+  Uint8List salt, {
+  int iterations = backupPbkdf2Iterations,
+}) {
   final passwordBytes = utf8.encode(passphrase);
   final hmac = Hmac(sha256, passwordBytes);
   final blockCount = (_keyLength / 32).ceil();
@@ -31,7 +35,7 @@ Uint8List deriveKey(String passphrase, Uint8List salt) {
     var u = hmac.convert(block).bytes;
     var result = Uint8List.fromList(u);
 
-    for (var i = 1; i < _pbkdf2Iterations; i++) {
+    for (var i = 1; i < iterations; i++) {
       u = hmac.convert(u).bytes;
       for (var j = 0; j < result.length; j++) {
         result[j] ^= u[j];

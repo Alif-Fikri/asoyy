@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('calculateLoan - annuity', () {
     test('matches the standard annuity formula', () {
-      // 100jt, 12%/tahun, 12 bulan -> cicilan ~8.884.879
       final r = calculateLoan(
         principal: 100000000,
         annualRatePercent: 12,
@@ -66,7 +65,6 @@ void main() {
         tenorMonths: 12,
         method: LoanInterestMethod.flat,
       );
-      // pokok 10jt + bunga 1.2jt per bulan
       expect(r.monthlyInstallment, closeTo(11200000, 0.01));
       expect(r.totalInterest, closeTo(14400000, 0.01));
       expect(r.totalPayment, closeTo(134400000, 0.01));
@@ -161,7 +159,6 @@ void main() {
           method: method,
         );
         expect(r.annualRatePercent, isNull, reason: '$method');
-        // totals are still reported so the UI can show the shortfall
         expect(r.totalPayment, closeTo(10800000, 0.01));
         expect(r.totalInterest, closeTo(-1200000, 0.01));
       }
