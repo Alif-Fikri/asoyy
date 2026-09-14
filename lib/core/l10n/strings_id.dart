@@ -268,6 +268,27 @@ class StringsId extends AppStrings {
   @override String link_settlement_out(String name) => 'Bayar utang ke $name';
   @override String get link_transaction_recorded => 'Tercatat di Keuangan';
   @override String get link_from_bill => 'Dari patungan';
+  @override String get auto_backup_title => 'Backup Otomatis';
+  @override String get auto_backup_subtitle => 'Simpan cadangan terenkripsi secara berkala tanpa perlu diingat';
+  @override String get auto_backup_enable => 'Aktifkan backup otomatis';
+  @override String get auto_backup_frequency => 'Seberapa sering';
+  @override String get auto_backup_daily => 'Harian';
+  @override String get auto_backup_weekly => 'Mingguan';
+  @override String get auto_backup_monthly => 'Bulanan';
+  @override String get auto_backup_folder => 'Folder tujuan';
+  @override String get auto_backup_folder_pick => 'Pilih folder';
+  @override String get auto_backup_folder_none => 'Belum dipilih';
+  @override String get auto_backup_passphrase => 'Passphrase';
+  @override String get auto_backup_passphrase_set => 'Sudah diatur';
+  @override String get auto_backup_passphrase_none => 'Belum diatur';
+  @override String get auto_backup_last_run => 'Backup terakhir';
+  @override String get auto_backup_never => 'Belum pernah';
+  @override String get auto_backup_incomplete => 'Pilih folder dan atur passphrase dulu';
+  @override String get auto_backup_saved_warning => 'Catat passphrase-mu di tempat aman. Tanpa itu file backup tidak bisa dibuka, bahkan olehmu sendiri.';
+  @override String get auto_backup_on_device_warning => 'Pilih folder yang tersinkron ke cloud (Drive/iCloud). Backup di HP yang sama tidak menolong kalau HP-nya hilang.';
+  @override String auto_backup_kept(int count) => 'Menyimpan $count backup terakhir';
+  @override String get auto_backup_failed => 'Backup otomatis gagal';
+  @override String get auto_backup_done => 'Backup otomatis tersimpan';
 
 
   @override String get fin_insights_title => 'Insight';

@@ -31,6 +31,7 @@ import 'features/password/presentation/bloc/password_event.dart';
 import 'features/split_bill/presentation/bloc/split_bill_bloc.dart';
 import 'features/split_bill/presentation/bloc/split_bill_event.dart';
 import 'features/debt/presentation/bloc/debt_bloc.dart';
+import 'features/backup/services/auto_backup_runner.dart';
 import 'features/debt/presentation/bloc/debt_event.dart';
 
 class NexusApp extends StatelessWidget {
@@ -111,7 +112,7 @@ class _MainShell extends StatefulWidget {
   State<_MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<_MainShell> {
+class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   int _currentIndex = 0;
 
   AlarmSet _previousRinging = AlarmSet.empty();
@@ -121,14 +122,23 @@ class _MainShellState extends State<_MainShell> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _alarmRingSubscription = Alarm.ringing.listen(_onRingingChanged);
     _onRingingChanged(Alarm.ringing.value);
+    unawaited(AutoBackupRunner().runIfDue());
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _alarmRingSubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) return;
+    unawaited(AutoBackupRunner().runIfDue());
   }
 
   Future<void> _onRingingChanged(AlarmSet currentRinging) async {

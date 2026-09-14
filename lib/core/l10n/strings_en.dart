@@ -268,6 +268,27 @@ class StringsEn extends AppStrings {
   @override String link_settlement_out(String name) => 'Paid back to $name';
   @override String get link_transaction_recorded => 'Added to Finance';
   @override String get link_from_bill => 'From a split bill';
+  @override String get auto_backup_title => 'Automatic backup';
+  @override String get auto_backup_subtitle => 'Write an encrypted copy on a schedule so you never have to remember';
+  @override String get auto_backup_enable => 'Back up automatically';
+  @override String get auto_backup_frequency => 'How often';
+  @override String get auto_backup_daily => 'Daily';
+  @override String get auto_backup_weekly => 'Weekly';
+  @override String get auto_backup_monthly => 'Monthly';
+  @override String get auto_backup_folder => 'Destination folder';
+  @override String get auto_backup_folder_pick => 'Choose folder';
+  @override String get auto_backup_folder_none => 'Not chosen yet';
+  @override String get auto_backup_passphrase => 'Passphrase';
+  @override String get auto_backup_passphrase_set => 'Set';
+  @override String get auto_backup_passphrase_none => 'Not set';
+  @override String get auto_backup_last_run => 'Last backup';
+  @override String get auto_backup_never => 'Never';
+  @override String get auto_backup_incomplete => 'Choose a folder and set a passphrase first';
+  @override String get auto_backup_saved_warning => 'Write your passphrase down somewhere safe. Without it the backup cannot be opened, not even by you.';
+  @override String get auto_backup_on_device_warning => 'Pick a folder that syncs to the cloud (Drive/iCloud). A backup on the same phone does not help if the phone is gone.';
+  @override String auto_backup_kept(int count) => 'Keeps the last $count backups';
+  @override String get auto_backup_failed => 'Automatic backup failed';
+  @override String get auto_backup_done => 'Automatic backup saved';
 
 
   @override String get fin_insights_title => 'Insights';

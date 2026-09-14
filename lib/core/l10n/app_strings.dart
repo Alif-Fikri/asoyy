@@ -266,6 +266,27 @@ abstract class AppStrings {
   String link_settlement_out(String name);
   String get link_transaction_recorded;
   String get link_from_bill;
+  String get auto_backup_title;
+  String get auto_backup_subtitle;
+  String get auto_backup_enable;
+  String get auto_backup_frequency;
+  String get auto_backup_daily;
+  String get auto_backup_weekly;
+  String get auto_backup_monthly;
+  String get auto_backup_folder;
+  String get auto_backup_folder_pick;
+  String get auto_backup_folder_none;
+  String get auto_backup_passphrase;
+  String get auto_backup_passphrase_set;
+  String get auto_backup_passphrase_none;
+  String get auto_backup_last_run;
+  String get auto_backup_never;
+  String get auto_backup_incomplete;
+  String get auto_backup_saved_warning;
+  String get auto_backup_on_device_warning;
+  String auto_backup_kept(int count);
+  String get auto_backup_failed;
+  String get auto_backup_done;
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);

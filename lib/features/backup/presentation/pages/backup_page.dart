@@ -13,6 +13,7 @@ import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../services/backup_service.dart';
+import '../widgets/auto_backup_section.dart';
 
 class BackupPage extends StatefulWidget {
   const BackupPage({super.key});
@@ -37,42 +38,56 @@ class _BackupPageState extends State<BackupPage> {
         final c = dialogContext.colors;
         return AlertDialog(
           backgroundColor: c.card,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Text(s.backup_passphrase, style: TextStyle(color: c.textPrimary)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            s.backup_passphrase,
+            style: TextStyle(color: c.textPrimary),
+          ),
           content: Form(
             key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: ctrl,
-                  obscureText: true,
-                  autofocus: true,
-                  style: TextStyle(color: c.textPrimary),
-                  decoration: InputDecoration(labelText: s.backup_passphrase),
-                  validator: (v) => (v == null || v.length < 6)
-                      ? s.backup_passphrase_too_short
-                      : null,
-                ),
-                if (confirmRequired) ...[
-                  const SizedBox(height: Insets.sm),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
                   TextFormField(
-                    controller: confirmCtrl,
+                    controller: ctrl,
                     obscureText: true,
+                    autofocus: true,
                     style: TextStyle(color: c.textPrimary),
-                    decoration: InputDecoration(labelText: s.backup_passphrase_confirm),
-                    validator: (v) =>
-                        (v != ctrl.text) ? s.backup_passphrase_mismatch : null,
+                    decoration: InputDecoration(labelText: s.backup_passphrase),
+                    validator:
+                        (v) =>
+                            (v == null || v.length < 6)
+                                ? s.backup_passphrase_too_short
+                                : null,
                   ),
+                  if (confirmRequired) ...[
+                    const SizedBox(height: Insets.sm),
+                    TextFormField(
+                      controller: confirmCtrl,
+                      obscureText: true,
+                      style: TextStyle(color: c.textPrimary),
+                      decoration: InputDecoration(
+                        labelText: s.backup_passphrase_confirm,
+                      ),
+                      validator:
+                          (v) =>
+                              (v != ctrl.text)
+                                  ? s.backup_passphrase_mismatch
+                                  : null,
+                    ),
+                  ],
+                  if (confirmRequired) ...[
+                    const SizedBox(height: Insets.md),
+                    Text(
+                      s.backup_passphrase_hint,
+                      style: AppType.caption.copyWith(color: c.textSecondary),
+                    ),
+                  ],
                 ],
-                if (confirmRequired) ...[
-                  const SizedBox(height: Insets.md),
-                  Text(
-                    s.backup_passphrase_hint,
-                    style: AppType.caption.copyWith(color: c.textSecondary),
-                  ),
-                ],
-              ],
+              ),
             ),
           ),
           actions: [
@@ -104,7 +119,8 @@ class _BackupPageState extends State<BackupPage> {
       await Share.shareXFiles([XFile(file.path)]);
       if (mounted) AppToast.show(context, context.strings.backup_success);
     } catch (e) {
-      if (mounted) AppToast.show(context, '${context.strings.backup_restore_failed}: $e');
+      if (mounted)
+        AppToast.show(context, '${context.strings.backup_restore_failed}: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -136,8 +152,13 @@ class _BackupPageState extends State<BackupPage> {
           final c = dialogContext.colors;
           return AlertDialog(
             backgroundColor: c.card,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: Text(s.backup_restore_success, style: TextStyle(color: c.textPrimary)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            title: Text(
+              s.backup_restore_success,
+              style: TextStyle(color: c.textPrimary),
+            ),
             content: Text(
               s.backup_restart_required,
               style: TextStyle(color: c.textSecondary),
@@ -177,18 +198,26 @@ class _BackupPageState extends State<BackupPage> {
               decoration: BoxDecoration(
                 color: AppColors.backupColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(Radii.md),
-                border: Border.all(color: AppColors.backupColor.withValues(alpha: 0.25)),
+                border: Border.all(
+                  color: AppColors.backupColor.withValues(alpha: 0.25),
+                ),
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(CupertinoIcons.shield_lefthalf_fill,
-                      color: AppColors.backupColor, size: 18),
+                  const Icon(
+                    CupertinoIcons.shield_lefthalf_fill,
+                    color: AppColors.backupColor,
+                    size: 18,
+                  ),
                   const SizedBox(width: Insets.sm),
                   Expanded(
                     child: Text(
                       s.backup_warning_hint,
-                      style: AppType.caption.copyWith(color: c.textSecondary, height: 1.4),
+                      style: AppType.caption.copyWith(
+                        color: c.textSecondary,
+                        height: 1.4,
+                      ),
                     ),
                   ),
                 ],
@@ -212,6 +241,10 @@ class _BackupPageState extends State<BackupPage> {
               width: double.infinity,
               color: AppColors.backupColor,
               icon: CupertinoIcons.arrow_down_doc,
+            ),
+            const SizedBox(height: Insets.xxl),
+            AutoBackupSection(
+              askPassphrase: () => _askPassphrase(confirmRequired: true),
             ),
           ],
         ),
