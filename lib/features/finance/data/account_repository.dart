@@ -21,4 +21,10 @@ class AccountRepository {
   Future<void> delete(String id) => _box.delete(id);
 
   bool get isEmpty => _box.isEmpty;
+
+  String? get fallbackAccountId {
+    if (_box.containsKey(defaultAccountId)) return defaultAccountId;
+    if (_box.isEmpty) return null;
+    return _box.values.first.id;
+  }
 }

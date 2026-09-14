@@ -7,6 +7,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../domain/entities/transaction_entity.dart';
+import '../../data/account_repository.dart';
 import '../../domain/utils/quick_add_parser.dart';
 
 Future<void> showQuickAddSheet(
@@ -54,6 +55,7 @@ class _QuickAddDialogState extends State<QuickAddDialog> {
       type: result.type,
       category: result.category,
       date: DateTime.now(),
+      accountId: AccountRepository().fallbackAccountId,
     ));
     Navigator.pop(context);
   }

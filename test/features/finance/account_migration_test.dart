@@ -131,4 +131,30 @@ void main() {
     expect(entity.isIncome, isTrue);
     expect(entity.isTransfer, isFalse);
   });
+
+  group('fallbackAccountId', () {
+    test('is null before any account exists', () {
+      expect(AccountRepository().fallbackAccountId, isNull);
+    });
+
+    test('prefers the migrated default account', () async {
+      await migrateTransactionsToDefaultAccount('Tunai');
+      await AccountRepository().save(const AccountEntity(
+        id: 'bca',
+        name: 'BCA',
+        type: AccountType.bank,
+      ));
+      expect(AccountRepository().fallbackAccountId, defaultAccountId);
+    });
+
+    test('falls back to any account when the default is gone', () async {
+      final repo = AccountRepository();
+      await repo.save(const AccountEntity(
+        id: 'bca',
+        name: 'BCA',
+        type: AccountType.bank,
+      ));
+      expect(repo.fallbackAccountId, 'bca');
+    });
+  });
 }

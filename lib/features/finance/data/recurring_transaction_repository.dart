@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
+import 'account_repository.dart';
 import '../../../core/constants/app_constants.dart';
 import '../domain/entities/recurring_transaction_entity.dart';
 import '../domain/entities/transaction_entity.dart';
@@ -92,6 +93,7 @@ class RecurringTransactionRepository {
         category: item.category,
         date: DateTime(now.year, now.month, item.dayOfMonth),
         notes: item.notes,
+        accountId: AccountRepository().fallbackAccountId,
       ));
       generated++;
       updated.add(item.copyWith(lastGeneratedMonth: currentMonthKey));
