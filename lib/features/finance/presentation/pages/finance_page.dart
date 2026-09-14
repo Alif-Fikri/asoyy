@@ -46,16 +46,23 @@ Map<String, double> _currentMonthExpenseByCategory(List<TransactionEntity> all) 
 class FinancePage extends StatelessWidget {
   const FinancePage({super.key});
 
-  void _showAddTransaction(BuildContext context) {
+  void _showAddTransaction(BuildContext context, {TransactionEntity? existing}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (_) => TransactionFormDialog(
+        existing: existing,
         onSave: (tx) {
-          context.read<FinanceBloc>().add(AddTransactionRequested(tx));
-          AppToast.show(context, context.strings.fin_transaction_added);
-          _checkBudget(context, tx);
+          final bloc = context.read<FinanceBloc>();
+          if (existing == null) {
+            bloc.add(AddTransactionRequested(tx));
+            AppToast.show(context, context.strings.fin_transaction_added);
+            _checkBudget(context, tx);
+          } else {
+            bloc.add(UpdateTransactionRequested(tx));
+            AppToast.show(context, context.strings.fin_transaction_updated);
+          }
         },
         categoryUsageCount: (category) => _categoryUsageCount(context, category),
       ),
@@ -136,8 +143,10 @@ class FinancePage extends StatelessWidget {
   void _openAccounts(BuildContext context, FinanceLoaded state) {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (_) => AccountsPage(
-        transactions: state.all,
         onChanged: () => context.read<FinanceBloc>().add(LoadTransactions()),
+        onReassign: (fromId, toId) => context
+            .read<FinanceBloc>()
+            .add(ReassignAccountRequested(fromId: fromId, toId: toId)),
       ),
     ));
   }
@@ -311,6 +320,7 @@ class FinancePage extends StatelessWidget {
                   .map(
                     (tx) => TransactionCard(
                       transaction: tx,
+                      onEdit: () => _showAddTransaction(context, existing: tx),
                       onDelete: () {
                         context
                             .read<FinanceBloc>()

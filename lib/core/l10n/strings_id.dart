@@ -241,6 +241,15 @@ class StringsId extends AppStrings {
   @override String get fin_transfer_same_account => 'Pilih dompet yang berbeda';
   @override String get nav_accounts => 'Dompet';
   @override String get more => 'Lainnya';
+  @override String get fin_edit => 'Ubah Transaksi';
+  @override String get fin_transaction_updated => 'Transaksi diperbarui';
+  @override String acc_delete_in_use_title(int count) => 'Dompet ini dipakai $count transaksi';
+  @override String get acc_delete_move => 'Pindahkan ke dompet lain';
+  @override String get acc_delete_move_desc => 'Transaksi tetap ada, hanya berpindah dompet';
+  @override String get acc_delete_anyway => 'Hapus saja';
+  @override String get acc_delete_anyway_desc => 'Transaksinya tetap ada tapi tanpa dompet';
+  @override String get acc_delete_needs_target => 'Tambah dompet lain dulu untuk memindahkan';
+  @override String acc_moved(int count) => '$count transaksi dipindahkan';
 
 
   @override String get fin_insights_title => 'Insight';

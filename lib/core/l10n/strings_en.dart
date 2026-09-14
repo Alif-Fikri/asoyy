@@ -241,6 +241,15 @@ class StringsEn extends AppStrings {
   @override String get fin_transfer_same_account => 'Pick a different wallet';
   @override String get nav_accounts => 'Wallets';
   @override String get more => 'More';
+  @override String get fin_edit => 'Edit transaction';
+  @override String get fin_transaction_updated => 'Transaction updated';
+  @override String acc_delete_in_use_title(int count) => 'This wallet is used by $count transactions';
+  @override String get acc_delete_move => 'Move them to another wallet';
+  @override String get acc_delete_move_desc => 'The transactions stay, they just change wallet';
+  @override String get acc_delete_anyway => 'Delete anyway';
+  @override String get acc_delete_anyway_desc => 'The transactions stay but without a wallet';
+  @override String get acc_delete_needs_target => 'Add another wallet first to move them';
+  @override String acc_moved(int count) => '$count transactions moved';
 
 
   @override String get fin_insights_title => 'Insights';

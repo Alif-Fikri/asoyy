@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
@@ -18,11 +19,13 @@ import 'account_picker.dart';
 class TransactionFormDialog extends StatefulWidget {
   final void Function(TransactionEntity) onSave;
   final int Function(String category) categoryUsageCount;
+  final TransactionEntity? existing;
 
   const TransactionFormDialog({
     super.key,
     required this.onSave,
     required this.categoryUsageCount,
+    this.existing,
   });
 
   @override
@@ -48,7 +51,25 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   void initState() {
     super.initState();
     _accounts = _accountRepo.getAll();
-    _accountId = _accounts.isNotEmpty ? _accounts.first.id : null;
+
+    final existing = widget.existing;
+    if (existing == null) {
+      _accountId = _accountRepo.fallbackAccountId ??
+          (_accounts.isNotEmpty ? _accounts.first.id : null);
+      return;
+    }
+
+    _titleCtrl.text = existing.title;
+    _amountCtrl.text =
+        NumberFormat.decimalPattern('id_ID').format(existing.amount);
+    _notesCtrl.text = existing.notes ?? '';
+    _type = existing.type;
+    _accountId = existing.accountId;
+    _toAccountId = existing.toAccountId;
+    if (existing.type != TransactionType.transfer) {
+      _category = existing.category;
+      _categoryInitialized = true;
+    }
   }
 
   AccountEntity? _accountById(String? id) {
@@ -135,12 +156,12 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
     }
 
     widget.onSave(TransactionEntity(
-      id: const Uuid().v4(),
+      id: widget.existing?.id ?? const Uuid().v4(),
       title: _titleCtrl.text.trim(),
       amount: double.parse(_amountCtrl.text.replaceAll('.', '')),
       type: _type,
       category: _type == TransactionType.transfer ? transferCategory : _category,
-      date: DateTime.now(),
+      date: widget.existing?.date ?? DateTime.now(),
       notes: _notesCtrl.text.trim().isEmpty ? null : _notesCtrl.text.trim(),
       accountId: _accountId,
       toAccountId: _type == TransactionType.transfer ? _toAccountId : null,
@@ -189,7 +210,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                 ),
               ),
               const SizedBox(height: 20),
-              Text(s.fin_add,
+              Text(widget.existing == null ? s.fin_add : s.fin_edit,
                   style: TextStyle(
                       color: c.textPrimary,
                       fontSize: 20,

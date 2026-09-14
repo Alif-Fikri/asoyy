@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -18,16 +19,20 @@ import '../../data/account_repository.dart';
 import '../../domain/entities/account_entity.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../domain/utils/account_balance.dart';
+import '../../../../core/widgets/action_sheet.dart';
+import '../widgets/account_picker.dart';
+import '../bloc/finance_bloc.dart';
+import '../bloc/finance_state.dart';
 import '../widgets/account_visuals.dart';
 
 class AccountsPage extends StatefulWidget {
-  final List<TransactionEntity> transactions;
   final VoidCallback onChanged;
+  final void Function(String fromId, String toId) onReassign;
 
   const AccountsPage({
     super.key,
-    required this.transactions,
     required this.onChanged,
+    required this.onReassign,
   });
 
   @override
@@ -49,7 +54,12 @@ class _AccountsPageState extends State<AccountsPage> {
     widget.onChanged();
   }
 
-  int _usageCount(String accountId) => widget.transactions
+  List<TransactionEntity> _transactions(BuildContext context) {
+    final state = context.read<FinanceBloc>().state;
+    return state is FinanceLoaded ? state.all : const [];
+  }
+
+  int _usageCount(String accountId) => _transactions(context)
       .where((t) => t.accountId == accountId || t.toAccountId == accountId)
       .length;
 
@@ -70,10 +80,60 @@ class _AccountsPageState extends State<AccountsPage> {
   Future<void> _delete(AccountEntity account) async {
     final s = context.strings;
     final used = _usageCount(account.id);
-    if (used > 0) {
-      AppToast.show(context, s.acc_delete_blocked(used));
+
+    if (used == 0) {
+      final confirmed = await showDeleteConfirm(context);
+      if (!confirmed || !mounted) return;
+      await _repo.delete(account.id);
+      if (!mounted) return;
+      AppToast.show(context, s.acc_deleted);
+      _reload();
       return;
     }
+
+    final others =
+        _accounts.where((a) => a.id != account.id).toList(growable: false);
+    final choice = await showActionSheet<String>(
+      context,
+      title: s.acc_delete_in_use_title(used),
+      actions: [
+        if (others.isNotEmpty)
+          SheetAction(
+            value: 'move',
+            icon: CupertinoIcons.arrow_right_arrow_left,
+            color: AppColors.primary,
+            label: s.acc_delete_move,
+            subtitle: s.acc_delete_move_desc,
+          )
+        else
+          SheetAction(
+            value: 'none',
+            icon: CupertinoIcons.info,
+            color: AppColors.calendarColor,
+            label: s.acc_delete_needs_target,
+          ),
+        SheetAction(
+          value: 'delete',
+          icon: CupertinoIcons.trash,
+          color: AppColors.alarmColor,
+          label: s.acc_delete_anyway,
+          subtitle: s.acc_delete_anyway_desc,
+        ),
+      ],
+    );
+    if (choice == null || choice == 'none' || !mounted) return;
+
+    if (choice == 'move') {
+      final target = await showAccountPicker(context, others, null);
+      if (target == null || !mounted) return;
+      widget.onReassign(account.id, target.id);
+      await _repo.delete(account.id);
+      if (!mounted) return;
+      AppToast.show(context, s.acc_moved(used));
+      _reload();
+      return;
+    }
+
     final confirmed = await showDeleteConfirm(context);
     if (!confirmed || !mounted) return;
     await _repo.delete(account.id);
@@ -84,6 +144,18 @@ class _AccountsPageState extends State<AccountsPage> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<FinanceBloc, FinanceState>(
+      builder: (context, state) => _buildScaffold(
+        context,
+        state is FinanceLoaded ? state.all : const [],
+      ),
+    );
+  }
+
+  Widget _buildScaffold(
+    BuildContext context,
+    List<TransactionEntity> transactions,
+  ) {
     final c = context.colors;
     final s = context.strings;
     final fmt = NumberFormat.currency(
@@ -91,8 +163,8 @@ class _AccountsPageState extends State<AccountsPage> {
       symbol: 'Rp ',
       decimalDigits: 0,
     );
-    final balances = balanceByAccount(_accounts, widget.transactions);
-    final total = totalBalance(_accounts, widget.transactions);
+    final balances = balanceByAccount(_accounts, transactions);
+    final total = totalBalance(_accounts, transactions);
 
     return Scaffold(
       backgroundColor: c.background,

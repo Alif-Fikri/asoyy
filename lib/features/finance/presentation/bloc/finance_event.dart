@@ -15,6 +15,21 @@ class AddTransactionRequested extends FinanceBlocEvent {
   List<Object?> get props => [transaction.id];
 }
 
+class UpdateTransactionRequested extends FinanceBlocEvent {
+  final TransactionEntity transaction;
+  UpdateTransactionRequested(this.transaction);
+  @override
+  List<Object?> get props => [transaction.id];
+}
+
+class ReassignAccountRequested extends FinanceBlocEvent {
+  final String fromId;
+  final String toId;
+  ReassignAccountRequested({required this.fromId, required this.toId});
+  @override
+  List<Object?> get props => [fromId, toId];
+}
+
 class DeleteTransactionRequested extends FinanceBlocEvent {
   final String id;
   DeleteTransactionRequested(this.id);

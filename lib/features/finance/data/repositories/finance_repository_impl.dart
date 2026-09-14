@@ -19,4 +19,8 @@ class FinanceRepositoryImpl implements FinanceRepository {
 
   @override
   Future<void> deleteTransaction(String id) => datasource.deleteTransaction(id);
+
+  @override
+  Future<int> reassignAccount(String fromId, String toId) =>
+      datasource.reassignAccount(fromId, toId);
 }

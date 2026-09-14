@@ -6,6 +6,7 @@ abstract class FinanceLocalDatasource {
   Future<List<TransactionModel>> getTransactions();
   Future<void> addTransaction(TransactionModel tx);
   Future<void> deleteTransaction(String id);
+  Future<int> reassignAccount(String fromId, String toId);
 }
 
 class FinanceLocalDatasourceImpl implements FinanceLocalDatasource {
@@ -25,4 +26,25 @@ class FinanceLocalDatasourceImpl implements FinanceLocalDatasource {
 
   @override
   Future<void> deleteTransaction(String id) => box.delete(id);
+
+  @override
+  Future<int> reassignAccount(String fromId, String toId) async {
+    final updates = <String, TransactionModel>{};
+    for (final m in box.values) {
+      if (m.accountId != fromId && m.toAccountId != fromId) continue;
+      updates[m.id] = TransactionModel(
+        id: m.id,
+        title: m.title,
+        amount: m.amount,
+        type: m.type,
+        category: m.category,
+        date: m.date,
+        notes: m.notes,
+        accountId: m.accountId == fromId ? toId : m.accountId,
+        toAccountId: m.toAccountId == fromId ? toId : m.toAccountId,
+      );
+    }
+    if (updates.isNotEmpty) await box.putAll(updates);
+    return updates.length;
+  }
 }

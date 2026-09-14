@@ -33,6 +33,7 @@ import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
 import '../../features/finance/domain/usecases/add_transaction.dart';
 import '../../features/finance/domain/usecases/delete_transaction.dart';
+import '../../features/finance/domain/usecases/reassign_account.dart';
 import '../../features/finance/domain/usecases/get_finance_summary.dart';
 import '../../features/finance/domain/usecases/get_transactions.dart';
 import '../../features/finance/presentation/bloc/finance_bloc.dart';
@@ -131,6 +132,7 @@ Future<void> init() async {
         getTransactions: GetTransactions(sl()),
         addTransaction: AddTransaction(sl()),
         deleteTransaction: DeleteTransaction(sl()),
+        reassignAccount: ReassignAccount(sl()),
         financeWidgetService: sl<FinanceWidgetService>(),
       ));
 

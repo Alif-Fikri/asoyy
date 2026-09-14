@@ -10,11 +10,13 @@ import '../../domain/entities/transaction_entity.dart';
 class TransactionCard extends StatelessWidget {
   final TransactionEntity transaction;
   final VoidCallback onDelete;
+  final VoidCallback? onEdit;
 
   const TransactionCard({
     super.key,
     required this.transaction,
     required this.onDelete,
+    this.onEdit,
   });
 
   @override
@@ -36,6 +38,7 @@ class TransactionCard extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        onTap: onEdit,
         onLongPress: () async {
           final confirmed = await showDeleteConfirm(context);
           if (confirmed) onDelete();

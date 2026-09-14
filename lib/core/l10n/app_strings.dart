@@ -239,6 +239,15 @@ abstract class AppStrings {
   String get fin_transfer_same_account;
   String get nav_accounts;
   String get more;
+  String get fin_edit;
+  String get fin_transaction_updated;
+  String acc_delete_in_use_title(int count);
+  String get acc_delete_move;
+  String get acc_delete_move_desc;
+  String get acc_delete_anyway;
+  String get acc_delete_anyway_desc;
+  String get acc_delete_needs_target;
+  String acc_moved(int count);
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);
