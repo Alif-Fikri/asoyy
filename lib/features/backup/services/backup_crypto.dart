@@ -14,8 +14,6 @@ Uint8List randomBytes(int length) {
   return Uint8List.fromList(List<int>.generate(length, (_) => rand.nextInt(256)));
 }
 
-/// PBKDF2-HMAC-SHA256 key derivation, implemented with the existing
-/// `crypto` package so no dedicated KDF library is needed.
 Uint8List deriveKey(String passphrase, Uint8List salt) {
   final passwordBytes = utf8.encode(passphrase);
   final hmac = Hmac(sha256, passwordBytes);

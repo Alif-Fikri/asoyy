@@ -21,8 +21,6 @@ class DebtEntity {
     this.isSettled = false,
   });
 
-  /// The date reminders are anchored to: the due date if set, otherwise the
-  /// date the debt was recorded.
   DateTime get reminderAnchor => dueDate ?? date;
 
   DebtEntity copyWith({

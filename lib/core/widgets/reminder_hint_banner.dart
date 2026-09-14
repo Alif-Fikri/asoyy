@@ -3,8 +3,6 @@ import '../constants/app_colors.dart';
 import '../theme/app_color_theme.dart';
 import '../theme/design_tokens.dart';
 
-/// Small info banner explaining that this page has automatic
-/// reminder notifications, so the user isn't surprised by them.
 class ReminderHintBanner extends StatelessWidget {
   final String text;
 

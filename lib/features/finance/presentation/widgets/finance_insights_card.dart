@@ -7,7 +7,6 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../domain/utils/finance_insights.dart';
 
-/// Turns an insight into the sentence shown to the user.
 String insightMessage(FinanceInsight insight, AppStrings s) {
   final money = NumberFormat.currency(
     locale: 'id_ID',

@@ -1,22 +1,16 @@
 import '../entities/transaction_entity.dart';
 
-/// How many previous months the "usual" baseline is averaged over.
 const int insightBaselineMonths = 3;
 
 enum FinanceInsightType {
-  /// This month's total spending versus the recent monthly average.
   spendingVsAverage,
 
-  /// A single category that grew well beyond its own recent average.
   categoryTrend,
 
-  /// How long the remaining budget lasts at the current spending pace.
   budgetPace,
 
-  /// The budget for this month is already used up.
   budgetOver,
 
-  /// Fallback: the category taking the biggest share of this month.
   topCategory,
 }
 
@@ -26,16 +20,12 @@ class FinanceInsight {
   final FinanceInsightType type;
   final InsightSentiment sentiment;
 
-  /// Category this insight is about, when it is category-scoped.
   final String? category;
 
-  /// Relative change or share, as a ratio (0.23 means 23%).
   final double ratio;
 
-  /// Supporting rupiah amount (overspend, remaining budget, ...).
   final double amount;
 
-  /// Supporting day count, e.g. how many days the remaining budget covers.
   final int days;
 
   const FinanceInsight({
@@ -51,7 +41,6 @@ class FinanceInsight {
 bool _isInMonth(TransactionEntity t, int year, int month) =>
     t.date.year == year && t.date.month == month;
 
-/// Total expense in a given month.
 double monthlyExpenseTotal(
   List<TransactionEntity> transactions,
   int year,
@@ -65,7 +54,6 @@ double monthlyExpenseTotal(
   return total;
 }
 
-/// Expense per category in a given month.
 Map<String, double> monthlyExpenseByCategory(
   List<TransactionEntity> transactions,
   int year,
@@ -80,7 +68,6 @@ Map<String, double> monthlyExpenseByCategory(
   return map;
 }
 
-/// The (year, month) pairs of the [insightBaselineMonths] months before [now].
 List<({int year, int month})> _baselineMonths(DateTime now) => [
       for (var back = 1; back <= insightBaselineMonths; back++)
         (
@@ -89,8 +76,6 @@ List<({int year, int month})> _baselineMonths(DateTime now) => [
         ),
     ];
 
-/// Average monthly expense over the baseline window, counting only months that
-/// actually had spending — a brand new user should not be compared to zeros.
 double _baselineAverage(List<TransactionEntity> transactions, DateTime now) {
   var total = 0.0;
   var months = 0;
@@ -103,8 +88,6 @@ double _baselineAverage(List<TransactionEntity> transactions, DateTime now) {
   return months == 0 ? 0 : total / months;
 }
 
-/// Average monthly expense per category over the baseline window, averaged
-/// over the months that had any spending at all.
 Map<String, double> _baselineByCategory(
   List<TransactionEntity> transactions,
   DateTime now,
@@ -123,10 +106,6 @@ Map<String, double> _baselineByCategory(
 
 int daysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 
-/// Builds the insight list shown at the top of the Finance page.
-///
-/// Everything is derived from data the app already stores, so this stays a pure
-/// function of [transactions], [budgets] and [now].
 List<FinanceInsight> buildFinanceInsights({
   required List<TransactionEntity> transactions,
   required Map<String, double> budgets,
@@ -137,7 +116,6 @@ List<FinanceInsight> buildFinanceInsights({
   final byCategory = monthlyExpenseByCategory(transactions, now.year, now.month);
   final insights = <FinanceInsight>[];
 
-  // 1. Spending versus the recent monthly average.
   final baseline = _baselineAverage(transactions, now);
   if (baseline > 0 && thisMonth > 0) {
     final change = (thisMonth - baseline) / baseline;
@@ -152,7 +130,6 @@ List<FinanceInsight> buildFinanceInsights({
     }
   }
 
-  // 2. The category that grew the most against its own average.
   final categoryBaseline = _baselineByCategory(transactions, now);
   String? risingCategory;
   var risingRatio = 0.0;
@@ -162,7 +139,6 @@ List<FinanceInsight> buildFinanceInsights({
     if (usual == null || usual <= 0) return;
     final change = (spent - usual) / usual;
     if (change < 0.20) return;
-    // Ignore categories too small to matter this month.
     if (thisMonth > 0 && spent / thisMonth < 0.10) return;
     if (change > risingRatio) {
       risingCategory = category;
@@ -180,7 +156,6 @@ List<FinanceInsight> buildFinanceInsights({
     ));
   }
 
-  // 3. Budget pace, across every category that has a limit set.
   var limitTotal = 0.0;
   var limitSpent = 0.0;
   budgets.forEach((category, limit) {
@@ -216,7 +191,6 @@ List<FinanceInsight> buildFinanceInsights({
     }
   }
 
-  // 4. Fallback so the card is never empty once there is data this month.
   if (insights.isEmpty && byCategory.isNotEmpty && thisMonth > 0) {
     final top =
         byCategory.entries.reduce((a, b) => a.value >= b.value ? a : b);
@@ -229,7 +203,6 @@ List<FinanceInsight> buildFinanceInsights({
     ));
   }
 
-  // Warnings are the ones worth acting on, so they lead.
   insights.sort((a, b) {
     int rank(FinanceInsight i) =>
         i.sentiment == InsightSentiment.warning ? 0 : 1;

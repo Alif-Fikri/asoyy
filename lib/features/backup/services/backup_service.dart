@@ -12,7 +12,7 @@ import '../../password/data/models/password_model.dart';
 import '../../split_bill/data/models/bill_model.dart';
 import 'backup_crypto.dart';
 
-const _magic = [0x42, 0x52, 0x53, 0x42]; // "BRSB"
+const _magic = [0x42, 0x52, 0x53, 0x42];
 const _version = 1;
 
 class BackupException implements Exception {
@@ -23,8 +23,6 @@ class BackupException implements Exception {
 }
 
 class BackupService {
-  /// Each box must be looked up with the exact generic type it was
-  /// opened with, or Hive's type check (box.valueType == T) throws.
   BoxBase _openBox(String name) {
     switch (name) {
       case AppConstants.eventsBox:
@@ -109,7 +107,7 @@ class BackupService {
     }
 
     var offset = 4;
-    offset += 1; // version, unused for now
+    offset += 1;
     final salt = bytes.sublist(offset, offset + backupSaltLength);
     offset += backupSaltLength;
     final iv = bytes.sublist(offset, offset + backupIvLength);

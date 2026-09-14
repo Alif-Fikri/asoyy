@@ -68,8 +68,6 @@ double _annuityPayment(double principal, double monthlyRate, int tenorMonths) {
   return principal * monthlyRate * powFactor / (powFactor - 1);
 }
 
-/// Solves for the annual interest rate given a known monthly installment,
-/// since there is no closed-form inverse for the annuity formula.
 LoanRateResult solveLoanRate({
   required double principal,
   required double monthlyInstallment,
@@ -103,7 +101,7 @@ LoanRateResult solveLoanRate({
   }
 
   var low = 0.0;
-  var high = 1.0; // monthly rate up to 100% — comfortably above any realistic loan
+  var high = 1.0;
   for (var i = 0; i < 100; i++) {
     final mid = (low + high) / 2;
     final payment = _annuityPayment(principal, mid, tenorMonths);
