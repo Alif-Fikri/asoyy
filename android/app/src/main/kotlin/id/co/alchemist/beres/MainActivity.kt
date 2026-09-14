@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
+import android.view.WindowManager
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -16,6 +17,7 @@ class MainActivity : FlutterFragmentActivity() {
 
     private val batteryChannel = "id.co.alchemist.beres/battery"
     private val ringtoneChannel = "id.co.alchemist.beres/ringtone"
+    private val secureScreenChannel = "id.co.alchemist.beres/secure_screen"
     private val ringtonePickerRequestCode = 4271
 
     private var pendingRingtoneResult: MethodChannel.Result? = null
@@ -44,6 +46,23 @@ class MainActivity : FlutterFragmentActivity() {
                 launchRingtonePicker()
             } else {
                 result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            secureScreenChannel,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "enable" -> {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    result.success(null)
+                }
+                "disable" -> {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    result.success(null)
+                }
+                else -> result.notImplemented()
             }
         }
     }

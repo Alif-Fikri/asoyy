@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import '../../backup/services/backup_crypto.dart';
@@ -17,12 +18,14 @@ class VaultKeyStore {
   );
 
   Future<Uint8List?> read() async {
-    final stored = await _storage.read(key: _keyName);
-    if (stored == null) return null;
     try {
+      final stored = await _storage.read(key: _keyName);
+      if (stored == null) return null;
       final bytes = base64Decode(stored);
       if (bytes.length != vaultKeyLength) return null;
       return Uint8List.fromList(bytes);
+    } on PlatformException {
+      return null;
     } catch (_) {
       return null;
     }

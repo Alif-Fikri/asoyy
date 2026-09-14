@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import '../../data/auth_config_repository.dart';
+import '../../services/secure_screen.dart';
+import '../widgets/auto_lock_gate.dart';
 import 'password_auth_gate.dart';
 import 'password_page.dart';
 
-class PasswordFlowPage extends StatefulWidget {
+class PasswordFlowPage extends StatelessWidget {
   const PasswordFlowPage({super.key});
 
   @override
-  State<PasswordFlowPage> createState() => _PasswordFlowPageState();
-}
-
-class _PasswordFlowPageState extends State<PasswordFlowPage> {
-  final AuthConfigRepository _repo = AuthConfigRepository();
-  bool _authenticated = false;
-
-  @override
   Widget build(BuildContext context) {
-    if (_authenticated) return PasswordPage(authRepo: _repo);
-    return PasswordAuthGate(
-      repo: _repo,
-      onAuthenticated: () => setState(() => _authenticated = true),
+    final repo = AuthConfigRepository();
+    return AutoLockGate(
+      onMount: SecureScreen.enable,
+      onUnmount: SecureScreen.disable,
+      locked: (context, unlock) => PasswordAuthGate(
+        repo: repo,
+        onAuthenticated: unlock,
+      ),
+      unlocked: (context) => PasswordPage(authRepo: repo),
     );
   }
 }
