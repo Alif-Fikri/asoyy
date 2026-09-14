@@ -32,7 +32,7 @@ Map<String, double> _currentMonthExpenseByCategory(List<TransactionEntity> all) 
   final now = DateTime.now();
   final map = <String, double>{};
   for (final t in all) {
-    if (t.isIncome) continue;
+    if (!t.isExpense) continue;
     if (t.date.year != now.year || t.date.month != now.month) continue;
     map[t.category] = (map[t.category] ?? 0) + t.amount;
   }
@@ -65,7 +65,7 @@ class FinancePage extends StatelessWidget {
   }
 
   void _checkBudget(BuildContext context, TransactionEntity tx) {
-    if (tx.isIncome) return;
+    if (!tx.isExpense) return;
     final limit = BudgetRepository().getLimit(tx.category);
     if (limit == null || limit <= 0) return;
 

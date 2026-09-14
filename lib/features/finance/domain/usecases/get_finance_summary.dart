@@ -20,8 +20,9 @@ class GetFinanceSummary implements UseCase<FinanceSummary, NoParams> {
     double balance = 0;
     double todayExpense = 0;
     for (final t in txs) {
+      if (t.isTransfer) continue;
       balance += t.isIncome ? t.amount : -t.amount;
-      if (!t.isIncome &&
+      if (t.isExpense &&
           t.date.year == now.year &&
           t.date.month == now.month &&
           t.date.day == now.day) {

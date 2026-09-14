@@ -26,6 +26,12 @@ class TransactionModel extends HiveObject {
   @HiveField(6)
   final String? notes;
 
+  @HiveField(7)
+  final String? accountId;
+
+  @HiveField(8)
+  final String? toAccountId;
+
   TransactionModel({
     required this.id,
     required this.title,
@@ -34,25 +40,38 @@ class TransactionModel extends HiveObject {
     required this.category,
     required this.date,
     this.notes,
+    this.accountId,
+    this.toAccountId,
   });
 
   factory TransactionModel.fromEntity(TransactionEntity e) => TransactionModel(
         id: e.id,
         title: e.title,
         amount: e.amount,
-        type: e.type == TransactionType.income ? 'income' : 'expense',
+        type: e.type.name,
         category: e.category,
         date: e.date,
         notes: e.notes,
+        accountId: e.accountId,
+        toAccountId: e.toAccountId,
       );
 
   TransactionEntity toEntity() => TransactionEntity(
         id: id,
         title: title,
         amount: amount,
-        type: type == 'income' ? TransactionType.income : TransactionType.expense,
+        type: _typeFromString(type),
         category: category,
         date: date,
         notes: notes,
+        accountId: accountId,
+        toAccountId: toAccountId,
       );
+
+  static TransactionType _typeFromString(String raw) {
+    for (final t in TransactionType.values) {
+      if (t.name == raw) return t;
+    }
+    return TransactionType.expense;
+  }
 }

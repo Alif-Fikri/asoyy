@@ -1,6 +1,10 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'transaction_model.dart';
 
+// **************************************************************************
+// TypeAdapterGenerator
+// **************************************************************************
 
 class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
   @override
@@ -20,13 +24,15 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       category: fields[4] as String,
       date: fields[5] as DateTime,
       notes: fields[6] as String?,
+      accountId: fields[7] as String?,
+      toAccountId: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TransactionModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -40,7 +46,11 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       ..writeByte(5)
       ..write(obj.date)
       ..writeByte(6)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(7)
+      ..write(obj.accountId)
+      ..writeByte(8)
+      ..write(obj.toAccountId);
   }
 
   @override

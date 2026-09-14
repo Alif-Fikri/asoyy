@@ -28,7 +28,7 @@ class FinanceCsvService {
     for (final t in transactions) {
       buffer.writeln([
         _escape(_formatDate(t.date)),
-        _escape(t.isIncome ? 'income' : 'expense'),
+        _escape(t.type.name),
         _escape(t.category),
         _escape(t.title),
         t.amount.toStringAsFixed(2),
@@ -37,7 +37,7 @@ class FinanceCsvService {
     }
 
     final expenseByCategory = <String, double>{};
-    for (final t in transactions.where((t) => !t.isIncome)) {
+    for (final t in transactions.where((t) => t.isExpense)) {
       expenseByCategory[t.category] =
           (expenseByCategory[t.category] ?? 0) + t.amount;
     }

@@ -48,7 +48,7 @@ double monthlyExpenseTotal(
 ) {
   var total = 0.0;
   for (final t in transactions) {
-    if (t.isIncome) continue;
+    if (!t.isExpense) continue;
     if (_isInMonth(t, year, month)) total += t.amount;
   }
   return total;
@@ -61,7 +61,7 @@ Map<String, double> monthlyExpenseByCategory(
 ) {
   final map = <String, double>{};
   for (final t in transactions) {
-    if (t.isIncome) continue;
+    if (!t.isExpense) continue;
     if (!_isInMonth(t, year, month)) continue;
     map[t.category] = (map[t.category] ?? 0) + t.amount;
   }

@@ -13,6 +13,7 @@ import 'features/alarm/data/models/alarm_model.dart';
 import 'features/alarm/services/notification_service.dart';
 import 'features/calendar/data/models/event_model.dart';
 import 'features/debt/data/models/debt_model.dart';
+import 'features/finance/data/models/account_model.dart';
 import 'features/debt/services/debt_reminder_service.dart';
 import 'features/finance/data/models/transaction_model.dart';
 import 'features/finance/services/finance_widget_service.dart';
@@ -50,6 +51,7 @@ void main() async {
   Hive.registerAdapter(ParticipantModelAdapter());
   Hive.registerAdapter(BillModelAdapter());
   Hive.registerAdapter(DebtModelAdapter());
+  Hive.registerAdapter(AccountModelAdapter());
 
   await Future.wait([
     initializeDateFormatting('id_ID', null),

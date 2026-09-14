@@ -41,13 +41,13 @@ class FinanceLoaded extends FinanceState {
       _periodFiltered.where((t) => t.isIncome).fold(0, (s, t) => s + t.amount);
 
   double get totalExpense =>
-      _periodFiltered.where((t) => !t.isIncome).fold(0, (s, t) => s + t.amount);
+      _periodFiltered.where((t) => t.isExpense).fold(0, (s, t) => s + t.amount);
 
   double get balance => totalIncome - totalExpense;
 
   Map<String, double> get expenseByCategory {
     final map = <String, double>{};
-    for (final t in _periodFiltered.where((t) => !t.isIncome)) {
+    for (final t in _periodFiltered.where((t) => t.isExpense)) {
       map[t.category] = (map[t.category] ?? 0) + t.amount;
     }
     return map;

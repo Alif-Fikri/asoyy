@@ -34,7 +34,7 @@ class FinanceChart extends StatelessWidget {
       final expense = transactions
           .where(
             (t) =>
-                !t.isIncome && t.date.year == m.year && t.date.month == m.month,
+                t.isExpense && t.date.year == m.year && t.date.month == m.month,
           )
           .fold(0.0, (sum, t) => sum + t.amount);
       incomeData.add(income);

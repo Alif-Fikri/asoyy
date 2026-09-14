@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_constants.dart';
@@ -26,6 +27,8 @@ import '../../features/converter/data/converter_rates_repository.dart';
 import '../../features/converter/presentation/bloc/converter_cubit.dart';
 
 import '../../features/finance/data/datasources/finance_local_datasource.dart';
+import '../../features/finance/data/account_migration.dart';
+import '../../features/finance/data/account_repository.dart';
 import '../../features/finance/data/recurring_transaction_repository.dart';
 import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
@@ -110,7 +113,11 @@ Future<void> init() async {
         deletePassword: DeletePassword(sl()),
       ));
 
+  await AccountRepository.open();
   final financeDs = await FinanceLocalDatasourceImpl.create();
+  await migrateTransactionsToDefaultAccount(
+    PlatformDispatcher.instance.locale.languageCode == 'id' ? 'Tunai' : 'Cash',
+  );
   sl.registerSingleton<FinanceLocalDatasource>(financeDs);
   sl.registerSingleton<FinanceRepository>(
       FinanceRepositoryImpl(sl<FinanceLocalDatasource>()));
