@@ -8,12 +8,16 @@ import '../../alarm/data/models/alarm_model.dart';
 import '../../calendar/data/models/event_model.dart';
 import '../../debt/data/models/debt_model.dart';
 import '../../finance/data/models/transaction_model.dart';
+import '../../password/data/datasources/password_local_datasource.dart';
 import '../../password/data/models/password_model.dart';
+import '../../password/services/vault_key_store.dart';
 import '../../split_bill/data/models/bill_model.dart';
 import 'backup_crypto.dart';
 
 const _magic = [0x42, 0x52, 0x53, 0x42];
-const _version = 1;
+const _version = 2;
+
+const _vaultKeyEntry = '__vault_key__';
 
 class BackupException implements Exception {
   final String message;
@@ -66,18 +70,25 @@ class BackupService {
     await _flushAll();
     final paths = _boxPaths();
 
-    final container = BytesBuilder();
-    container.addByte(paths.length);
+    final payload = <String, Uint8List>{};
     for (final entry in paths.entries) {
       final path = entry.value;
-      final data = (path != null && File(path).existsSync())
+      payload[entry.key] = (path != null && File(path).existsSync())
           ? await File(path).readAsBytes()
           : Uint8List(0);
+    }
+
+    final vaultKey = await VaultKeyStore().read();
+    if (vaultKey != null) payload[_vaultKeyEntry] = vaultKey;
+
+    final container = BytesBuilder();
+    container.addByte(payload.length);
+    for (final entry in payload.entries) {
       final nameBytes = entry.key.codeUnits;
       container.add(_u16(nameBytes.length));
       container.add(nameBytes);
-      container.add(_u32(data.length));
-      container.add(data);
+      container.add(_u32(entry.value.length));
+      container.add(entry.value);
     }
 
     final salt = randomBytes(backupSaltLength);
@@ -151,6 +162,29 @@ class BackupService {
       }
       await File(path).writeAsBytes(entry.value, flush: true);
     }
+
+    await _restoreVault(entries[_vaultKeyEntry]);
+  }
+
+  /// Re-points the vault at the restored data.
+  ///
+  /// A v2 archive carries the key the restored box file was encrypted with, so
+  /// the vault stays readable on a different device. A v1 archive holds a
+  /// plaintext box, which is encrypted on the spot instead.
+  Future<void> _restoreVault(Uint8List? backedUpKey) async {
+    if (!Hive.isBoxOpen(AppConstants.settingsBox)) {
+      await Hive.openBox(AppConstants.settingsBox);
+    }
+    final store = VaultKeyStore();
+
+    if (backedUpKey != null && backedUpKey.length == vaultKeyLength) {
+      await store.write(backedUpKey);
+      await setVaultEncrypted(true);
+      return;
+    }
+
+    await setVaultEncrypted(false);
+    await ensureVaultEncrypted(HiveAesCipher(await store.readOrCreate()));
   }
 
   bool _matchesMagic(Uint8List bytes) {
