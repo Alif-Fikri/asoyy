@@ -29,6 +29,12 @@ class DebtModel extends HiveObject {
   @HiveField(7)
   final DateTime? dueDate;
 
+  @HiveField(8)
+  final String? sourceBillId;
+
+  @HiveField(9)
+  final String? sourceParticipantId;
+
   DebtModel({
     required this.id,
     required this.personName,
@@ -38,6 +44,8 @@ class DebtModel extends HiveObject {
     required this.date,
     required this.isSettled,
     this.dueDate,
+    this.sourceBillId,
+    this.sourceParticipantId,
   });
 
   factory DebtModel.fromEntity(DebtEntity e) => DebtModel(
@@ -49,6 +57,8 @@ class DebtModel extends HiveObject {
         date: e.date,
         isSettled: e.isSettled,
         dueDate: e.dueDate,
+        sourceBillId: e.sourceBillId,
+        sourceParticipantId: e.sourceParticipantId,
       );
 
   DebtEntity toEntity() => DebtEntity(
@@ -60,5 +70,7 @@ class DebtModel extends HiveObject {
         date: date,
         isSettled: isSettled,
         dueDate: dueDate,
+        sourceBillId: sourceBillId,
+        sourceParticipantId: sourceParticipantId,
       );
 }

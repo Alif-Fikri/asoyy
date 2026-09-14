@@ -25,13 +25,15 @@ class DebtModelAdapter extends TypeAdapter<DebtModel> {
       date: fields[5] as DateTime,
       isSettled: fields[6] as bool,
       dueDate: fields[7] as DateTime?,
+      sourceBillId: fields[8] as String?,
+      sourceParticipantId: fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, DebtModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +49,11 @@ class DebtModelAdapter extends TypeAdapter<DebtModel> {
       ..writeByte(6)
       ..write(obj.isSettled)
       ..writeByte(7)
-      ..write(obj.dueDate);
+      ..write(obj.dueDate)
+      ..writeByte(8)
+      ..write(obj.sourceBillId)
+      ..writeByte(9)
+      ..write(obj.sourceParticipantId);
   }
 
   @override

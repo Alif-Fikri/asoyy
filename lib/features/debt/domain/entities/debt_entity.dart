@@ -9,6 +9,8 @@ class DebtEntity {
   final DateTime date;
   final DateTime? dueDate;
   final bool isSettled;
+  final String? sourceBillId;
+  final String? sourceParticipantId;
 
   const DebtEntity({
     required this.id,
@@ -19,7 +21,11 @@ class DebtEntity {
     required this.date,
     this.dueDate,
     this.isSettled = false,
+    this.sourceBillId,
+    this.sourceParticipantId,
   });
+
+  bool get isFromBill => sourceBillId != null && sourceParticipantId != null;
 
   DateTime get reminderAnchor => dueDate ?? date;
 
@@ -41,5 +47,7 @@ class DebtEntity {
         date: date ?? this.date,
         dueDate: clearDueDate ? null : (dueDate ?? this.dueDate),
         isSettled: isSettled ?? this.isSettled,
+        sourceBillId: sourceBillId,
+        sourceParticipantId: sourceParticipantId,
       );
 }
