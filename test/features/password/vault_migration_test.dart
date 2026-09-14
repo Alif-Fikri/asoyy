@@ -17,6 +17,8 @@ PasswordModel sample(String id, String secret) => PasswordModel(
     );
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late Directory dir;
   final key = List<int>.generate(32, (i) => i);
   final cipher = HiveAesCipher(key);
@@ -144,5 +146,68 @@ void main() {
     );
     expect(box.values, isEmpty);
     await box.close();
+  });
+
+  group('a missing vault key', () {
+    test('is refused instead of silently opening an empty vault', () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'rahasia-a'));
+      await plain.close();
+
+      await ensureVaultEncrypted(cipher);
+      expect(isVaultEncrypted(), isTrue);
+
+      await expectLater(
+        openVaultBox(),
+        throwsA(isA<VaultKeyMissingException>()),
+        reason: 'no key is reachable in a plain test environment',
+      );
+    });
+
+    test('leaves the encrypted data on disk untouched', () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'rahasia-a'));
+      await plain.close();
+      await ensureVaultEncrypted(cipher);
+
+      try {
+        await openVaultBox();
+      } catch (_) {}
+
+      final restored = await readEncrypted();
+      expect(restored, hasLength(1));
+      expect(restored.single.password, 'rahasia-a');
+    });
+
+    test('the unreadable datasource refuses reads and writes', () async {
+      final ds = UnreadableVaultDatasource();
+      await expectLater(
+        ds.getPasswords(),
+        throwsA(isA<VaultKeyMissingException>()),
+      );
+      await expectLater(
+        ds.savePassword(sample('a', 'x')),
+        throwsA(isA<VaultKeyMissingException>()),
+        reason: 'writing would corrupt the vault it cannot read',
+      );
+      await expectLater(
+        ds.deletePassword('a'),
+        throwsA(isA<VaultKeyMissingException>()),
+      );
+    });
+
+    test('resetVault clears the box, the flag and starts fresh', () async {
+      final plain = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      await plain.put('a', sample('a', 'rahasia-a'));
+      await plain.close();
+      await ensureVaultEncrypted(cipher);
+
+      await resetVault();
+
+      expect(isVaultEncrypted(), isFalse);
+      final box = await Hive.openBox<PasswordModel>(AppConstants.passwordsBox);
+      expect(box.values, isEmpty);
+      await box.close();
+    });
   });
 }

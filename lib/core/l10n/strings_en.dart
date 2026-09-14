@@ -212,6 +212,11 @@ class StringsEn extends AppStrings {
   @override String auth_locked_retry(String time) => 'Try again in $time';
   @override String auth_attempts_left(int count) => '$count attempts left before lockout';
 
+  @override String get vault_missing_title => 'Vault cannot be opened';
+  @override String get vault_missing_desc => 'The vault encryption key is not on this device. Your saved passwords are still stored but cannot be read without it. Restore from a backup file, or reset the vault to start over.';
+  @override String get vault_missing_reset => 'Reset vault';
+  @override String get vault_missing_reset_confirm => 'Every saved password will be permanently deleted and cannot be recovered. Continue?';
+
   @override String get fin_insights_title => 'Insights';
   @override String fin_insight_spending_up(String percent) => 'You spent $percent more this month than your 3-month average';
   @override String fin_insight_spending_down(String percent) => 'You spent $percent less this month than your 3-month average';

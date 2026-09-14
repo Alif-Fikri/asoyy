@@ -210,6 +210,11 @@ abstract class AppStrings {
   String auth_locked_retry(String time);
   String auth_attempts_left(int count);
 
+  String get vault_missing_title;
+  String get vault_missing_desc;
+  String get vault_missing_reset;
+  String get vault_missing_reset_confirm;
+
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);
   String fin_insight_spending_down(String percent);

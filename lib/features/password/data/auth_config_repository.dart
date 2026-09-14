@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../backup/services/backup_crypto.dart';
 import '../domain/entities/auth_method.dart';
+import 'datasources/password_local_datasource.dart';
 import 'models/password_model.dart';
 
 const int authPbkdf2Iterations = 120000;
@@ -42,7 +43,11 @@ class AuthConfigRepository {
   }
 
   Future<void> clearPasswords() async {
-    await Hive.box<PasswordModel>(AppConstants.passwordsBox).clear();
+    if (Hive.isBoxOpen(AppConstants.passwordsBox)) {
+      await Hive.box<PasswordModel>(AppConstants.passwordsBox).clear();
+      return;
+    }
+    await resetVault();
   }
 
   Future<bool> verify(String secret) async {

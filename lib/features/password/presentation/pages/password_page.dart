@@ -9,6 +9,7 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../data/auth_config_repository.dart';
+import '../../data/datasources/password_local_datasource.dart';
 import '../../domain/entities/password_entity.dart';
 import '../password_actions.dart';
 import '../bloc/password_bloc.dart';
@@ -112,6 +113,9 @@ class _PasswordPageState extends State<PasswordPage> {
       return const Center(child: CircularProgressIndicator());
     }
     if (state is PasswordError) {
+      if (state.message.contains('vault-key-missing')) {
+        return const _VaultUnreadable();
+      }
       return Center(
         child: Text(
           state.message,
@@ -208,6 +212,102 @@ class _SearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide.none,
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _VaultUnreadable extends StatelessWidget {
+  const _VaultUnreadable();
+
+  Future<void> _reset(BuildContext context) async {
+    final s = context.strings;
+    final bloc = context.read<PasswordBloc>();
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(s.vault_missing_reset),
+        content: Text(s.vault_missing_reset_confirm),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(s.cancel),
+          ),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: AppColors.alarmColor),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(s.vault_missing_reset),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true) return;
+    await resetVault();
+    bloc.add(LoadPasswords());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.strings;
+    final c = context.colors;
+
+    return Center(
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: AppColors.alarmColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(
+                CupertinoIcons.exclamationmark_shield,
+                color: AppColors.alarmColor,
+                size: 32,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              s.vault_missing_title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: c.textPrimary,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              s.vault_missing_desc,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: c.textSecondary,
+                fontSize: 14,
+                height: 1.45,
+              ),
+            ),
+            const SizedBox(height: 28),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => _reset(context),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.alarmColor,
+                  side: const BorderSide(color: AppColors.alarmColor),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+                child: Text(s.vault_missing_reset),
+              ),
+            ),
+          ],
         ),
       ),
     );

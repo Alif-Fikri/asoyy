@@ -46,5 +46,13 @@ class VaultKeyStore {
     return created;
   }
 
-  Future<void> delete() => _storage.delete(key: _keyName);
+  Future<void> delete() async {
+    try {
+      await _storage.delete(key: _keyName);
+    } on PlatformException {
+      return;
+    } on MissingPluginException {
+      return;
+    }
+  }
 }

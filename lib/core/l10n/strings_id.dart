@@ -212,6 +212,11 @@ class StringsId extends AppStrings {
   @override String auth_locked_retry(String time) => 'Coba lagi dalam $time';
   @override String auth_attempts_left(int count) => 'Sisa $count percobaan sebelum terkunci';
 
+  @override String get vault_missing_title => 'Vault tidak bisa dibuka';
+  @override String get vault_missing_desc => 'Kunci enkripsi vault tidak ditemukan di perangkat ini. Password lamamu masih tersimpan tapi tidak bisa dibaca tanpa kunci itu. Pulihkan dari file backup, atau reset vault untuk mulai dari nol.';
+  @override String get vault_missing_reset => 'Reset vault';
+  @override String get vault_missing_reset_confirm => 'Semua password yang tersimpan akan dihapus permanen dan tidak bisa dikembalikan. Lanjutkan?';
+
   @override String get fin_insights_title => 'Insight';
   @override String fin_insight_spending_up(String percent) => 'Pengeluaran bulan ini $percent lebih tinggi dari rata-rata 3 bulan terakhir';
   @override String fin_insight_spending_down(String percent) => 'Pengeluaran bulan ini $percent lebih hemat dari rata-rata 3 bulan terakhir';

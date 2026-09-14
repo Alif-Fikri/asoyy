@@ -3,6 +3,12 @@ import '../../../../core/constants/app_constants.dart';
 import '../../services/vault_key_store.dart';
 import '../models/password_model.dart';
 
+class VaultKeyMissingException implements Exception {
+  const VaultKeyMissingException();
+  @override
+  String toString() => 'vault-key-missing';
+}
+
 abstract class PasswordLocalDatasource {
   Future<List<PasswordModel>> getPasswords();
   Future<void> savePassword(PasswordModel password);
@@ -13,9 +19,12 @@ class PasswordLocalDatasourceImpl implements PasswordLocalDatasource {
   final Box<PasswordModel> box;
   PasswordLocalDatasourceImpl(this.box);
 
-  static Future<PasswordLocalDatasourceImpl> create() async {
-    final box = await openVaultBox();
-    return PasswordLocalDatasourceImpl(box);
+  static Future<PasswordLocalDatasource> create() async {
+    try {
+      return PasswordLocalDatasourceImpl(await openVaultBox());
+    } on VaultKeyMissingException {
+      return UnreadableVaultDatasource();
+    }
   }
 
   @override
@@ -27,6 +36,20 @@ class PasswordLocalDatasourceImpl implements PasswordLocalDatasource {
 
   @override
   Future<void> deletePassword(String id) => box.delete(id);
+}
+
+class UnreadableVaultDatasource implements PasswordLocalDatasource {
+  @override
+  Future<List<PasswordModel>> getPasswords() async =>
+      throw const VaultKeyMissingException();
+
+  @override
+  Future<void> savePassword(PasswordModel password) async =>
+      throw const VaultKeyMissingException();
+
+  @override
+  Future<void> deletePassword(String id) async =>
+      throw const VaultKeyMissingException();
 }
 
 const String vaultEncryptedFlag = 'vault_encrypted';
@@ -44,7 +67,14 @@ Future<void> ensureVaultEncrypted(HiveAesCipher cipher) async {
 }
 
 Future<Box<PasswordModel>> openVaultBox() async {
-  final cipher = HiveAesCipher(await VaultKeyStore().readOrCreate());
+  final store = VaultKeyStore();
+  final existing = await store.read();
+
+  if (existing == null && isVaultEncrypted()) {
+    throw const VaultKeyMissingException();
+  }
+
+  final cipher = HiveAesCipher(existing ?? await store.readOrCreate());
   await ensureVaultEncrypted(cipher);
 
   if (Hive.isBoxOpen(AppConstants.passwordsBox)) {
@@ -54,6 +84,15 @@ Future<Box<PasswordModel>> openVaultBox() async {
     AppConstants.passwordsBox,
     encryptionCipher: cipher,
   );
+}
+
+Future<void> resetVault() async {
+  if (Hive.isBoxOpen(AppConstants.passwordsBox)) {
+    await Hive.box<PasswordModel>(AppConstants.passwordsBox).close();
+  }
+  await Hive.deleteBoxFromDisk(AppConstants.passwordsBox);
+  await VaultKeyStore().delete();
+  await setVaultEncrypted(false);
 }
 
 PasswordModel _detach(PasswordModel p) => PasswordModel(
