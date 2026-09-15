@@ -9,6 +9,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/resizable_text_field.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../data/account_repository.dart';
 import '../../data/finance_category_repository.dart';
@@ -413,11 +414,10 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
               ),
               ],
               const SizedBox(height: 12),
-              AppTextField(
+              ResizableTextField(
                 label: s.fin_notes,
                 controller: _notesCtrl,
                 prefixIcon: CupertinoIcons.text_alignleft,
-                maxLines: 2,
               ),
               const SizedBox(height: 24),
               AppButton(

@@ -7,10 +7,12 @@ import '../../debt/domain/entities/debt_entity.dart';
 import '../../debt/domain/utils/bill_debt_link.dart';
 import '../../debt/domain/utils/debt_reminder_schedule.dart';
 import '../../finance/domain/entities/recurring_transaction_entity.dart';
+import '../../notes/domain/entities/note_entity.dart';
+import '../../notes/domain/utils/note_status.dart';
 import '../../finance/domain/utils/recurring_schedule.dart';
 import '../../split_bill/domain/entities/bill_entity.dart';
 
-enum ReminderKind { alarm, event, holiday, payday, recurringBill, debt }
+enum ReminderKind { alarm, event, holiday, payday, recurringBill, debt, note }
 
 class ReminderItem {
   final ReminderKind kind;
@@ -61,12 +63,14 @@ List<ReminderItem> buildReminders({
   required List<RecurringTransactionEntity> recurringBills,
   required List<BillEntity> splitBills,
   required List<DebtEntity> debts,
+  List<NoteEntity> notes = const [],
   required DateTime now,
   required Color alarmColor,
   required Color holidayColor,
   required Color paydayColor,
   required Color recurringBillColor,
   required Color debtColor,
+  Color? noteColor,
   required String paydayLabel,
   required bool isId,
   Set<String> mutedIds = const {},
@@ -173,6 +177,20 @@ List<ReminderItem> buildReminders({
           : '${debt.personName} · $note',
       when: reminderAt,
       color: debtColor,
+      enabled: !mutedIds.contains(id),
+    ));
+  }
+
+  for (final note in notes) {
+    final reminderAt = nextNoteReminder(note, now);
+    if (reminderAt == null || reminderAt.isAfter(horizon)) continue;
+    final id = 'note-${note.id}';
+    items.add(ReminderItem(
+      kind: ReminderKind.note,
+      id: id,
+      title: note.title,
+      when: reminderAt,
+      color: noteColor ?? debtColor,
       enabled: !mutedIds.contains(id),
     ));
   }

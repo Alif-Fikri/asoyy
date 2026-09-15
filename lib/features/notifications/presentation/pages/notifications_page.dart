@@ -25,6 +25,9 @@ import '../../../split_bill/presentation/bloc/split_bill_bloc.dart';
 import '../../../split_bill/presentation/bloc/split_bill_state.dart';
 import '../../../split_bill/presentation/pages/split_bill_page.dart';
 import '../../../debt/presentation/bloc/debt_bloc.dart';
+import '../../../notes/presentation/bloc/note_bloc.dart';
+import '../../../notes/presentation/bloc/note_state.dart';
+import '../../../notes/presentation/pages/notes_page.dart';
 import '../../../debt/presentation/bloc/debt_state.dart';
 import '../../../debt/presentation/pages/debt_page.dart';
 import '../../../debt/services/debt_reminder_service.dart';
@@ -95,6 +98,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
               value: context.read<DebtBloc>(),
               child: const DebtPage(),
             ),
+      ReminderKind.note => BlocProvider.value(
+          value: context.read<NoteBloc>(),
+          child: const NotesPage(),
+        ),
     };
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
@@ -115,6 +122,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 builder: (context, splitBillState) {
                   return BlocBuilder<DebtBloc, DebtState>(
                     builder: (context, debtState) {
+                      return BlocBuilder<NoteBloc, NoteState>(
+                        builder: (context, noteState) {
               final isId = context.currentLocale.languageCode == 'id';
               final now = DateTime.now();
 
@@ -136,12 +145,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ? splitBillState.bills
                     : const [],
                 debts: debtState is DebtLoaded ? debtState.debts : const [],
+                notes: noteState is NoteLoaded ? noteState.notes : const [],
                 now: now,
                 alarmColor: AppColors.alarmColor,
                 holidayColor: AppColors.calendarColor,
                 paydayColor: AppColors.income,
                 recurringBillColor: AppColors.financeColor,
                 debtColor: AppColors.debtColor,
+                noteColor: AppColors.income,
                 paydayLabel: s.cal_payday,
                 isId: isId,
                 mutedIds: _muteRepo.getMuted(),
@@ -198,6 +209,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                       ),
                 ],
               );
+                        },
+                      );
                     },
                   );
                 },
@@ -234,6 +247,7 @@ class _ReminderRow extends StatelessWidget {
         ReminderKind.payday => CupertinoIcons.money_dollar_circle,
         ReminderKind.recurringBill => CupertinoIcons.repeat,
         ReminderKind.debt => CupertinoIcons.person_2,
+        ReminderKind.note => CupertinoIcons.checkmark_square,
       };
 
   String _kindLabel(AppStrings s) => switch (item.kind) {
@@ -243,6 +257,7 @@ class _ReminderRow extends StatelessWidget {
         ReminderKind.payday => s.notif_kind_payday,
         ReminderKind.recurringBill => s.notif_kind_recurring_bill,
         ReminderKind.debt => s.notif_kind_debt,
+        ReminderKind.note => s.notif_kind_note,
       };
 
   @override

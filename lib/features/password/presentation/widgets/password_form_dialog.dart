@@ -6,6 +6,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/resizable_text_field.dart';
 import '../../domain/entities/password_entity.dart';
 
 class PasswordFormDialog extends StatefulWidget {
@@ -134,11 +135,10 @@ class _PasswordFormDialogState extends State<PasswordFormDialog> {
                 keyboardType: TextInputType.url,
               ),
               const SizedBox(height: 12),
-              AppTextField(
+              ResizableTextField(
                 label: s.pass_notes,
                 controller: _notesCtrl,
                 prefixIcon: CupertinoIcons.doc_text,
-                maxLines: 2,
               ),
               const SizedBox(height: 24),
               AppButton(

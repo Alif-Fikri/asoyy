@@ -295,6 +295,32 @@ class StringsEn extends AppStrings {
   @override String get auto_backup_copied => 'Passphrase copied';
   @override String get auto_backup_change_passphrase => 'Change passphrase';
   @override String get copy => 'Copy';
+  @override String get nav_notes => 'Notes';
+  @override String get notes_title => 'Notes';
+  @override String get notes_add => 'New note';
+  @override String get notes_edit => 'Edit note';
+  @override String get notes_empty_title => 'No notes yet';
+  @override String get notes_empty_subtitle => 'Write a note or build a checklist, with a deadline and a reminder';
+  @override String get notes_note_title => 'Title';
+  @override String get notes_body => 'Note (optional)';
+  @override String get notes_checklist => 'Checklist';
+  @override String get notes_add_item => 'Add item';
+  @override String get notes_deadline => 'Deadline';
+  @override String get notes_deadline_none => 'No deadline';
+  @override String get notes_reminder => 'Reminder';
+  @override String get notes_reminder_none => 'No reminder';
+  @override String get notes_reminder_optional => 'Optional. If set, you get a notification at that time.';
+  @override String get notes_saved => 'Note saved';
+  @override String get notes_deleted => 'Note deleted';
+  @override String get notes_overdue => 'Past deadline';
+  @override String get notes_due_today => 'Due today';
+  @override String notes_due_in(int days) => 'in $days days';
+  @override String get notes_done => 'Done';
+  @override String notes_progress(int done, int total) => '$done of $total';
+  @override String get notes_group_active => 'Open';
+  @override String get notes_group_done => 'Done';
+  @override String get notes_reminder_past => 'That reminder time has passed';
+  @override String get notif_kind_note => 'Note';
 
 
   @override String get fin_insights_title => 'Insights';

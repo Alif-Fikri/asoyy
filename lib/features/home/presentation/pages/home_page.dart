@@ -24,6 +24,7 @@ import '../../../search/presentation/pages/search_page.dart';
 import '../../../split_bill/presentation/pages/split_bill_page.dart';
 import '../../../debt/presentation/pages/debt_page.dart';
 import '../../../subscription/presentation/pages/subscription_page.dart';
+import '../../../notes/presentation/pages/notes_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -379,6 +380,12 @@ class _FeatureMenu extends StatelessWidget {
         label: s.nav_subscription,
         onTap: () => openFeature(context, const SubscriptionPage()),
       ),
+      _MenuItemData(
+        icon: CupertinoIcons.checkmark_square,
+        iconColor: AppColors.income,
+        label: s.nav_notes,
+        onTap: () => openFeature(context, const NotesPage()),
+      ),
     ];
 
     return Column(
@@ -406,12 +413,16 @@ class _FeatureMenu extends StatelessWidget {
 }
 
 class _MenuItemData {
-  final String asset;
+  final String? asset;
+  final IconData? icon;
+  final Color? iconColor;
   final String label;
   final VoidCallback onTap;
 
   const _MenuItemData({
-    required this.asset,
+    this.asset,
+    this.icon,
+    this.iconColor,
     required this.label,
     required this.onTap,
   });
@@ -440,7 +451,22 @@ class _MenuTile extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              MenuIconImage(asset: item.asset, size: Sizes.menuIcon),
+              if (item.asset != null)
+                MenuIconImage(asset: item.asset!, size: Sizes.menuIcon)
+              else
+                Container(
+                  width: Sizes.menuIcon,
+                  height: Sizes.menuIcon,
+                  decoration: BoxDecoration(
+                    color: item.iconColor ?? AppColors.primary,
+                    borderRadius: BorderRadius.circular(Radii.sm + 2),
+                  ),
+                  child: Icon(
+                    item.icon,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                ),
               const SizedBox(height: Insets.sm),
               Text(
                 item.label,

@@ -33,6 +33,8 @@ import 'features/split_bill/presentation/bloc/split_bill_event.dart';
 import 'features/debt/presentation/bloc/debt_bloc.dart';
 import 'features/backup/services/auto_backup_runner.dart';
 import 'features/debt/presentation/bloc/debt_event.dart';
+import 'features/notes/presentation/bloc/note_bloc.dart';
+import 'features/notes/presentation/bloc/note_event.dart';
 
 class NexusApp extends StatelessWidget {
   const NexusApp({super.key});
@@ -70,6 +72,9 @@ class NexusApp extends StatelessWidget {
                   ),
                   BlocProvider(
                     create: (_) => di.sl<DebtBloc>()..add(LoadDebts()),
+                  ),
+                  BlocProvider(
+                    create: (_) => di.sl<NoteBloc>()..add(LoadNotes()),
                   ),
                 ],
                 child: MaterialApp(

@@ -28,6 +28,11 @@ import '../../features/converter/presentation/bloc/converter_cubit.dart';
 import '../../features/finance/data/datasources/finance_local_datasource.dart';
 import '../../features/finance/data/account_migration.dart';
 import '../../features/finance/data/account_repository.dart';
+import '../../features/notes/data/datasources/note_local_datasource.dart';
+import '../../features/notes/data/repositories/note_repository_impl.dart';
+import '../../features/notes/domain/repositories/note_repository.dart';
+import '../../features/notes/presentation/bloc/note_bloc.dart';
+import '../../features/notes/services/note_reminder_service.dart';
 import '../../features/finance/data/recurring_transaction_repository.dart';
 import '../../features/finance/data/repositories/finance_repository_impl.dart';
 import '../../features/finance/domain/repositories/finance_repository.dart';
@@ -96,6 +101,14 @@ Future<void> init() async {
         toggleAlarm: ToggleAlarm(sl()),
         deleteAlarm: DeleteAlarm(sl()),
         notificationService: sl(),
+      ));
+
+  final noteDs = await NoteLocalDatasourceImpl.create();
+  sl.registerSingleton<NoteLocalDatasource>(noteDs);
+  sl.registerSingleton<NoteRepository>(NoteRepositoryImpl(sl()));
+  sl.registerFactory(() => NoteBloc(
+        repository: sl(),
+        reminderService: const NoteReminderService(),
       ));
 
   sl.registerFactory(() => CalculatorBloc());

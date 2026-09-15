@@ -295,6 +295,32 @@ class StringsId extends AppStrings {
   @override String get auto_backup_copied => 'Passphrase disalin';
   @override String get auto_backup_change_passphrase => 'Ganti passphrase';
   @override String get copy => 'Salin';
+  @override String get nav_notes => 'Catatan';
+  @override String get notes_title => 'Catatan';
+  @override String get notes_add => 'Catatan Baru';
+  @override String get notes_edit => 'Ubah Catatan';
+  @override String get notes_empty_title => 'Belum Ada Catatan';
+  @override String get notes_empty_subtitle => 'Tulis catatan atau buat checklist, lengkap dengan deadline dan pengingat';
+  @override String get notes_note_title => 'Judul';
+  @override String get notes_body => 'Isi catatan (opsional)';
+  @override String get notes_checklist => 'Checklist';
+  @override String get notes_add_item => 'Tambah item';
+  @override String get notes_deadline => 'Deadline';
+  @override String get notes_deadline_none => 'Tanpa deadline';
+  @override String get notes_reminder => 'Pengingat';
+  @override String get notes_reminder_none => 'Tanpa pengingat';
+  @override String get notes_reminder_optional => 'Opsional. Kalau diisi, kamu akan dinotifikasi pada waktu itu.';
+  @override String get notes_saved => 'Catatan disimpan';
+  @override String get notes_deleted => 'Catatan dihapus';
+  @override String get notes_overdue => 'Lewat deadline';
+  @override String get notes_due_today => 'Deadline hari ini';
+  @override String notes_due_in(int days) => '$days hari lagi';
+  @override String get notes_done => 'Selesai';
+  @override String notes_progress(int done, int total) => '$done dari $total';
+  @override String get notes_group_active => 'Belum selesai';
+  @override String get notes_group_done => 'Sudah selesai';
+  @override String get notes_reminder_past => 'Waktu pengingat sudah lewat';
+  @override String get notif_kind_note => 'Catatan';
 
 
   @override String get fin_insights_title => 'Insight';

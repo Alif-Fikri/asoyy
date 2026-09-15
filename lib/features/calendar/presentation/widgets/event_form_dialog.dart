@@ -5,6 +5,7 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/resizable_text_field.dart';
 import '../../../../core/widgets/feature_icon.dart';
 import '../../domain/entities/event_entity.dart';
 
@@ -95,12 +96,10 @@ class _EventFormDialogState extends State<EventFormDialog> {
                   (v == null || v.trim().isEmpty) ? s.required_field : null,
             ),
             const SizedBox(height: 12),
-            AppTextField(
+            ResizableTextField(
               label: '${s.cal_description} (${s.optional})',
-              hint: 'Tambahkan deskripsi...',
               controller: _descCtrl,
               prefixIcon: CupertinoIcons.doc_text,
-              maxLines: 3,
             ),
             const SizedBox(height: 16),
             Text(
