@@ -11,6 +11,18 @@ abstract class AppConstants {
   static const String accountsBox = 'accounts_box';
   static const String notesBox = 'notes_box';
 
+  static const List<String> allDataBoxes = [
+    eventsBox,
+    alarmsBox,
+    passwordsBox,
+    transactionsBox,
+    billsBox,
+    debtsBox,
+    accountsBox,
+    notesBox,
+    settingsBox,
+  ];
+
   static const String masterPinKey = 'master_pin';
   static const String themeKey = 'theme_mode';
 

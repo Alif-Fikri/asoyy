@@ -7,7 +7,9 @@ import '../../../core/constants/app_constants.dart';
 import '../../alarm/data/models/alarm_model.dart';
 import '../../calendar/data/models/event_model.dart';
 import '../../debt/data/models/debt_model.dart';
+import '../../finance/data/models/account_model.dart';
 import '../../finance/data/models/transaction_model.dart';
+import '../../notes/data/models/note_model.dart';
 import '../../password/data/datasources/password_local_datasource.dart';
 import '../../password/data/models/password_model.dart';
 import '../../password/services/vault_key_store.dart';
@@ -41,20 +43,16 @@ class BackupService {
         return Hive.box<BillModel>(name);
       case AppConstants.debtsBox:
         return Hive.box<DebtModel>(name);
+      case AppConstants.accountsBox:
+        return Hive.box<AccountModel>(name);
+      case AppConstants.notesBox:
+        return Hive.box<NoteModel>(name);
       default:
         return Hive.box(name);
     }
   }
 
-  static const _boxNames = [
-    AppConstants.eventsBox,
-    AppConstants.alarmsBox,
-    AppConstants.passwordsBox,
-    AppConstants.transactionsBox,
-    AppConstants.billsBox,
-    AppConstants.debtsBox,
-    AppConstants.settingsBox,
-  ];
+  static const _boxNames = AppConstants.allDataBoxes;
 
   Map<String, String?> _boxPaths() => {
         for (final name in _boxNames) name: _openBox(name).path,
