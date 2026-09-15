@@ -10,7 +10,7 @@ class LocaleBloc extends Cubit<Locale> {
 
   static Locale _load() {
     final code = Hive.box(AppConstants.settingsBox)
-        .get(_key, defaultValue: 'id') as String;
+        .get(_key, defaultValue: 'en') as String;
     return Locale(code == 'en' ? 'en' : 'id');
   }
 
