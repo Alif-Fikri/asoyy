@@ -321,6 +321,13 @@ class StringsId extends AppStrings {
   @override String get notes_group_done => 'Sudah selesai';
   @override String get notes_reminder_past => 'Waktu pengingat sudah lewat';
   @override String get notif_kind_note => 'Catatan';
+  @override String get search_section_notes => 'Catatan';
+  @override String get search_section_debt => 'Utang Piutang';
+  @override String get search_section_splitbill => 'Patungan';
+  @override String get search_section_wallet => 'Dompet';
+  @override String get home_group_money => 'Keuangan';
+  @override String get home_group_daily => 'Harian';
+  @override String get home_group_tools => 'Alat Hitung';
 
 
   @override String get fin_insights_title => 'Insight';
@@ -354,7 +361,7 @@ class StringsId extends AppStrings {
   @override String get loan_calc_estimated_rate => 'Estimasi Bunga per Tahun';
   @override String get loan_calc_rate_not_found => 'Cicilan terlalu kecil untuk melunasi pinjaman ini dalam tenor tersebut.';
   @override String get search_title => 'Pencarian';
-  @override String get search_hint => 'Cari transaksi, event, password, alarm...';
+  @override String get search_hint => 'Cari transaksi, catatan, utang, password...';
   @override String get search_prompt_title => 'Cari apa saja';
   @override String get search_prompt_subtitle => 'Ketik untuk mencari di transaksi, kalender, password, dan alarm sekaligus';
   @override String get search_empty_title => 'Tidak ditemukan';

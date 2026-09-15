@@ -24,6 +24,20 @@ import '../../../password/domain/entities/password_entity.dart';
 import '../../../password/presentation/bloc/password_bloc.dart';
 import '../../../password/presentation/bloc/password_state.dart';
 import '../../../password/presentation/pages/password_flow_page.dart';
+import '../../../debt/domain/entities/debt_entity.dart';
+import '../../../debt/presentation/bloc/debt_bloc.dart';
+import '../../../debt/presentation/bloc/debt_state.dart';
+import '../../../debt/presentation/pages/debt_page.dart';
+import '../../../finance/data/account_repository.dart';
+import '../../../finance/domain/entities/account_entity.dart';
+import '../../../notes/domain/entities/note_entity.dart';
+import '../../../notes/presentation/bloc/note_bloc.dart';
+import '../../../notes/presentation/bloc/note_state.dart';
+import '../../../notes/presentation/pages/notes_page.dart';
+import '../../../split_bill/domain/entities/bill_entity.dart';
+import '../../../split_bill/presentation/bloc/split_bill_bloc.dart';
+import '../../../split_bill/presentation/bloc/split_bill_state.dart';
+import '../../../split_bill/presentation/pages/split_bill_page.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -61,6 +75,9 @@ class _SearchPageState extends State<SearchPage> {
     final calendarState = context.watch<CalendarBloc>().state;
     final passwordState = context.watch<PasswordBloc>().state;
     final alarmState = context.watch<AlarmBloc>().state;
+    final noteState = context.watch<NoteBloc>().state;
+    final debtState = context.watch<DebtBloc>().state;
+    final billState = context.watch<SplitBillBloc>().state;
 
     final transactions =
         financeState is FinanceLoaded ? financeState.all : <TransactionEntity>[];
@@ -69,6 +86,11 @@ class _SearchPageState extends State<SearchPage> {
     final passwords =
         passwordState is PasswordLoaded ? passwordState.all : <PasswordEntity>[];
     final alarms = alarmState is AlarmLoaded ? alarmState.alarms : <AlarmEntity>[];
+    final notes = noteState is NoteLoaded ? noteState.notes : <NoteEntity>[];
+    final debts = debtState is DebtLoaded ? debtState.debts : <DebtEntity>[];
+    final bills =
+        billState is SplitBillLoaded ? billState.bills : <BillEntity>[];
+    final wallets = AccountRepository().getAll();
 
     final showResults = _query.trim().isNotEmpty;
 
@@ -87,10 +109,38 @@ class _SearchPageState extends State<SearchPage> {
         ? alarms.where((a) => _matches([a.label])).toList()
         : <AlarmEntity>[];
 
+    final matchedNotes = showResults
+        ? notes
+            .where((n) => _matches([
+                  n.title,
+                  n.body,
+                  ...n.items.map((i) => i.text),
+                ]))
+            .toList()
+        : <NoteEntity>[];
+    final matchedDebts = showResults
+        ? debts.where((d) => _matches([d.personName, d.note])).toList()
+        : <DebtEntity>[];
+    final matchedBills = showResults
+        ? bills
+            .where((b) => _matches([
+                  b.title,
+                  ...b.participants.map((p) => p.name),
+                ]))
+            .toList()
+        : <BillEntity>[];
+    final matchedWallets = showResults
+        ? wallets.where((a) => _matches([a.name])).toList()
+        : <AccountEntity>[];
+
     final totalResults = matchedTransactions.length +
         matchedEvents.length +
         matchedPasswords.length +
-        matchedAlarms.length;
+        matchedAlarms.length +
+        matchedNotes.length +
+        matchedDebts.length +
+        matchedBills.length +
+        matchedWallets.length;
 
     final dateFmt = DateFormat('d MMM yyyy', isId ? 'id_ID' : 'en_US');
     final currencyFmt = NumberFormat.compact(locale: 'id_ID');
@@ -225,6 +275,105 @@ class _SearchPageState extends State<SearchPage> {
                                           subtitle: a.timeString,
                                           showChevron: true,
                                           onTap: () => _open(const AlarmPage()),
+                                        ))
+                                    .toList(),
+                              ),
+                            if (matchedNotes.isNotEmpty)
+                              IosSection(
+                                header: s.search_section_notes,
+                                children: matchedNotes
+                                    .map((n) => IosRow(
+                                          leading: const IosIcon(
+                                            icon:
+                                                CupertinoIcons.checkmark_square,
+                                            color: AppColors.income,
+                                          ),
+                                          title: n.title,
+                                          subtitle: n.isChecklist
+                                              ? s.notes_progress(
+                                                  n.doneCount, n.items.length)
+                                              : (n.body ?? ''),
+                                          showChevron: true,
+                                          onTap: () => _open(
+                                            BlocProvider.value(
+                                              value: context.read<NoteBloc>(),
+                                              child: const NotesPage(),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            if (matchedDebts.isNotEmpty)
+                              IosSection(
+                                header: s.search_section_debt,
+                                children: matchedDebts
+                                    .map((d) => IosRow(
+                                          leading: const IosIcon(
+                                            icon: CupertinoIcons.person_2_fill,
+                                            color: AppColors.debtColor,
+                                          ),
+                                          title: d.personName,
+                                          subtitle: d.note ?? '',
+                                          trailing: Text(
+                                            'Rp ${currencyFmt.format(d.amount)}',
+                                            style: TextStyle(
+                                              color: c.textPrimary,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          showChevron: true,
+                                          onTap: () => _open(
+                                            BlocProvider.value(
+                                              value: context.read<DebtBloc>(),
+                                              child: const DebtPage(),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            if (matchedBills.isNotEmpty)
+                              IosSection(
+                                header: s.search_section_splitbill,
+                                children: matchedBills
+                                    .map((b) => IosRow(
+                                          leading: const IosIcon(
+                                            icon: CupertinoIcons.person_3_fill,
+                                            color: AppColors.splitBillColor,
+                                          ),
+                                          title: b.title,
+                                          subtitle: dateFmt.format(b.date),
+                                          trailing: Text(
+                                            'Rp ${currencyFmt.format(b.totalAmount)}',
+                                            style: TextStyle(
+                                              color: c.textPrimary,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          showChevron: true,
+                                          onTap: () => _open(
+                                            BlocProvider.value(
+                                              value:
+                                                  context.read<SplitBillBloc>(),
+                                              child: const SplitBillPage(),
+                                            ),
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            if (matchedWallets.isNotEmpty)
+                              IosSection(
+                                header: s.search_section_wallet,
+                                children: matchedWallets
+                                    .map((a) => IosRow(
+                                          leading: const IosIcon(
+                                            icon: CupertinoIcons.creditcard_fill,
+                                            color: AppColors.financeColor,
+                                          ),
+                                          title: a.name,
+                                          showChevron: true,
+                                          onTap: () => _open(const FinancePage()),
                                         ))
                                     .toList(),
                               ),

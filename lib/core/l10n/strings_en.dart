@@ -321,6 +321,13 @@ class StringsEn extends AppStrings {
   @override String get notes_group_done => 'Done';
   @override String get notes_reminder_past => 'That reminder time has passed';
   @override String get notif_kind_note => 'Note';
+  @override String get search_section_notes => 'Notes';
+  @override String get search_section_debt => 'Debts';
+  @override String get search_section_splitbill => 'Split Bills';
+  @override String get search_section_wallet => 'Wallets';
+  @override String get home_group_money => 'Money';
+  @override String get home_group_daily => 'Daily';
+  @override String get home_group_tools => 'Calculators';
 
 
   @override String get fin_insights_title => 'Insights';
@@ -354,7 +361,7 @@ class StringsEn extends AppStrings {
   @override String get loan_calc_estimated_rate => 'Estimated Annual Rate';
   @override String get loan_calc_rate_not_found => 'The installment is too low to pay off this loan within that tenor.';
   @override String get search_title => 'Search';
-  @override String get search_hint => 'Search transactions, events, passwords, alarms...';
+  @override String get search_hint => 'Search transactions, notes, debts, passwords...';
   @override String get search_prompt_title => 'Search anything';
   @override String get search_prompt_subtitle => 'Type to search across transactions, calendar, passwords, and alarms at once';
   @override String get search_empty_title => 'No results found';

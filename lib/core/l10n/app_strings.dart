@@ -319,6 +319,13 @@ abstract class AppStrings {
   String get notes_group_done;
   String get notes_reminder_past;
   String get notif_kind_note;
+  String get search_section_notes;
+  String get search_section_debt;
+  String get search_section_splitbill;
+  String get search_section_wallet;
+  String get home_group_money;
+  String get home_group_daily;
+  String get home_group_tools;
 
   String get fin_insights_title;
   String fin_insight_spending_up(String percent);

@@ -329,87 +329,109 @@ class _FeatureMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final s = context.strings;
-    final items = [
-      _MenuItemData(
-        asset: 'assets/images/menu_calendar.png',
-        label: s.nav_calendar,
-        onTap: () => openFeature(context, const CalendarPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_alarm.png',
-        label: s.nav_alarm,
-        onTap: () => openFeature(context, const AlarmPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_calculator.png',
-        label: s.calc_title,
-        onTap: () => openFeature(context, const CalculatorPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_converter.png',
-        label: s.convert_title,
-        onTap: () => openFeature(context, const ConverterPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_loan.png',
-        label: s.nav_loan_calc,
-        onTap: () => openFeature(context, const LoanCalculatorPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_finance.png',
-        label: s.nav_finance,
-        onTap: () => openFeature(context, const FinancePage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_password.png',
-        label: s.nav_password,
-        onTap: () => openFeature(context, const PasswordFlowPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_split_bill.png',
-        label: s.nav_split_bill,
-        onTap: () => openFeature(context, const SplitBillPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_debt.png',
-        label: s.nav_debt,
-        onTap: () => openFeature(context, const DebtPage()),
-      ),
-      _MenuItemData(
-        asset: 'assets/images/menu_subscription.png',
-        label: s.nav_subscription,
-        onTap: () => openFeature(context, const SubscriptionPage()),
-      ),
-      _MenuItemData(
-        icon: CupertinoIcons.checkmark_square,
-        iconColor: AppColors.income,
-        label: s.nav_notes,
-        onTap: () => openFeature(context, const NotesPage()),
-      ),
+    final groups = <_MenuGroup>[
+      _MenuGroup(s.home_group_money, [
+        _MenuItemData(
+          asset: 'assets/images/menu_finance.png',
+          label: s.nav_finance,
+          onTap: () => openFeature(context, const FinancePage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_split_bill.png',
+          label: s.nav_split_bill,
+          onTap: () => openFeature(context, const SplitBillPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_debt.png',
+          label: s.nav_debt,
+          onTap: () => openFeature(context, const DebtPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_subscription.png',
+          label: s.nav_subscription,
+          onTap: () => openFeature(context, const SubscriptionPage()),
+        ),
+      ]),
+      _MenuGroup(s.home_group_daily, [
+        _MenuItemData(
+          asset: 'assets/images/menu_calendar.png',
+          label: s.nav_calendar,
+          onTap: () => openFeature(context, const CalendarPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_alarm.png',
+          label: s.nav_alarm,
+          onTap: () => openFeature(context, const AlarmPage()),
+        ),
+        _MenuItemData(
+          icon: CupertinoIcons.checkmark_square,
+          iconColor: AppColors.income,
+          label: s.nav_notes,
+          onTap: () => openFeature(context, const NotesPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_password.png',
+          label: s.nav_password,
+          onTap: () => openFeature(context, const PasswordFlowPage()),
+        ),
+      ]),
+      _MenuGroup(s.home_group_tools, [
+        _MenuItemData(
+          asset: 'assets/images/menu_calculator.png',
+          label: s.calc_title,
+          onTap: () => openFeature(context, const CalculatorPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_loan.png',
+          label: s.nav_loan_calc,
+          onTap: () => openFeature(context, const LoanCalculatorPage()),
+        ),
+        _MenuItemData(
+          asset: 'assets/images/menu_converter.png',
+          label: s.convert_title,
+          onTap: () => openFeature(context, const ConverterPage()),
+        ),
+      ]),
     ];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(Insets.xs, 0, Insets.xs, Insets.md),
-          child: Text(
-            s.home_features.toUpperCase(),
-            style: AppType.label.copyWith(color: c.textSecondary),
+        for (final group in groups) ...[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              Insets.xs,
+              0,
+              Insets.xs,
+              Insets.md,
+            ),
+            child: Text(
+              group.title.toUpperCase(),
+              style: AppType.label.copyWith(color: c.textSecondary),
+            ),
           ),
-        ),
-        GridView.count(
-          crossAxisCount: 3,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: Insets.md,
-          crossAxisSpacing: Insets.md,
-          childAspectRatio: 1.12,
-          children: items.map((item) => _MenuTile(item: item)).toList(),
-        ),
+          GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: Insets.md,
+            crossAxisSpacing: Insets.md,
+            childAspectRatio: 1.12,
+            children:
+                group.items.map((item) => _MenuTile(item: item)).toList(),
+          ),
+          if (group != groups.last) const SizedBox(height: Insets.xl),
+        ],
       ],
     );
   }
+}
+
+class _MenuGroup {
+  final String title;
+  final List<_MenuItemData> items;
+
+  const _MenuGroup(this.title, this.items);
 }
 
 class _MenuItemData {
