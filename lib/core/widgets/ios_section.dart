@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../constants/app_colors.dart';
 import '../theme/app_color_theme.dart';
 import '../theme/design_tokens.dart';
 
@@ -184,12 +185,14 @@ class IosIcon extends StatelessWidget {
   final IconData icon;
   final Color color;
   final double size;
+  final bool filled;
 
   const IosIcon({
     super.key,
     required this.icon,
     required this.color,
     this.size = Sizes.iconTile,
+    this.filled = false,
   });
 
   @override
@@ -198,10 +201,14 @@ class IosIcon extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: filled ? color : color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(Radii.sm + 2),
       ),
-      child: Icon(icon, color: color, size: size * 0.52),
+      child: Icon(
+        icon,
+        color: filled ? const Color(0xFFFFFFFF) : color,
+        size: size * 0.52,
+      ),
     );
   }
 }

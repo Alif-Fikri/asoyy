@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/constants/app_colors.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/l10n/app_localizations.dart';
+import 'core/tour/tour_keys.dart';
 import 'core/l10n/locale_bloc.dart';
 import 'core/theme/app_color_theme.dart';
 import 'core/theme/app_theme.dart';
@@ -235,12 +236,18 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
               label: s.nav_home,
             ),
             NavigationDestination(
-              icon: const Icon(CupertinoIcons.bell),
+              icon: KeyedSubtree(
+                key: TourKeys.notifications,
+                child: const Icon(CupertinoIcons.bell),
+              ),
               selectedIcon: const Icon(CupertinoIcons.bell_fill),
               label: s.nav_notifications,
             ),
             NavigationDestination(
-              icon: const Icon(CupertinoIcons.person),
+              icon: KeyedSubtree(
+                key: TourKeys.profile,
+                child: const Icon(CupertinoIcons.person),
+              ),
               selectedIcon: const Icon(CupertinoIcons.person_fill),
               label: s.nav_profile,
             ),

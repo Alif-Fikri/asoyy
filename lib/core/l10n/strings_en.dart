@@ -328,6 +328,29 @@ class StringsEn extends AppStrings {
   @override String get home_group_money => 'Money';
   @override String get home_group_daily => 'Daily';
   @override String get home_group_tools => 'Calculators';
+  @override String get tour_next => 'Next';
+  @override String get tour_back => 'Back';
+  @override String get tour_skip => 'Skip';
+  @override String get tour_done => 'Done';
+  @override String get profile_help => 'Help';
+  @override String get tour_replay => 'Replay the tour';
+  @override String get tour_replay_hint => 'The tour starts when you go back to Home';
+  @override String get tour_welcome_title => 'Welcome to Beres';
+  @override String get tour_welcome_body => 'A quick look around. You can skip any time, and replay it later from Profile.';
+  @override String get tour_search_title => 'Search everything here';
+  @override String get tour_search_body => 'One field for transactions, notes, debts, split bills, passwords, even checklist items.';
+  @override String get tour_balance_title => 'Your total balance';
+  @override String get tour_balance_body => 'Money across every wallet, with income and expense. Tap to open Finance.';
+  @override String get tour_money_title => 'Everything about money';
+  @override String get tour_money_body => 'Record transactions, split bills, track who owes what, and watch subscriptions. They connect to each other.';
+  @override String get tour_daily_title => 'Day to day';
+  @override String get tour_daily_body => 'Calendar and holidays, alarms, notes and checklists, and an encrypted password vault.';
+  @override String get tour_tools_title => 'Calculators';
+  @override String get tour_tools_body => 'A plain calculator, loan and mortgage simulation, and currency or unit conversion.';
+  @override String get tour_notifications_title => 'Every reminder in one place';
+  @override String get tour_notifications_body => 'Alarms, note deadlines, subscription charges and unpaid debts all show up here.';
+  @override String get tour_profile_title => 'Settings and backup';
+  @override String get tour_profile_body => 'Theme, language, security, and Backup & Restore. Turn on automatic backup here to keep your data safe.';
 
 
   @override String get fin_insights_title => 'Insights';

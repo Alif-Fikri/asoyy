@@ -25,6 +25,8 @@ import '../../../split_bill/presentation/pages/split_bill_page.dart';
 import '../../../debt/presentation/pages/debt_page.dart';
 import '../../../subscription/presentation/pages/subscription_page.dart';
 import '../../../notes/presentation/pages/notes_page.dart';
+import '../../../../core/tour/home_tour.dart';
+import '../../../../core/tour/tour_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -35,6 +37,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _scrollController = ScrollController();
+  final _searchKey = GlobalKey();
+  final _balanceKey = GlobalKey();
+  final _groupKeys = [GlobalKey(), GlobalKey(), GlobalKey()];
   double _titleOpacity = 0;
 
   static const _collapseRange = 60.0;
@@ -43,6 +48,39 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _maybeStartTour());
+  }
+
+  Future<void> _maybeStartTour() async {
+    if (!TourPreferences().shouldShowOnLaunch) return;
+    await TourPreferences().markSeen();
+    if (!mounted) return;
+    await startHomeTour(
+      context,
+      searchKey: _searchKey,
+      balanceKey: _balanceKey,
+      groupKeys: _groupKeys,
+      scrollTo: _scrollTo,
+    );
+  }
+
+  Future<void> _scrollTo(GlobalKey? key) async {
+    if (key == null) {
+      await _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeInOut,
+      );
+      return;
+    }
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    await Scrollable.ensureVisible(
+      ctx,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeInOut,
+      alignment: 0.25,
+    );
   }
 
   @override
@@ -123,11 +161,15 @@ class _HomePageState extends State<HomePage> {
               Insets.lg,
               Insets.xl,
             ),
-            sliver: SliverToBoxAdapter(child: _SearchBar(s: s)),
+            sliver: SliverToBoxAdapter(
+              child: KeyedSubtree(key: _searchKey, child: _SearchBar(s: s)),
+            ),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, 0),
-            sliver: SliverToBoxAdapter(child: _BalanceCard()),
+            sliver: SliverToBoxAdapter(
+              child: KeyedSubtree(key: _balanceKey, child: _BalanceCard()),
+            ),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
@@ -136,7 +178,9 @@ class _HomePageState extends State<HomePage> {
               Insets.lg,
               Insets.xxl,
             ),
-            sliver: SliverToBoxAdapter(child: _FeatureMenu()),
+            sliver: SliverToBoxAdapter(
+              child: _FeatureMenu(groupKeys: _groupKeys),
+            ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: Insets.xxl)),
         ],
@@ -325,6 +369,10 @@ class _FlowStat extends StatelessWidget {
 }
 
 class _FeatureMenu extends StatelessWidget {
+  final List<GlobalKey> groupKeys;
+
+  const _FeatureMenu({required this.groupKeys});
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
@@ -397,7 +445,12 @@ class _FeatureMenu extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final group in groups) ...[
+        for (final (i, group) in groups.indexed) ...[
+          KeyedSubtree(
+            key: i < groupKeys.length ? groupKeys[i] : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
               Insets.xs,
@@ -419,6 +472,9 @@ class _FeatureMenu extends StatelessWidget {
             childAspectRatio: 1.12,
             children:
                 group.items.map((item) => _MenuTile(item: item)).toList(),
+          ),
+              ],
+            ),
           ),
           if (group != groups.last) const SizedBox(height: Insets.xl),
         ],

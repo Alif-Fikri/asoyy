@@ -328,6 +328,29 @@ class StringsId extends AppStrings {
   @override String get home_group_money => 'Keuangan';
   @override String get home_group_daily => 'Harian';
   @override String get home_group_tools => 'Alat Hitung';
+  @override String get tour_next => 'Lanjut';
+  @override String get tour_back => 'Kembali';
+  @override String get tour_skip => 'Lewati';
+  @override String get tour_done => 'Selesai';
+  @override String get profile_help => 'Bantuan';
+  @override String get tour_replay => 'Lihat Tur Fitur';
+  @override String get tour_replay_hint => 'Tur akan muncul saat kamu kembali ke Beranda';
+  @override String get tour_welcome_title => 'Selamat datang di Beres';
+  @override String get tour_welcome_body => 'Sebentar saja, saya tunjukkan isi app ini. Bisa dilewati kapan saja, dan bisa diputar ulang dari Profil.';
+  @override String get tour_search_title => 'Cari apa saja dari sini';
+  @override String get tour_search_body => 'Satu kolom untuk mencari transaksi, catatan, utang, patungan, password, sampai isi checklist.';
+  @override String get tour_balance_title => 'Saldo semua dompetmu';
+  @override String get tour_balance_body => 'Jumlah uang di seluruh dompet, plus pemasukan dan pengeluaran. Ketuk untuk membuka Keuangan.';
+  @override String get tour_money_title => 'Semua soal uang';
+  @override String get tour_money_body => 'Catat transaksi, bagi tagihan patungan, lacak utang piutang, dan pantau langganan. Ketiganya saling terhubung.';
+  @override String get tour_daily_title => 'Kebutuhan harian';
+  @override String get tour_daily_body => 'Kalender dan hari libur, alarm, catatan dan checklist, serta password yang terenkripsi.';
+  @override String get tour_tools_title => 'Alat hitung';
+  @override String get tour_tools_body => 'Kalkulator biasa, simulasi cicilan/KPR, dan konversi mata uang maupun satuan.';
+  @override String get tour_notifications_title => 'Semua pengingat berkumpul';
+  @override String get tour_notifications_body => 'Alarm, deadline catatan, tagihan langganan, dan utang yang belum lunas muncul di sini.';
+  @override String get tour_profile_title => 'Pengaturan dan backup';
+  @override String get tour_profile_body => 'Tema, bahasa, keamanan, dan Backup & Restore. Aktifkan backup otomatis di sini biar datamu aman.';
 
 
   @override String get fin_insights_title => 'Insight';

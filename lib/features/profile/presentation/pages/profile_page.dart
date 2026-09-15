@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/constants/app_colors.dart';
@@ -6,6 +7,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/utils/name_prefs.dart';
 import '../../../../core/widgets/ios_section.dart';
+import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/menu_icon.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import '../../../../core/widgets/toggle_controls.dart';
@@ -15,6 +17,7 @@ import '../../../finance/presentation/widgets/finance_export_dialog.dart';
 import '../../../password/data/auth_config_repository.dart';
 import '../../../password/presentation/password_actions.dart';
 import '../../../backup/presentation/pages/backup_page.dart';
+import '../../../../core/tour/tour_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -137,6 +140,25 @@ class _ProfilePageState extends State<ProfilePage> {
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const BackupPage()),
                 ),
+              ),
+            ],
+          ),
+          IosSection(
+            header: s.profile_help,
+            children: [
+              IosRow(
+                leading: const IosIcon(
+                  icon: CupertinoIcons.compass_fill,
+                  color: AppColors.primary,
+                  filled: true,
+                ),
+                title: s.tour_replay,
+                showChevron: true,
+                onTap: () async {
+                  await TourPreferences().reset();
+                  if (!context.mounted) return;
+                  AppToast.show(context, s.tour_replay_hint);
+                },
               ),
             ],
           ),
