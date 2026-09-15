@@ -19,7 +19,7 @@ Future<void> showGuidedTour(
       opaque: false,
       barrierDismissible: false,
       barrierColor: Colors.transparent,
-      pageBuilder: (_, __, ___) => _TourOverlay(
+      pageBuilder: (context, animation, secondaryAnimation) => _TourOverlay(
         steps: steps,
         onBeforeStep: onBeforeStep,
       ),
