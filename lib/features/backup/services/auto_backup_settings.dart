@@ -12,6 +12,8 @@ class AutoBackupSettings {
   static const _lastRunKey = 'auto_backup_last_run';
   static const _lastErrorKey = 'auto_backup_last_error';
   static const _passphraseKey = 'auto_backup_passphrase';
+  static const _firstSeenKey = 'backup_reminder_first_seen';
+  static const _lastNaggedKey = 'backup_reminder_last_nagged';
 
   static const _storage = FlutterSecureStorage(
     iOptions: IOSOptions(
@@ -44,6 +46,22 @@ class AutoBackupSettings {
 
   Future<void> setLastRun(DateTime value) =>
       _box.put(_lastRunKey, value.millisecondsSinceEpoch);
+
+  DateTime ensureFirstSeen() {
+    final raw = _box.get(_firstSeenKey);
+    if (raw is int) return DateTime.fromMillisecondsSinceEpoch(raw);
+    final now = DateTime.now();
+    _box.put(_firstSeenKey, now.millisecondsSinceEpoch);
+    return now;
+  }
+
+  DateTime? get lastNagged {
+    final raw = _box.get(_lastNaggedKey);
+    return raw is int ? DateTime.fromMillisecondsSinceEpoch(raw) : null;
+  }
+
+  Future<void> setLastNagged(DateTime value) =>
+      _box.put(_lastNaggedKey, value.millisecondsSinceEpoch);
 
   String? get lastError => _box.get(_lastErrorKey) as String?;
 

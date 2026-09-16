@@ -9,6 +9,7 @@ import 'core/constants/app_colors.dart';
 import 'core/di/injection_container.dart' as di;
 import 'core/l10n/app_localizations.dart';
 import 'core/tour/tour_keys.dart';
+import 'features/backup/services/backup_reminder_service.dart';
 import 'core/l10n/locale_bloc.dart';
 import 'core/theme/app_color_theme.dart';
 import 'core/theme/app_theme.dart';
@@ -132,6 +133,7 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
     _alarmRingSubscription = Alarm.ringing.listen(_onRingingChanged);
     _onRingingChanged(Alarm.ringing.value);
     unawaited(AutoBackupRunner().runIfDue());
+    unawaited(BackupReminderService().checkAndNotify());
   }
 
   @override
@@ -145,6 +147,7 @@ class _MainShellState extends State<_MainShell> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) return;
     unawaited(AutoBackupRunner().runIfDue());
+    unawaited(BackupReminderService().checkAndNotify());
   }
 
   Future<void> _onRingingChanged(AlarmSet currentRinging) async {

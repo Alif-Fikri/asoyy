@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -12,6 +13,7 @@ import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../services/auto_backup_settings.dart';
 import '../../services/backup_service.dart';
 import '../widgets/auto_backup_section.dart';
 
@@ -115,6 +117,7 @@ class _BackupPageState extends State<BackupPage> {
     setState(() => _busy = true);
     try {
       final file = await _service.createBackup(passphrase);
+      await AutoBackupSettings().setLastRun(DateTime.now());
       if (!mounted) return;
       await Share.shareXFiles([XFile(file.path)]);
       if (mounted) AppToast.show(context, context.strings.backup_success);
