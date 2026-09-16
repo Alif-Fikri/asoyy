@@ -143,7 +143,7 @@ class _BackupPageState extends State<BackupPage> {
 
     setState(() => _busy = true);
     try {
-      await _service.restoreBackup(File(path), passphrase);
+      final outcome = await _service.restoreBackup(File(path), passphrase);
       if (!mounted) return;
       await showDialog<void>(
         context: context,
@@ -160,7 +160,9 @@ class _BackupPageState extends State<BackupPage> {
               style: TextStyle(color: c.textPrimary),
             ),
             content: Text(
-              s.backup_restart_required,
+              outcome.vaultKeyMissing
+                  ? '${s.backup_vault_not_restored}\n\n${s.backup_restart_required}'
+                  : s.backup_restart_required,
               style: TextStyle(color: c.textSecondary),
             ),
             actions: [

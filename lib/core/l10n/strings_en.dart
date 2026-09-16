@@ -90,6 +90,8 @@ class StringsEn extends AppStrings {
   @override String get backup_passphrase_hint => 'Keep this passphrase safe. Without it, the backup file can\'t be restored.';
   @override String get backup_success => 'Backup created';
   @override String get backup_restore_success => 'Data restored successfully';
+  @override String get backup_vault_not_restored =>
+      'Everything else was restored, but this backup does not carry the password vault key, so the vault stays locked. Restore a backup that has it, or reset the vault from the Password screen.';
   @override String get backup_restore_failed => 'Failed to restore data';
   @override String get backup_restart_required => 'Data restored. Close and reopen the app to see the changes.';
   @override String get backup_close_app => 'Close App';

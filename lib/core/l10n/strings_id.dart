@@ -90,6 +90,8 @@ class StringsId extends AppStrings {
   @override String get backup_passphrase_hint => 'Simpan kata sandi ini baik-baik. Tanpa itu, file backup tidak bisa dipulihkan.';
   @override String get backup_success => 'Backup berhasil dibuat';
   @override String get backup_restore_success => 'Data berhasil dipulihkan';
+  @override String get backup_vault_not_restored =>
+      'Semua data lain berhasil dipulihkan, tapi backup ini tidak memuat kunci vault password sehingga vault tetap terkunci. Pulihkan dari backup yang memuatnya, atau reset vault lewat halaman Password.';
   @override String get backup_restore_failed => 'Gagal memulihkan data';
   @override String get backup_restart_required => 'Data berhasil dipulihkan. Tutup dan buka lagi aplikasi untuk melihat perubahannya.';
   @override String get backup_close_app => 'Tutup Aplikasi';

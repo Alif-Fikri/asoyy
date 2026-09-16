@@ -89,6 +89,7 @@ abstract class AppStrings {
   String get backup_passphrase_hint;
   String get backup_success;
   String get backup_restore_success;
+  String get backup_vault_not_restored;
   String get backup_restore_failed;
   String get backup_restart_required;
   String get backup_close_app;

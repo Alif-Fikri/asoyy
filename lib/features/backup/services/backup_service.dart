@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
+
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,19 +15,64 @@ import '../../notes/data/models/note_model.dart';
 import '../../password/data/datasources/password_local_datasource.dart';
 import '../../password/data/models/password_model.dart';
 import '../../password/services/vault_key_store.dart';
+import '../domain/vault_restore_plan.dart';
 import '../../split_bill/data/models/bill_model.dart';
 import 'backup_crypto.dart';
 
 const _magic = [0x42, 0x52, 0x53, 0x42];
-const _version = 2;
+const _version = 3;
 
 const _vaultKeyEntry = '__vault_key__';
+const _vaultStateEntry = '__vault_encrypted__';
+
+class BackupRestoreResult {
+  final bool vaultKeyMissing;
+
+  const BackupRestoreResult({required this.vaultKeyMissing});
+}
 
 class BackupException implements Exception {
   final String message;
   BackupException(this.message);
   @override
   String toString() => message;
+}
+
+class _KeyMaterial {
+  final Uint8List encryptionKey;
+  final Uint8List macKey;
+
+  const _KeyMaterial({required this.encryptionKey, required this.macKey});
+}
+
+class _DeriveRequest {
+  final String passphrase;
+  final Uint8List salt;
+  final int iterations;
+
+  const _DeriveRequest(this.passphrase, this.salt, this.iterations);
+}
+
+Uint8List _deriveInIsolate(_DeriveRequest request) => deriveKey(
+      request.passphrase,
+      request.salt,
+      iterations: request.iterations,
+      length: 64,
+    );
+
+Future<_KeyMaterial> _deriveMaterial({
+  required String passphrase,
+  required Uint8List salt,
+  required int iterations,
+}) async {
+  final bytes = await compute(
+    _deriveInIsolate,
+    _DeriveRequest(passphrase, salt, iterations),
+  );
+  return _KeyMaterial(
+    encryptionKey: Uint8List.fromList(bytes.sublist(0, 32)),
+    macKey: Uint8List.fromList(bytes.sublist(32, 64)),
+  );
 }
 
 class BackupService {
@@ -76,8 +123,19 @@ class BackupService {
           : Uint8List(0);
     }
 
+    final vaultWasEncrypted = isVaultEncrypted();
     final vaultKey = await VaultKeyStore().read();
+
+    if (vaultWasEncrypted && vaultKey == null) {
+      throw BackupException(
+        'Kunci vault password tidak terbaca, jadi backup ini tidak akan bisa '
+        'membuka vault-mu lagi. Buka menu Password dulu untuk memastikan '
+        'vault masih bisa diakses, lalu coba backup lagi.',
+      );
+    }
+
     if (vaultKey != null) payload[_vaultKeyEntry] = vaultKey;
+    payload[_vaultStateEntry] = Uint8List.fromList([vaultWasEncrypted ? 1 : 0]);
 
     final container = BytesBuilder();
     container.addByte(payload.length);
@@ -91,15 +149,30 @@ class BackupService {
 
     final salt = randomBytes(backupSaltLength);
     final iv = randomBytes(backupIvLength);
-    final key = deriveKey(passphrase, salt);
-    final cipher = encryptBytes(container.toBytes(), key, iv);
+    final material = await _deriveMaterial(
+      passphrase: passphrase,
+      salt: salt,
+      iterations: backupPbkdf2Iterations,
+    );
+    final cipher = encryptBytes(container.toBytes(), material.encryptionKey, iv);
+
+    final header = <int>[
+      ..._magic,
+      _version,
+      ..._u32(backupPbkdf2Iterations),
+      ...salt,
+      ...iv,
+    ];
+    final tag = computeBackupTag(
+      macKey: material.macKey,
+      header: header,
+      cipher: cipher,
+    );
 
     final out = BytesBuilder();
-    out.add(_magic);
-    out.addByte(_version);
-    out.add(salt);
-    out.add(iv);
+    out.add(header);
     out.add(cipher);
+    out.add(tag);
 
     final tempDir = await getTemporaryDirectory();
     final stamp = DateFormat('yyyyMMdd-HHmm').format(DateTime.now());
@@ -108,7 +181,7 @@ class BackupService {
     return file;
   }
 
-  Future<void> restoreBackup(File file, String passphrase) async {
+  Future<BackupRestoreResult> restoreBackup(File file, String passphrase) async {
     final bytes = await file.readAsBytes();
     if (bytes.length < 4 + 1 + backupSaltLength + backupIvLength ||
         !_matchesMagic(bytes)) {
@@ -116,17 +189,63 @@ class BackupService {
     }
 
     var offset = 4;
+    final fileVersion = bytes[offset];
     offset += 1;
+    if (fileVersion < 1 || fileVersion > _version) {
+      throw BackupException(
+        'File backup ini dibuat versi aplikasi yang lebih baru. '
+        'Perbarui aplikasinya dulu.',
+      );
+    }
+
+    final isAuthenticated = fileVersion >= 3;
+
+    final int iterations;
+    if (isAuthenticated) {
+      iterations = _readU32(bytes, offset);
+      offset += 4;
+    } else {
+      iterations = legacyBackupPbkdf2Iterations;
+    }
+
     final salt = bytes.sublist(offset, offset + backupSaltLength);
     offset += backupSaltLength;
     final iv = bytes.sublist(offset, offset + backupIvLength);
     offset += backupIvLength;
-    final cipher = bytes.sublist(offset);
 
-    final key = deriveKey(passphrase, Uint8List.fromList(salt));
+    final Uint8List cipher;
+    if (isAuthenticated) {
+      if (bytes.length < offset + backupTagLength) {
+        throw BackupException('File backup tidak valid.');
+      }
+      cipher = bytes.sublist(offset, bytes.length - backupTagLength);
+    } else {
+      cipher = bytes.sublist(offset);
+    }
+
+    final material = await _deriveMaterial(
+      passphrase: passphrase,
+      salt: Uint8List.fromList(salt),
+      iterations: iterations,
+    );
+
+    if (isAuthenticated) {
+      final expected = computeBackupTag(
+        macKey: material.macKey,
+        header: bytes.sublist(0, offset),
+        cipher: cipher,
+      );
+      final actual = bytes.sublist(bytes.length - backupTagLength);
+      if (!constantTimeEquals(expected, actual)) {
+        throw BackupException(
+          'Passphrase salah, atau file backup ini sudah berubah sejak dibuat.',
+        );
+      }
+    }
+
     late Uint8List plain;
     try {
-      plain = decryptBytes(Uint8List.fromList(cipher), key, Uint8List.fromList(iv));
+      plain = decryptBytes(cipher, material.encryptionKey, Uint8List.fromList(iv));
     } catch (_) {
       throw BackupException('Passphrase salah atau file rusak.');
     }
@@ -161,23 +280,43 @@ class BackupService {
       await File(path).writeAsBytes(entry.value, flush: true);
     }
 
-    await _restoreVault(entries[_vaultKeyEntry]);
+    return _restoreVault(
+      backedUpKey: entries[_vaultKeyEntry],
+      vaultState: entries[_vaultStateEntry],
+    );
   }
 
-  Future<void> _restoreVault(Uint8List? backedUpKey) async {
+  Future<BackupRestoreResult> _restoreVault({
+    required Uint8List? backedUpKey,
+    required Uint8List? vaultState,
+  }) async {
     if (!Hive.isBoxOpen(AppConstants.settingsBox)) {
       await Hive.openBox(AppConstants.settingsBox);
     }
     final store = VaultKeyStore();
 
-    if (backedUpKey != null && backedUpKey.length == vaultKeyLength) {
-      await store.write(backedUpKey);
-      await setVaultEncrypted(true);
-      return;
-    }
+    final plan = planVaultRestore(
+      backedUpKey: backedUpKey,
+      vaultState: vaultState,
+      expectedKeyLength: vaultKeyLength,
+    );
 
-    await setVaultEncrypted(false);
-    await ensureVaultEncrypted(HiveAesCipher(await store.readOrCreate()));
+    switch (plan) {
+      case VaultRestorePlan.useBackedUpKey:
+        await store.write(backedUpKey!);
+        await setVaultEncrypted(true);
+        return const BackupRestoreResult(vaultKeyMissing: false);
+
+      case VaultRestorePlan.keepLocked:
+        await store.delete();
+        await setVaultEncrypted(true);
+        return const BackupRestoreResult(vaultKeyMissing: true);
+
+      case VaultRestorePlan.migratePlaintext:
+        await setVaultEncrypted(false);
+        await ensureVaultEncrypted(HiveAesCipher(await store.readOrCreate()));
+        return const BackupRestoreResult(vaultKeyMissing: false);
+    }
   }
 
   bool _matchesMagic(Uint8List bytes) {
