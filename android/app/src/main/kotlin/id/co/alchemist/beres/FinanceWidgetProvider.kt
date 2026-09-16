@@ -61,8 +61,12 @@ class FinanceWidgetProvider : HomeWidgetProvider() {
                 if (hidden) MASK else widgetData.getString("balance", "Rp 0"),
             )
             setTextViewText(
-                R.id.widget_today_expense,
-                widgetData.getString("today_expense", "Rp 0"),
+                R.id.widget_month_income,
+                widgetData.getString("month_income", "Rp 0"),
+            )
+            setTextViewText(
+                R.id.widget_month_expense,
+                widgetData.getString("month_expense", "Rp 0"),
             )
             setImageViewResource(
                 R.id.widget_toggle_visibility,

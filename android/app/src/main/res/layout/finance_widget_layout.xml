@@ -43,8 +43,44 @@
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Saldo saat ini"
+            android:textColor="@color/widget_label"
+            android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/widget_balance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Rp 0"
+            android:textColor="@color/widget_title"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/widget_divider" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
@@ -57,20 +93,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Saldo saat ini"
+                android:text="↓ Pemasukan bulan ini"
                 android:textColor="@color/widget_label"
                 android:textSize="11sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
             <TextView
-                android:id="@+id/widget_balance"
+                android:id="@+id/widget_month_income"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Rp 0"
-                android:textColor="@color/widget_title"
-                android:textSize="20sp"
+                android:textColor="@color/widget_income"
+                android:textSize="15sp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textStyle="bold" />
@@ -93,20 +129,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="↓ Pengeluaran hari ini"
+                android:text="↑ Pengeluaran bulan ini"
                 android:textColor="@color/widget_label"
                 android:textSize="11sp"
                 android:maxLines="1"
                 android:ellipsize="end" />
 
             <TextView
-                android:id="@+id/widget_today_expense"
+                android:id="@+id/widget_month_expense"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Rp 0"
                 android:textColor="@color/widget_expense"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textStyle="bold" />

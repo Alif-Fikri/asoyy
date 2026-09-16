@@ -20,6 +20,8 @@ class FinanceWidgetService {
 
     await HomeWidget.saveWidgetData<String>('balance', fmt.format(summary.totalBalance));
     await HomeWidget.saveWidgetData<String>('today_expense', fmt.format(summary.todayExpense));
+    await HomeWidget.saveWidgetData<String>('month_income', fmt.format(summary.monthIncome));
+    await HomeWidget.saveWidgetData<String>('month_expense', fmt.format(summary.monthExpense));
     await HomeWidget.updateWidget(androidName: _androidWidgetName);
   }
 }
