@@ -12,6 +12,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import '../../../../core/widgets/segmented_tab_bar.dart';
 import '../../data/account_repository.dart';
 import '../../data/budget_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
@@ -349,61 +350,28 @@ class _TypeFilterRow extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            _FilterChip(
-              label: s.fin_all,
-              isSelected: state.filter == null,
-              onTap: () =>
-                  context.read<FinanceBloc>().add(FilterChanged(null)),
-            ),
-            const SizedBox(width: Insets.sm),
-            _FilterChip(
+        SegmentedTabBar<TransactionType?>(
+          selected: state.filter,
+          color: AppColors.primary,
+          onChanged: (type) =>
+              context.read<FinanceBloc>().add(FilterChanged(type)),
+          tabs: [
+            SegmentedTab(value: null, label: s.fin_all),
+            SegmentedTab(
+              value: TransactionType.income,
               label: s.fin_income,
               color: AppColors.income,
-              isSelected: state.filter == TransactionType.income,
-              onTap: () => context
-                  .read<FinanceBloc>()
-                  .add(FilterChanged(TransactionType.income)),
             ),
-            const SizedBox(width: Insets.sm),
-            _FilterChip(
+            SegmentedTab(
+              value: TransactionType.expense,
               label: s.fin_expense,
               color: AppColors.expense,
-              isSelected: state.filter == TransactionType.expense,
-              onTap: () => context
-                  .read<FinanceBloc>()
-                  .add(FilterChanged(TransactionType.expense)),
             ),
           ],
         ),
         const SizedBox(height: Insets.sm),
         _PeriodChip(state: state, onTap: onPeriodTap),
       ],
-    );
-  }
-}
-
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final Color? color;
-  final VoidCallback onTap;
-
-  const _FilterChip({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AppChip(
-      label: label,
-      isSelected: isSelected,
-      color: color,
-      onTap: onTap,
     );
   }
 }
@@ -465,6 +433,10 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
     _viewYear = widget.selectedYear ?? DateTime.now().year;
   }
 
+  DateTime get now => DateTime.now();
+
+  DateTime get lastMonth => DateTime(now.year, now.month - 1);
+
   void _pick(int? year, int? month) {
     widget.onChanged(year, month);
     widget.onClose();
@@ -508,7 +480,38 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: _QuickPeriod(
+                    label: s.fin_period_this_month,
+                    isSelected: widget.selectedYear == now.year &&
+                        widget.selectedMonth == now.month,
+                    onTap: () => _pick(now.year, now.month),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _QuickPeriod(
+                    label: s.fin_period_last_month,
+                    isSelected: widget.selectedYear == lastMonth.year &&
+                        widget.selectedMonth == lastMonth.month,
+                    onTap: () => _pick(lastMonth.year, lastMonth.month),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: _QuickPeriod(
+                    label: s.fin_period_this_year,
+                    isSelected: widget.selectedYear == now.year &&
+                        widget.selectedMonth == null,
+                    onTap: () => _pick(now.year, null),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -532,13 +535,22 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
                         color: isFullYear ? AppColors.primary : Colors.transparent,
                       ),
                     ),
-                    child: Text(
-                      '$_viewYear',
-                      style: TextStyle(
-                        color: isFullYear ? AppColors.primary : c.textPrimary,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '$_viewYear',
+                          style: TextStyle(
+                            color: isFullYear ? AppColors.primary : c.textPrimary,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                        Text(
+                          s.fin_period_full_year,
+                          style: TextStyle(color: c.textHint, fontSize: 10),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -562,9 +574,15 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
                     DateFormat('MMM', locale).format(DateTime(2000, month));
                 final isSelected = widget.selectedYear == _viewYear &&
                     widget.selectedMonth == month;
+                final isCurrent = _viewYear == now.year && month == now.month;
+                final isFuture = DateTime(_viewYear, month).isAfter(
+                  DateTime(now.year, now.month),
+                );
                 return _MonthTile(
                   label: label,
                   isSelected: isSelected,
+                  isCurrent: isCurrent,
+                  isDimmed: isFuture,
                   onTap: () => _pick(_viewYear, month),
                 );
               }),
@@ -609,12 +627,12 @@ class _PeriodPickerDialogState extends State<_PeriodPickerDialog> {
   }
 }
 
-class _MonthTile extends StatelessWidget {
+class _QuickPeriod extends StatelessWidget {
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _MonthTile({
+  const _QuickPeriod({
     required this.label,
     required this.isSelected,
     required this.onTap,
@@ -623,6 +641,55 @@ class _MonthTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    return Material(
+      color: isSelected ? AppColors.primary.withValues(alpha: 0.15) : c.cardLight,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 4),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: isSelected ? AppColors.primary : c.textSecondary,
+              fontSize: 12,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MonthTile extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final bool isCurrent;
+  final bool isDimmed;
+  final VoidCallback onTap;
+
+  const _MonthTile({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+    this.isCurrent = false,
+    this.isDimmed = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final labelColor = isSelected
+        ? AppColors.primary
+        : isDimmed
+            ? c.textHint
+            : c.textPrimary;
+
     return Material(
       color: isSelected ? AppColors.primary.withValues(alpha: 0.12) : c.cardLight,
       borderRadius: BorderRadius.circular(10),
@@ -633,17 +700,35 @@ class _MonthTile extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: isSelected ? AppColors.primary : c.border,
+              color: isSelected
+                  ? AppColors.primary
+                  : isCurrent
+                      ? AppColors.primary.withValues(alpha: 0.4)
+                      : c.border,
             ),
           ),
           alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? AppColors.primary : c.textPrimary,
-              fontSize: 13,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  color: labelColor,
+                  fontSize: 13,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Container(
+                width: 4,
+                height: 4,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: isCurrent ? AppColors.primary : Colors.transparent,
+                ),
+              ),
+            ],
           ),
         ),
       ),

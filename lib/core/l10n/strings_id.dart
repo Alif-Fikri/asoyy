@@ -561,6 +561,10 @@ class StringsId extends AppStrings {
   @override String get fin_notes => 'Catatan (Opsional)';
   @override String get fin_period => 'Periode';
   @override String get fin_period_all => 'Semua Waktu';
+  @override String get fin_period_this_month => 'Bulan Ini';
+  @override String get fin_period_last_month => 'Bulan Lalu';
+  @override String get fin_period_this_year => 'Tahun Ini';
+  @override String get fin_period_full_year => 'Ketuk tahunnya untuk setahun penuh';
   @override String get fin_add_category => 'Tambah Kategori';
   @override String get fin_category_name_hint => 'Nama kategori baru';
   @override String get fin_category_exists => 'Kategori sudah ada';

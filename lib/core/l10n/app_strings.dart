@@ -556,6 +556,10 @@ abstract class AppStrings {
   String get fin_notes;
   String get fin_period;
   String get fin_period_all;
+  String get fin_period_this_month;
+  String get fin_period_last_month;
+  String get fin_period_this_year;
+  String get fin_period_full_year;
   String get fin_add_category;
   String get fin_category_name_hint;
   String get fin_category_exists;

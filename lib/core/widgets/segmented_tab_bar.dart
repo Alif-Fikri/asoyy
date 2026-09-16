@@ -5,8 +5,14 @@ class SegmentedTab<T> {
   final T value;
   final String label;
   final IconData? icon;
+  final Color? color;
 
-  const SegmentedTab({required this.value, required this.label, this.icon});
+  const SegmentedTab({
+    required this.value,
+    required this.label,
+    this.icon,
+    this.color,
+  });
 }
 
 class SegmentedTabBar<T> extends StatelessWidget {
@@ -35,6 +41,7 @@ class SegmentedTabBar<T> extends StatelessWidget {
       child: Row(
         children: tabs.map((tab) {
           final isSelected = tab.value == selected;
+          final activeColor = tab.color ?? color;
           return Expanded(
             child: GestureDetector(
               onTap: () => onChanged(tab.value),
@@ -42,14 +49,14 @@ class SegmentedTabBar<T> extends StatelessWidget {
                 duration: const Duration(milliseconds: 150),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
                 decoration: BoxDecoration(
-                  color: isSelected ? color.withValues(alpha: 0.15) : Colors.transparent,
+                  color: isSelected ? activeColor.withValues(alpha: 0.15) : Colors.transparent,
                   borderRadius: BorderRadius.circular(11),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (tab.icon != null) ...[
-                      Icon(tab.icon, color: isSelected ? color : c.textHint, size: 16),
+                      Icon(tab.icon, color: isSelected ? activeColor : c.textHint, size: 16),
                       const SizedBox(width: 6),
                     ],
                     Flexible(
@@ -59,7 +66,7 @@ class SegmentedTabBar<T> extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: isSelected ? color : c.textHint,
+                          color: isSelected ? activeColor : c.textHint,
                           fontSize: 13,
                           fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
                         ),

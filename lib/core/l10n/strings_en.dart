@@ -561,6 +561,10 @@ class StringsEn extends AppStrings {
   @override String get fin_notes => 'Notes (Optional)';
   @override String get fin_period => 'Period';
   @override String get fin_period_all => 'All Time';
+  @override String get fin_period_this_month => 'This Month';
+  @override String get fin_period_last_month => 'Last Month';
+  @override String get fin_period_this_year => 'This Year';
+  @override String get fin_period_full_year => 'Tap the year for the whole year';
   @override String get fin_add_category => 'Add Category';
   @override String get fin_category_name_hint => 'New category name';
   @override String get fin_category_exists => 'Category already exists';
