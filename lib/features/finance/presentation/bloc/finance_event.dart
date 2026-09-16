@@ -15,6 +15,13 @@ class AddTransactionRequested extends FinanceBlocEvent {
   List<Object?> get props => [transaction.id];
 }
 
+class AddTransactionsBatchRequested extends FinanceBlocEvent {
+  final List<TransactionEntity> transactions;
+  AddTransactionsBatchRequested(this.transactions);
+  @override
+  List<Object?> get props => [transactions.map((t) => t.id).toList()];
+}
+
 class UpdateTransactionRequested extends FinanceBlocEvent {
   final TransactionEntity transaction;
   UpdateTransactionRequested(this.transaction);

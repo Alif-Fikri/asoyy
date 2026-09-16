@@ -92,6 +92,9 @@ class StringsEn extends AppStrings {
   @override String get backup_restore_success => 'Data restored successfully';
   @override String get backup_vault_not_restored =>
       'Everything else was restored, but this backup does not carry the password vault key, so the vault stays locked. Restore a backup that has it, or reset the vault from the Password screen.';
+  @override String get backup_reminder_title => 'Back up your data';
+  @override String backup_reminder_body(int days) =>
+      'It has been $days days since your last backup. If you lose this phone, everything since then is gone.';
   @override String get backup_restore_failed => 'Failed to restore data';
   @override String get backup_restart_required => 'Data restored. Close and reopen the app to see the changes.';
   @override String get backup_close_app => 'Close App';
@@ -590,6 +593,25 @@ class StringsEn extends AppStrings {
   @override String get fin_export_from => 'From';
   @override String get fin_export_to => 'To';
   @override String get fin_export_empty => 'No transactions in selected range';
+  @override String get fin_import => 'Import from Bank/E-Wallet';
+  @override String get fin_import_pick_file => 'Choose CSV file';
+  @override String get fin_import_no_rows => 'No usable transactions found in that file';
+  @override String get fin_import_preview_title => 'Preview';
+  @override String fin_import_preview_summary(int count, int skipped) =>
+      skipped > 0
+          ? '$count transactions ready to import ($skipped skipped - duplicate or unreadable)'
+          : '$count transactions ready to import';
+  @override String get fin_import_wallet_label => 'Add to wallet';
+  @override String get fin_import_confirm => 'Import';
+  @override String fin_import_success(int count) => 'Imported $count transactions';
+  @override String get fin_import_failed => 'Could not read that file';
+  @override String get fin_import_needs_mapping => 'Could not auto-detect the columns. Pick them manually:';
+  @override String get fin_import_map_date => 'Date column';
+  @override String get fin_import_map_amount => 'Amount column (signed)';
+  @override String get fin_import_map_debit => 'Debit/out column';
+  @override String get fin_import_map_credit => 'Credit/in column';
+  @override String get fin_import_map_description => 'Description column';
+  @override String get fin_import_column_none => 'None';
 
   @override String get cat_salary => 'Salary';
   @override String get cat_freelance => 'Freelance';

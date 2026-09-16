@@ -27,6 +27,7 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
   }) : super(FinanceInitial()) {
     on<LoadTransactions>(_onLoad);
     on<AddTransactionRequested>(_onAdd);
+    on<AddTransactionsBatchRequested>(_onAddBatch);
     on<UpdateTransactionRequested>(_onUpdate);
     on<ReassignAccountRequested>(_onReassign);
     on<DeleteTransactionRequested>(_onDelete);
@@ -91,6 +92,17 @@ class FinanceBloc extends Bloc<FinanceBlocEvent, FinanceState> {
     await addTransaction(event.transaction);
     final updated = [event.transaction, ...current.all];
     emit(current.copyWith(all: updated));
+    unawaited(financeWidgetService.updateWidget());
+  }
+
+  Future<void> _onAddBatch(
+      AddTransactionsBatchRequested event, Emitter<FinanceState> emit) async {
+    if (state is! FinanceLoaded) return;
+    final current = state as FinanceLoaded;
+    for (final tx in event.transactions) {
+      await addTransaction(tx);
+    }
+    emit(current.copyWith(all: [...event.transactions, ...current.all]));
     unawaited(financeWidgetService.updateWidget());
   }
 

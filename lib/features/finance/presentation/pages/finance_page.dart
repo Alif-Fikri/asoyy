@@ -12,6 +12,7 @@ import '../../../../core/widgets/app_toast.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
+import 'finance_import_page.dart';
 import '../../../../core/widgets/segmented_tab_bar.dart';
 import '../../data/account_repository.dart';
 import '../../data/budget_repository.dart';
@@ -119,6 +120,12 @@ class FinancePage extends StatelessWidget {
             color: AppColors.calendarColor,
             label: s.fin_export,
           ),
+          SheetAction(
+            value: 'import',
+            icon: CupertinoIcons.arrow_up_doc,
+            color: AppColors.income,
+            label: s.fin_import,
+          ),
         ],
         SheetAction(
           value: 'recurring',
@@ -136,6 +143,10 @@ class FinancePage extends StatelessWidget {
         if (loaded != null) _openBudget(context, loaded);
       case 'export':
         if (loaded != null) _showExportDialog(context, loaded);
+      case 'import':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const FinanceImportPage()),
+        );
       case 'recurring':
         _openRecurring(context);
     }

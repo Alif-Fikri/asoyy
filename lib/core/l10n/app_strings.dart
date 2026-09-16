@@ -90,6 +90,8 @@ abstract class AppStrings {
   String get backup_success;
   String get backup_restore_success;
   String get backup_vault_not_restored;
+  String get backup_reminder_title;
+  String backup_reminder_body(int days);
   String get backup_restore_failed;
   String get backup_restart_required;
   String get backup_close_app;
@@ -584,6 +586,22 @@ abstract class AppStrings {
   String get fin_export_from;
   String get fin_export_to;
   String get fin_export_empty;
+  String get fin_import;
+  String get fin_import_pick_file;
+  String get fin_import_no_rows;
+  String get fin_import_preview_title;
+  String fin_import_preview_summary(int count, int skipped);
+  String get fin_import_wallet_label;
+  String get fin_import_confirm;
+  String fin_import_success(int count);
+  String get fin_import_failed;
+  String get fin_import_needs_mapping;
+  String get fin_import_map_date;
+  String get fin_import_map_amount;
+  String get fin_import_map_debit;
+  String get fin_import_map_credit;
+  String get fin_import_map_description;
+  String get fin_import_column_none;
 
   String get cat_salary;
   String get cat_freelance;

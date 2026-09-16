@@ -92,6 +92,9 @@ class StringsId extends AppStrings {
   @override String get backup_restore_success => 'Data berhasil dipulihkan';
   @override String get backup_vault_not_restored =>
       'Semua data lain berhasil dipulihkan, tapi backup ini tidak memuat kunci vault password sehingga vault tetap terkunci. Pulihkan dari backup yang memuatnya, atau reset vault lewat halaman Password.';
+  @override String get backup_reminder_title => 'Backup data kamu';
+  @override String backup_reminder_body(int days) =>
+      'Sudah $days hari sejak backup terakhir. Kalau HP ini hilang, semua yang belum dibackup ikut hilang.';
   @override String get backup_restore_failed => 'Gagal memulihkan data';
   @override String get backup_restart_required => 'Data berhasil dipulihkan. Tutup dan buka lagi aplikasi untuk melihat perubahannya.';
   @override String get backup_close_app => 'Tutup Aplikasi';
@@ -590,6 +593,25 @@ class StringsId extends AppStrings {
   @override String get fin_export_from => 'Dari';
   @override String get fin_export_to => 'Sampai';
   @override String get fin_export_empty => 'Tidak ada transaksi di rentang ini';
+  @override String get fin_import => 'Import dari Bank/E-Wallet';
+  @override String get fin_import_pick_file => 'Pilih file CSV';
+  @override String get fin_import_no_rows => 'Tidak ditemukan transaksi yang bisa dibaca di file itu';
+  @override String get fin_import_preview_title => 'Pratinjau';
+  @override String fin_import_preview_summary(int count, int skipped) =>
+      skipped > 0
+          ? '$count transaksi siap diimpor ($skipped dilewati - duplikat atau tidak terbaca)'
+          : '$count transaksi siap diimpor';
+  @override String get fin_import_wallet_label => 'Masukkan ke dompet';
+  @override String get fin_import_confirm => 'Import';
+  @override String fin_import_success(int count) => 'Berhasil impor $count transaksi';
+  @override String get fin_import_failed => 'File tidak bisa dibaca';
+  @override String get fin_import_needs_mapping => 'Kolom tidak terdeteksi otomatis. Pilih manual:';
+  @override String get fin_import_map_date => 'Kolom tanggal';
+  @override String get fin_import_map_amount => 'Kolom nominal (bertanda +/-)';
+  @override String get fin_import_map_debit => 'Kolom debit/keluar';
+  @override String get fin_import_map_credit => 'Kolom kredit/masuk';
+  @override String get fin_import_map_description => 'Kolom keterangan';
+  @override String get fin_import_column_none => 'Tidak ada';
 
   @override String get cat_salary => 'Gaji';
   @override String get cat_freelance => 'Freelance';
