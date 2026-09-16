@@ -108,5 +108,86 @@ void main() {
       );
       expect(result!.description, 'DANA');
     });
+
+    test('reads an incoming transfer worded as "transfer masuk"', () {
+      final result = parseBankNotification(
+        title: 'SeaBank',
+        text: 'Transfer masuk sebesar Rp2.000.000 dari SITI AMINAH',
+      );
+      expect(result!.type, TransactionType.income);
+      expect(result.amount, 2000000);
+    });
+
+    test('reads a cashback as income', () {
+      final result = parseBankNotification(
+        title: 'GoPay',
+        text: 'Cashback Rp5.000 sudah masuk ke GoPay kamu',
+      );
+      expect(result!.type, TransactionType.income);
+      expect(result.amount, 5000);
+    });
+
+    test('reads a refund as income', () {
+      final result = parseBankNotification(
+        title: 'GoPay',
+        text: 'Refund Rp30.000 untuk pesananmu telah diproses',
+      );
+      expect(result!.type, TransactionType.income);
+      expect(result.amount, 30000);
+    });
+
+    test('reads a deposit worded as "setoran berhasil" as income', () {
+      final result = parseBankNotification(
+        title: 'SeaBank',
+        text: 'Setoran berhasil sebesar Rp1.000.000',
+      );
+      expect(result!.type, TransactionType.income);
+      expect(result.amount, 1000000);
+    });
+
+    test('reads an outgoing transfer worded as "transfer keluar"', () {
+      final result = parseBankNotification(
+        title: 'SeaBank',
+        text: 'Transfer keluar sebesar Rp750.000 ke rekening 998877',
+      );
+      expect(result!.type, TransactionType.expense);
+      expect(result.amount, 750000);
+    });
+
+    test('reads a QRIS payment as expense', () {
+      final result = parseBankNotification(
+        title: 'BRImo',
+        text: 'QRIS berhasil sebesar Rp45.000 di Warung Kopi',
+      );
+      expect(result!.type, TransactionType.expense);
+      expect(result.amount, 45000);
+    });
+
+    test('reads a bill payment as expense', () {
+      final result = parseBankNotification(
+        title: 'BCA mobile',
+        text: 'Bayar tagihan listrik berhasil sebesar Rp350.000',
+      );
+      expect(result!.type, TransactionType.expense);
+      expect(result.amount, 350000);
+    });
+
+    test('reads an admin fee deduction as expense', () {
+      final result = parseBankNotification(
+        title: 'SeaBank',
+        text: 'Biaya admin bulanan Rp10.000 telah dipotong dari saldo',
+      );
+      expect(result!.type, TransactionType.expense);
+      expect(result.amount, 10000);
+    });
+
+    test('an ATM cash withdrawal reads as expense', () {
+      final result = parseBankNotification(
+        title: 'BCA mobile',
+        text: 'Tarik tunai berhasil sebesar Rp500.000',
+      );
+      expect(result!.type, TransactionType.expense);
+      expect(result.amount, 500000);
+    });
   });
 }

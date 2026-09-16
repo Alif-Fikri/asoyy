@@ -13,12 +13,18 @@ const List<String> knownBankPackages = [
 const List<String> _incomeKeywords = [
   'menerima', 'diterima', 'masuk ke', 'kredit', 'top up berhasil',
   'saldo bertambah', 'received', 'credited', 'top-up berhasil',
+  'transfer masuk', 'uang masuk', 'dana masuk', 'terima uang',
+  'terima transfer', 'cashback', 'refund', 'pengembalian dana',
+  'setoran berhasil', 'gaji masuk', 'pemasukan',
 ];
 
 const List<String> _expenseKeywords = [
   'mengirim', 'dikirim', 'terkirim', 'keluar dari', 'debet', 'debit',
   'pembayaran berhasil', 'berhasil membayar', 'bayar', 'purchase',
-  'sent', 'paid', 'penarikan', 'ditarik',
+  'sent', 'paid', 'penarikan', 'ditarik', 'transfer keluar', 'uang keluar',
+  'dana keluar', 'kirim uang', 'tarik tunai', 'qris berhasil',
+  'bayar tagihan', 'autodebet', 'auto debet', 'pembelian', 'pengeluaran',
+  'potongan', 'biaya admin',
 ];
 
 final RegExp _amountPattern = RegExp(r'Rp\.?\s?[\d][\d.,]*', caseSensitive: false);
