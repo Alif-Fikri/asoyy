@@ -389,6 +389,18 @@ class StringsEn extends AppStrings {
       from == to ? 'Year $from' : 'Year $from-$to';
   @override String get loan_calc_total_installments => 'Total Installments (Whole Tenor)';
   @override String get loan_calc_grand_total => 'Grand Total (Installments + Cash at Closing)';
+  @override String get loan_calc_fee_assumptions => 'Fee Assumptions (editable)';
+  @override String get loan_calc_provisi_percent => 'Provision (% of loan)';
+  @override String get loan_calc_admin_fee_input => 'Admin Fee (Rp)';
+  @override String get loan_calc_notary_percent => 'Notary/PPAT (% of price)';
+  @override String get loan_calc_insurance_percent => 'Insurance (% of loan)';
+  @override String get loan_calc_tax_threshold => 'BPHTB Tax-Free Threshold (NPOPTKP)';
+  @override String get loan_calc_cost_notary => 'Notary / PPAT';
+  @override String get loan_calc_cost_insurance => 'Life & Fire Insurance';
+  @override String get loan_calc_cost_tax => 'Buyer Tax (BPHTB 5%)';
+  @override String get loan_calc_fee_note =>
+      'Only BPHTB follows a statutory rate (5% above the regional NPOPTKP). The rest are assumptions: fill in the figures from your own bank offer and notary quote.';
+
   @override String get loan_calc_property_price => 'Property Price';
   @override String get loan_calc_down_payment_percent => 'Down Payment (%)';
   @override String get loan_calc_down_payment_amount => 'Down Payment';
@@ -401,9 +413,8 @@ class StringsEn extends AppStrings {
   @override String get loan_calc_installment_fixed_period => 'Installment During Fixed Period';
   @override String get loan_calc_installment_floating_period => 'Installment After Fixed Period';
   @override String get loan_calc_costs_title => 'Credit Costs (Estimate)';
-  @override String get loan_calc_cost_provisi => 'Provision Fee (1%)';
+  @override String get loan_calc_cost_provisi => 'Provision Fee';
   @override String get loan_calc_cost_admin => 'Admin Fee';
-  @override String get loan_calc_cost_other => 'Notary, Insurance, Tax (~7%)';
   @override String get loan_calc_cost_total => 'Total Cash Needed at Closing';
   @override String get loan_calc_affordability_title => 'Affordability Check';
   @override String get loan_calc_monthly_income => 'Monthly Income';

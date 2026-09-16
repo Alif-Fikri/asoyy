@@ -10,18 +10,60 @@ void main() {
       expect(result.loanPrincipal, 400000000);
     });
 
-    test('estimates provisi, admin, and other fees off the loan principal', () {
+    test('provisi and insurance scale with the loan, notary with the price', () {
       final result = estimateKprCosts(
         propertyPrice: 500000000,
         downPaymentPercent: 20,
         provisiPercent: 1,
         adminFee: 500000,
-        otherFeesPercent: 7,
+        notaryPercent: 1,
+        insurancePercent: 0.5,
       );
       expect(result.provisiFee, 4000000);
       expect(result.adminFee, 500000);
-      expect(result.otherFeesEstimate, 28000000);
-      expect(result.totalUpfrontCost, 100000000 + 4000000 + 500000 + 28000000);
+      expect(result.notaryFee, 5000000);
+      expect(result.insuranceFee, 2000000);
+    });
+
+    test('BPHTB is 5% of the price above the tax-free threshold', () {
+      final result = estimateKprCosts(
+        propertyPrice: 500000000,
+        downPaymentPercent: 20,
+        taxFreeThreshold: 80000000,
+      );
+      expect(result.transferTax, 21000000);
+    });
+
+    test('a price under the threshold owes no BPHTB', () {
+      final result = estimateKprCosts(
+        propertyPrice: 60000000,
+        downPaymentPercent: 20,
+        taxFreeThreshold: 80000000,
+      );
+      expect(result.transferTax, 0);
+    });
+
+    test('a different regional threshold changes the tax', () {
+      final jakarta = estimateKprCosts(
+        propertyPrice: 500000000,
+        downPaymentPercent: 20,
+        taxFreeThreshold: 80000000,
+      );
+      final elsewhere = estimateKprCosts(
+        propertyPrice: 500000000,
+        downPaymentPercent: 20,
+        taxFreeThreshold: 60000000,
+      );
+      expect(elsewhere.transferTax, greaterThan(jakarta.transferTax));
+      expect(elsewhere.transferTax, 22000000);
+    });
+
+    test('the upfront total is the sum of every component', () {
+      final r = estimateKprCosts(propertyPrice: 500000000, downPaymentPercent: 20);
+      expect(
+        r.totalUpfrontCost,
+        r.downPayment + r.provisiFee + r.adminFee + r.notaryFee + r.insuranceFee + r.transferTax,
+      );
     });
 
     test('a non-positive property price yields all zeros', () {

@@ -1,11 +1,15 @@
 import 'loan_calc.dart';
 
+const double bphtbRatePercent = 5;
+
 class KprCostBreakdown {
   final double downPayment;
   final double loanPrincipal;
   final double provisiFee;
   final double adminFee;
-  final double otherFeesEstimate;
+  final double notaryFee;
+  final double insuranceFee;
+  final double transferTax;
   final double totalUpfrontCost;
 
   const KprCostBreakdown({
@@ -13,7 +17,9 @@ class KprCostBreakdown {
     required this.loanPrincipal,
     required this.provisiFee,
     required this.adminFee,
-    required this.otherFeesEstimate,
+    required this.notaryFee,
+    required this.insuranceFee,
+    required this.transferTax,
     required this.totalUpfrontCost,
   });
 }
@@ -23,7 +29,9 @@ KprCostBreakdown estimateKprCosts({
   required double downPaymentPercent,
   double provisiPercent = 1,
   double adminFee = 500000,
-  double otherFeesPercent = 7,
+  double notaryPercent = 1,
+  double insurancePercent = 0.5,
+  double taxFreeThreshold = 80000000,
 }) {
   if (propertyPrice <= 0) {
     return const KprCostBreakdown(
@@ -31,21 +39,33 @@ KprCostBreakdown estimateKprCosts({
       loanPrincipal: 0,
       provisiFee: 0,
       adminFee: 0,
-      otherFeesEstimate: 0,
+      notaryFee: 0,
+      insuranceFee: 0,
+      transferTax: 0,
       totalUpfrontCost: 0,
     );
   }
+
   final downPayment = propertyPrice * downPaymentPercent / 100;
   final loanPrincipal = propertyPrice - downPayment;
   final provisiFee = loanPrincipal * provisiPercent / 100;
-  final otherFeesEstimate = loanPrincipal * otherFeesPercent / 100;
-  final totalUpfrontCost = downPayment + provisiFee + adminFee + otherFeesEstimate;
+  final notaryFee = propertyPrice * notaryPercent / 100;
+  final insuranceFee = loanPrincipal * insurancePercent / 100;
+
+  final taxable = propertyPrice - taxFreeThreshold;
+  final transferTax = taxable <= 0 ? 0.0 : taxable * bphtbRatePercent / 100;
+
+  final totalUpfrontCost =
+      downPayment + provisiFee + adminFee + notaryFee + insuranceFee + transferTax;
+
   return KprCostBreakdown(
     downPayment: downPayment,
     loanPrincipal: loanPrincipal,
     provisiFee: provisiFee,
     adminFee: adminFee,
-    otherFeesEstimate: otherFeesEstimate,
+    notaryFee: notaryFee,
+    insuranceFee: insuranceFee,
+    transferTax: transferTax,
     totalUpfrontCost: totalUpfrontCost,
   );
 }

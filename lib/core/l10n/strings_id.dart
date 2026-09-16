@@ -389,6 +389,18 @@ class StringsId extends AppStrings {
       from == to ? 'Tahun $from' : 'Tahun $from-$to';
   @override String get loan_calc_total_installments => 'Total Angsuran (Seluruh Tenor)';
   @override String get loan_calc_grand_total => 'Total Keseluruhan (Angsuran + Dana Tunai)';
+  @override String get loan_calc_fee_assumptions => 'Asumsi Biaya (bisa diubah)';
+  @override String get loan_calc_provisi_percent => 'Provisi (% dari plafon)';
+  @override String get loan_calc_admin_fee_input => 'Biaya Administrasi (Rp)';
+  @override String get loan_calc_notary_percent => 'Notaris/PPAT (% dari harga)';
+  @override String get loan_calc_insurance_percent => 'Asuransi (% dari plafon)';
+  @override String get loan_calc_tax_threshold => 'NPOPTKP (batas bebas BPHTB)';
+  @override String get loan_calc_cost_notary => 'Notaris / PPAT';
+  @override String get loan_calc_cost_insurance => 'Asuransi Jiwa & Kebakaran';
+  @override String get loan_calc_cost_tax => 'Pajak Pembeli (BPHTB 5%)';
+  @override String get loan_calc_fee_note =>
+      'Hanya BPHTB yang tarifnya baku (5% di atas NPOPTKP daerahmu). Sisanya asumsi: isi sesuai penawaran bank dan tarif notarismu sendiri.';
+
   @override String get loan_calc_property_price => 'Harga Rumah';
   @override String get loan_calc_down_payment_percent => 'Uang Muka (%)';
   @override String get loan_calc_down_payment_amount => 'Uang Muka';
@@ -401,9 +413,8 @@ class StringsId extends AppStrings {
   @override String get loan_calc_installment_fixed_period => 'Angsuran Masa Fixed';
   @override String get loan_calc_installment_floating_period => 'Angsuran Setelah Masa Fixed';
   @override String get loan_calc_costs_title => 'Biaya-Biaya Kredit (Estimasi)';
-  @override String get loan_calc_cost_provisi => 'Biaya Provisi (1%)';
+  @override String get loan_calc_cost_provisi => 'Biaya Provisi';
   @override String get loan_calc_cost_admin => 'Biaya Administrasi';
-  @override String get loan_calc_cost_other => 'Notaris, Asuransi, Pajak (~7%)';
   @override String get loan_calc_cost_total => 'Total Dana Tunai yang Dibutuhkan';
   @override String get loan_calc_affordability_title => 'Cek Kemampuan Bayar';
   @override String get loan_calc_monthly_income => 'Penghasilan Bulanan';

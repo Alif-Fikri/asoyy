@@ -385,6 +385,17 @@ abstract class AppStrings {
   String loan_calc_year_range(int from, int to);
   String get loan_calc_total_installments;
   String get loan_calc_grand_total;
+  String get loan_calc_fee_assumptions;
+  String get loan_calc_provisi_percent;
+  String get loan_calc_admin_fee_input;
+  String get loan_calc_notary_percent;
+  String get loan_calc_insurance_percent;
+  String get loan_calc_tax_threshold;
+  String get loan_calc_cost_notary;
+  String get loan_calc_cost_insurance;
+  String get loan_calc_cost_tax;
+  String get loan_calc_fee_note;
+
   String get loan_calc_property_price;
   String get loan_calc_down_payment_percent;
   String get loan_calc_down_payment_amount;
@@ -399,7 +410,6 @@ abstract class AppStrings {
   String get loan_calc_costs_title;
   String get loan_calc_cost_provisi;
   String get loan_calc_cost_admin;
-  String get loan_calc_cost_other;
   String get loan_calc_cost_total;
   String get loan_calc_affordability_title;
   String get loan_calc_monthly_income;

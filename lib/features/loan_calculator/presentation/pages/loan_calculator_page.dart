@@ -39,6 +39,13 @@ class _LoanCalculatorPageState extends State<LoanCalculatorPage> {
   final _incomeCtrl = TextEditingController();
   final _otherInstallmentCtrl = TextEditingController();
 
+  final _provisiPercentCtrl = TextEditingController(text: '1');
+  final _adminFeeCtrl = TextEditingController(text: '500.000');
+  final _notaryPercentCtrl = TextEditingController(text: '1');
+  final _insurancePercentCtrl = TextEditingController(text: '0,5');
+  final _taxThresholdCtrl = TextEditingController(text: '80.000.000');
+  bool _feeSettingsOpen = false;
+
   @override
   void dispose() {
     _amountCtrl.dispose();
@@ -53,6 +60,11 @@ class _LoanCalculatorPageState extends State<LoanCalculatorPage> {
     _kprTenorYearsCtrl.dispose();
     _incomeCtrl.dispose();
     _otherInstallmentCtrl.dispose();
+    _provisiPercentCtrl.dispose();
+    _adminFeeCtrl.dispose();
+    _notaryPercentCtrl.dispose();
+    _insurancePercentCtrl.dispose();
+    _taxThresholdCtrl.dispose();
     super.dispose();
   }
 
@@ -110,6 +122,11 @@ class _LoanCalculatorPageState extends State<LoanCalculatorPage> {
                 method: _method,
                 monthlyIncome: _parseAmount(_incomeCtrl.text),
                 otherInstallments: _parseAmount(_otherInstallmentCtrl.text),
+                provisiPercent: _parse(_provisiPercentCtrl.text),
+                adminFee: _parseAmount(_adminFeeCtrl.text),
+                notaryPercent: _parse(_notaryPercentCtrl.text),
+                insurancePercent: _parse(_insurancePercentCtrl.text),
+                taxFreeThreshold: _parseAmount(_taxThresholdCtrl.text),
                 fmt: fmt,
                 s: s,
               ),
@@ -316,7 +333,107 @@ class _LoanCalculatorPageState extends State<LoanCalculatorPage> {
           inputFormatters: [ThousandSeparatorFormatter()],
           onChanged: (_) => setState(() {}),
         ),
+        const SizedBox(height: Insets.lg),
+        _buildFeeSettings(context, c, s),
       ],
+    );
+  }
+
+  Widget _buildFeeSettings(BuildContext context, AppColorTheme c, AppStrings s) {
+    return Container(
+      decoration: BoxDecoration(
+        color: c.card,
+        borderRadius: BorderRadius.circular(Radii.lg),
+        border: Border.all(color: c.border),
+      ),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => setState(() => _feeSettingsOpen = !_feeSettingsOpen),
+            borderRadius: BorderRadius.circular(Radii.lg),
+            child: Padding(
+              padding: const EdgeInsets.all(Insets.lg),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      s.loan_calc_fee_assumptions,
+                      style: AppType.body.copyWith(color: c.textPrimary),
+                    ),
+                  ),
+                  Icon(
+                    _feeSettingsOpen ? CupertinoIcons.chevron_up : CupertinoIcons.chevron_down,
+                    size: 18,
+                    color: c.textSecondary,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_feeSettingsOpen)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(Insets.lg, 0, Insets.lg, Insets.lg),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: AppTextField(
+                          label: s.loan_calc_provisi_percent,
+                          controller: _provisiPercentCtrl,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          prefixIcon: CupertinoIcons.percent,
+                          onChanged: (_) => setState(() {}),
+                        ),
+                      ),
+                      const SizedBox(width: Insets.md),
+                      Expanded(
+                        child: AppTextField(
+                          label: s.loan_calc_insurance_percent,
+                          controller: _insurancePercentCtrl,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          prefixIcon: CupertinoIcons.percent,
+                          onChanged: (_) => setState(() {}),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: Insets.md),
+                  AppTextField(
+                    label: s.loan_calc_notary_percent,
+                    controller: _notaryPercentCtrl,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    prefixIcon: CupertinoIcons.percent,
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: Insets.md),
+                  AppTextField(
+                    label: s.loan_calc_admin_fee_input,
+                    controller: _adminFeeCtrl,
+                    keyboardType: TextInputType.number,
+                    prefixIcon: CupertinoIcons.money_dollar,
+                    inputFormatters: [ThousandSeparatorFormatter()],
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: Insets.md),
+                  AppTextField(
+                    label: s.loan_calc_tax_threshold,
+                    controller: _taxThresholdCtrl,
+                    keyboardType: TextInputType.number,
+                    prefixIcon: CupertinoIcons.money_dollar,
+                    inputFormatters: [ThousandSeparatorFormatter()],
+                    onChanged: (_) => setState(() {}),
+                  ),
+                  const SizedBox(height: Insets.md),
+                  Text(
+                    s.loan_calc_fee_note,
+                    style: AppType.caption.copyWith(color: c.textSecondary, height: 1.4),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -448,6 +565,11 @@ class _KprResultCard extends StatelessWidget {
   final LoanInterestMethod method;
   final double monthlyIncome;
   final double otherInstallments;
+  final double provisiPercent;
+  final double adminFee;
+  final double notaryPercent;
+  final double insurancePercent;
+  final double taxFreeThreshold;
   final NumberFormat fmt;
   final AppStrings s;
 
@@ -461,6 +583,11 @@ class _KprResultCard extends StatelessWidget {
     required this.method,
     required this.monthlyIncome,
     required this.otherInstallments,
+    required this.provisiPercent,
+    required this.adminFee,
+    required this.notaryPercent,
+    required this.insurancePercent,
+    required this.taxFreeThreshold,
     required this.fmt,
     required this.s,
   });
@@ -469,7 +596,15 @@ class _KprResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
 
-    final costs = estimateKprCosts(propertyPrice: propertyPrice, downPaymentPercent: dpPercent);
+    final costs = estimateKprCosts(
+      propertyPrice: propertyPrice,
+      downPaymentPercent: dpPercent,
+      provisiPercent: provisiPercent,
+      adminFee: adminFee,
+      notaryPercent: notaryPercent,
+      insurancePercent: insurancePercent,
+      taxFreeThreshold: taxFreeThreshold,
+    );
     final staged = calculateKprStaged(
       principal: costs.loanPrincipal,
       fixedRatePercent: fixedRatePercent,
@@ -590,7 +725,11 @@ class _KprResultCard extends StatelessWidget {
               const SizedBox(height: Insets.sm),
               _ResultRow(label: s.loan_calc_cost_admin, value: fmt.format(costs.adminFee)),
               const SizedBox(height: Insets.sm),
-              _ResultRow(label: s.loan_calc_cost_other, value: fmt.format(costs.otherFeesEstimate)),
+              _ResultRow(label: s.loan_calc_cost_notary, value: fmt.format(costs.notaryFee)),
+              const SizedBox(height: Insets.sm),
+              _ResultRow(label: s.loan_calc_cost_insurance, value: fmt.format(costs.insuranceFee)),
+              const SizedBox(height: Insets.sm),
+              _ResultRow(label: s.loan_calc_cost_tax, value: fmt.format(costs.transferTax)),
               const SizedBox(height: Insets.sm),
               Divider(color: c.border),
               const SizedBox(height: Insets.sm),
