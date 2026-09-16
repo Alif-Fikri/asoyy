@@ -602,6 +602,16 @@ abstract class AppStrings {
   String get fin_import_map_credit;
   String get fin_import_map_description;
   String get fin_import_column_none;
+  String get fin_capture_title;
+  String get fin_capture_menu_label;
+  String get fin_capture_access_needed;
+  String get fin_capture_access_explain;
+  String get fin_capture_open_settings;
+  String get fin_capture_empty;
+  String get fin_capture_wallet_label;
+  String fin_capture_confirm(int count);
+  String fin_capture_confirmed(int count);
+  String get fin_capture_discard;
 
   String get cat_salary;
   String get cat_freelance;

@@ -13,6 +13,7 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../core/widgets/ios_section.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
 import 'finance_import_page.dart';
+import 'notification_capture_page.dart';
 import '../../../../core/widgets/segmented_tab_bar.dart';
 import '../../data/account_repository.dart';
 import '../../data/budget_repository.dart';
@@ -126,6 +127,12 @@ class FinancePage extends StatelessWidget {
             color: AppColors.income,
             label: s.fin_import,
           ),
+          SheetAction(
+            value: 'capture',
+            icon: CupertinoIcons.bell_circle,
+            color: AppColors.primary,
+            label: s.fin_capture_menu_label,
+          ),
         ],
         SheetAction(
           value: 'recurring',
@@ -146,6 +153,10 @@ class FinancePage extends StatelessWidget {
       case 'import':
         Navigator.of(context).push(
           MaterialPageRoute(builder: (_) => const FinanceImportPage()),
+        );
+      case 'capture':
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => const NotificationCapturePage()),
         );
       case 'recurring':
         _openRecurring(context);

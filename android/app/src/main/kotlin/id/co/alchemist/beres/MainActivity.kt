@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.PowerManager
 import android.provider.Settings
 import android.net.Uri as AndroidUri
+import android.content.Context
 import android.view.WindowManager
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -23,6 +24,7 @@ class MainActivity : FlutterFragmentActivity() {
     private val ringtoneChannel = "id.co.alchemist.beres/ringtone"
     private val secureScreenChannel = "id.co.alchemist.beres/secure_screen"
     private val textRecognitionChannel = "id.co.alchemist.beres/text_recognition"
+    private val notificationCaptureChannel = "id.co.alchemist.beres/notification_capture"
     private val ringtonePickerRequestCode = 4271
 
     private var pendingRingtoneResult: MethodChannel.Result? = null
@@ -67,6 +69,21 @@ class MainActivity : FlutterFragmentActivity() {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
                     result.success(null)
                 }
+                else -> result.notImplemented()
+            }
+        }
+
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            notificationCaptureChannel,
+        ).setMethodCallHandler { call, result ->
+            when (call.method) {
+                "isAccessGranted" -> result.success(isNotificationAccessGranted())
+                "openAccessSettings" -> {
+                    startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS))
+                    result.success(null)
+                }
+                "drainCaptured" -> result.success(drainCapturedNotifications())
                 else -> result.notImplemented()
             }
         }
@@ -173,6 +190,21 @@ class MainActivity : FlutterFragmentActivity() {
         } catch (e: Exception) {
             result.error("RINGTONE_COPY_FAILED", e.message, null)
         }
+    }
+
+    private fun isNotificationAccessGranted(): Boolean {
+        val enabled = Settings.Secure.getString(contentResolver, "enabled_notification_listeners")
+        return enabled != null && enabled.contains(packageName)
+    }
+
+    private fun drainCapturedNotifications(): String {
+        val prefs = applicationContext.getSharedPreferences(
+            TransactionNotificationListenerService.PREFS_NAME,
+            Context.MODE_PRIVATE,
+        )
+        val queued = prefs.getString(TransactionNotificationListenerService.KEY_QUEUE, "[]") ?: "[]"
+        prefs.edit().putString(TransactionNotificationListenerService.KEY_QUEUE, "[]").apply()
+        return queued
     }
 
     private fun requestIgnoreBatteryOptimizations() {

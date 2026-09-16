@@ -612,6 +612,17 @@ class StringsEn extends AppStrings {
   @override String get fin_import_map_credit => 'Credit/in column';
   @override String get fin_import_map_description => 'Description column';
   @override String get fin_import_column_none => 'None';
+  @override String get fin_capture_title => 'Auto-Detected Transactions';
+  @override String get fin_capture_menu_label => 'Auto-Detect from Notifications';
+  @override String get fin_capture_access_needed => 'Notification Access Needed';
+  @override String get fin_capture_access_explain =>
+      'To auto-detect transactions from BCA, BRI, GoPay or SeaBank, Beres needs permission to read notifications. Only notifications from those apps are read, nothing else.';
+  @override String get fin_capture_open_settings => 'Open Settings';
+  @override String get fin_capture_empty => 'No new transactions detected yet';
+  @override String get fin_capture_wallet_label => 'Add to wallet';
+  @override String fin_capture_confirm(int count) => 'Add $count transactions';
+  @override String fin_capture_confirmed(int count) => 'Added $count transactions';
+  @override String get fin_capture_discard => 'Discard';
 
   @override String get cat_salary => 'Salary';
   @override String get cat_freelance => 'Freelance';

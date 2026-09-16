@@ -612,6 +612,17 @@ class StringsId extends AppStrings {
   @override String get fin_import_map_credit => 'Kolom kredit/masuk';
   @override String get fin_import_map_description => 'Kolom keterangan';
   @override String get fin_import_column_none => 'Tidak ada';
+  @override String get fin_capture_title => 'Transaksi Terdeteksi Otomatis';
+  @override String get fin_capture_menu_label => 'Deteksi Otomatis dari Notifikasi';
+  @override String get fin_capture_access_needed => 'Perlu Akses Notifikasi';
+  @override String get fin_capture_access_explain =>
+      'Untuk mendeteksi otomatis transaksi dari BCA, BRI, GoPay, atau SeaBank, Beres butuh izin membaca notifikasi. Hanya notifikasi dari app itu yang dibaca, tidak ada yang lain.';
+  @override String get fin_capture_open_settings => 'Buka Pengaturan';
+  @override String get fin_capture_empty => 'Belum ada transaksi baru yang terdeteksi';
+  @override String get fin_capture_wallet_label => 'Masukkan ke dompet';
+  @override String fin_capture_confirm(int count) => 'Tambah $count transaksi';
+  @override String fin_capture_confirmed(int count) => 'Berhasil tambah $count transaksi';
+  @override String get fin_capture_discard => 'Abaikan';
 
   @override String get cat_salary => 'Gaji';
   @override String get cat_freelance => 'Freelance';
