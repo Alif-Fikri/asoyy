@@ -36,7 +36,7 @@ LoanCalcResult calculateLoan({
     );
   }
 
-  final monthlyInstallment = _annuityPayment(principal, monthlyRate, tenorMonths);
+  final monthlyInstallment = annuityPayment(principal, monthlyRate, tenorMonths);
   final totalPayment = monthlyInstallment * tenorMonths;
   final totalInterest = totalPayment - principal;
   return LoanCalcResult(
@@ -58,7 +58,7 @@ class LoanRateResult {
   });
 }
 
-double _annuityPayment(double principal, double monthlyRate, int tenorMonths) {
+double annuityPayment(double principal, double monthlyRate, int tenorMonths) {
   if (monthlyRate == 0) return principal / tenorMonths;
   final factor = 1 + monthlyRate;
   var powFactor = 1.0;
@@ -104,7 +104,7 @@ LoanRateResult solveLoanRate({
   var high = 1.0;
   for (var i = 0; i < 100; i++) {
     final mid = (low + high) / 2;
-    final payment = _annuityPayment(principal, mid, tenorMonths);
+    final payment = annuityPayment(principal, mid, tenorMonths);
     if (payment > monthlyInstallment) {
       high = mid;
     } else {
