@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -87,10 +88,15 @@ Future<void> exportPasswordsCsv(
   } catch (_) {
     if (context.mounted) AppToast.show(context, s.pass_import_error);
   } finally {
-    if (file != null && await file.exists()) {
-      try {
-        await file.delete();
-      } catch (_) {}
+    if (file != null) {
+      final toDelete = file;
+      unawaited(Future.delayed(const Duration(seconds: 5), () async {
+        if (await toDelete.exists()) {
+          try {
+            await toDelete.delete();
+          } catch (_) {}
+        }
+      }));
     }
   }
 }

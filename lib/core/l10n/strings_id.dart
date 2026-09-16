@@ -302,6 +302,7 @@ class StringsId extends AppStrings {
   @override String get notes_empty_title => 'Belum Ada Catatan';
   @override String get notes_empty_subtitle => 'Tulis catatan atau buat checklist, lengkap dengan deadline dan pengingat';
   @override String get notes_note_title => 'Judul';
+  @override String get notes_reminder_locked_body => 'Kamu punya pengingat catatan. Buka Beres untuk melihatnya.';
   @override String get notes_body => 'Isi catatan (opsional)';
   @override String get notes_checklist => 'Checklist';
   @override String get notes_add_item => 'Tambah item';

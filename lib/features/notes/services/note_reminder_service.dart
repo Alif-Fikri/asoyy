@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
+import '../../../core/l10n/current_strings.dart';
 import '../../alarm/services/notification_service.dart';
 import '../domain/entities/note_entity.dart';
 import '../domain/utils/note_status.dart';
@@ -24,7 +25,7 @@ class NoteReminderService {
     await NotificationService.fln.zonedSchedule(
       notificationIdForNote(note.id),
       channelTitle,
-      note.title,
+      currentStrings().notes_reminder_locked_body,
       tz.TZDateTime.from(at, tz.local),
       const NotificationDetails(
         android: AndroidNotificationDetails(
@@ -33,6 +34,7 @@ class NoteReminderService {
           channelDescription: 'Pengingat untuk catatan dan checklist',
           importance: Importance.high,
           priority: Priority.high,
+          visibility: NotificationVisibility.private,
         ),
         iOS: DarwinNotificationDetails(),
       ),

@@ -300,6 +300,7 @@ abstract class AppStrings {
   String get notes_empty_title;
   String get notes_empty_subtitle;
   String get notes_note_title;
+  String get notes_reminder_locked_body;
   String get notes_body;
   String get notes_checklist;
   String get notes_add_item;

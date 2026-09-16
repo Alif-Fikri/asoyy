@@ -20,6 +20,7 @@ import 'features/finance/data/models/transaction_model.dart';
 import 'features/finance/services/finance_widget_service.dart';
 import 'features/finance/services/recurring_reminder_service.dart';
 import 'features/password/data/models/password_model.dart';
+import 'features/password/services/csv_service.dart';
 import 'features/split_bill/data/models/bill_model.dart';
 import 'features/split_bill/data/models/participant_model.dart';
 import 'app.dart';
@@ -63,6 +64,8 @@ void main() async {
 
   await di.init();
   unawaited(di.sl<FinanceWidgetService>().updateWidget());
+
+  unawaited(purgeStalePasswordExports());
 
   await NotificationService().init();
   await RecurringReminderService().rescheduleAll();

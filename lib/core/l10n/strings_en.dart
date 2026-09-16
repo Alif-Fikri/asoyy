@@ -302,6 +302,7 @@ class StringsEn extends AppStrings {
   @override String get notes_empty_title => 'No notes yet';
   @override String get notes_empty_subtitle => 'Write a note or build a checklist, with a deadline and a reminder';
   @override String get notes_note_title => 'Title';
+  @override String get notes_reminder_locked_body => 'You have a note reminder. Open Beres to see it.';
   @override String get notes_body => 'Note (optional)';
   @override String get notes_checklist => 'Checklist';
   @override String get notes_add_item => 'Add item';
