@@ -382,6 +382,9 @@ abstract class AppStrings {
   String get loan_calc_estimated_rate;
   String get loan_calc_rate_not_found;
   String get loan_calc_mode_kpr;
+  String loan_calc_year_range(int from, int to);
+  String get loan_calc_total_installments;
+  String get loan_calc_grand_total;
   String get loan_calc_property_price;
   String get loan_calc_down_payment_percent;
   String get loan_calc_down_payment_amount;

@@ -385,6 +385,10 @@ class StringsEn extends AppStrings {
   @override String get loan_calc_estimated_rate => 'Estimated Annual Rate';
   @override String get loan_calc_rate_not_found => 'The installment is too low to pay off this loan within that tenor.';
   @override String get loan_calc_mode_kpr => 'KPR Simulation';
+  @override String loan_calc_year_range(int from, int to) =>
+      from == to ? 'Year $from' : 'Year $from-$to';
+  @override String get loan_calc_total_installments => 'Total Installments (Whole Tenor)';
+  @override String get loan_calc_grand_total => 'Grand Total (Installments + Cash at Closing)';
   @override String get loan_calc_property_price => 'Property Price';
   @override String get loan_calc_down_payment_percent => 'Down Payment (%)';
   @override String get loan_calc_down_payment_amount => 'Down Payment';

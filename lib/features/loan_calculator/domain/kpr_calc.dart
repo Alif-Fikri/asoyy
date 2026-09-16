@@ -121,6 +121,14 @@ KprAffordabilityResult estimateKprAffordability({
   );
 }
 
+double kprQualifyingRatePercent({
+  required double fixedRatePercent,
+  required double floatingRatePercent,
+  required int fixedYears,
+  required int totalTenorYears,
+}) =>
+    fixedYears >= totalTenorYears ? fixedRatePercent : floatingRatePercent;
+
 class KprStagedResult {
   final double fixedMonthlyInstallment;
   final double floatingMonthlyInstallment;
@@ -198,5 +206,30 @@ KprStagedResult calculateKprStaged({
     remainingPrincipalAtTransition: remaining,
     fixedMonths: fixedMonths,
     floatingMonths: floatingMonths,
+  );
+}
+
+class KprTotals {
+  final double totalInstallmentPayment;
+  final double totalInterest;
+  final double grandTotal;
+
+  const KprTotals({
+    required this.totalInstallmentPayment,
+    required this.totalInterest,
+    required this.grandTotal,
+  });
+}
+
+KprTotals kprTotals({
+  required KprStagedResult staged,
+  required KprCostBreakdown costs,
+}) {
+  final totalInstallmentPayment = staged.fixedMonthlyInstallment * staged.fixedMonths +
+      staged.floatingMonthlyInstallment * staged.floatingMonths;
+  return KprTotals(
+    totalInstallmentPayment: totalInstallmentPayment,
+    totalInterest: totalInstallmentPayment - costs.loanPrincipal,
+    grandTotal: totalInstallmentPayment + costs.totalUpfrontCost,
   );
 }

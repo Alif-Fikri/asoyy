@@ -94,6 +94,79 @@ void main() {
     });
   });
 
+  group('kprTotals', () {
+    test('sums both stages and derives the interest paid', () {
+      final costs = estimateKprCosts(propertyPrice: 500000000, downPaymentPercent: 20);
+      final staged = calculateKprStaged(
+        principal: costs.loanPrincipal,
+        fixedRatePercent: 6,
+        fixedYears: 3,
+        floatingRatePercent: 11,
+        totalTenorYears: 15,
+        method: LoanInterestMethod.annuity,
+      );
+      final totals = kprTotals(staged: staged, costs: costs);
+
+      final expectedInstallments = staged.fixedMonthlyInstallment * 36 +
+          staged.floatingMonthlyInstallment * 144;
+      expect(totals.totalInstallmentPayment, closeTo(expectedInstallments, 0.01));
+      expect(totals.totalInterest, closeTo(expectedInstallments - 400000000, 0.01));
+      expect(totals.grandTotal, closeTo(expectedInstallments + costs.totalUpfrontCost, 0.01));
+    });
+
+    test('the total paid always exceeds the principal borrowed', () {
+      final costs = estimateKprCosts(propertyPrice: 300000000, downPaymentPercent: 10);
+      final staged = calculateKprStaged(
+        principal: costs.loanPrincipal,
+        fixedRatePercent: 5,
+        fixedYears: 2,
+        floatingRatePercent: 12,
+        totalTenorYears: 20,
+        method: LoanInterestMethod.annuity,
+      );
+      final totals = kprTotals(staged: staged, costs: costs);
+
+      expect(totals.totalInstallmentPayment, greaterThan(costs.loanPrincipal));
+      expect(totals.totalInterest, greaterThan(0));
+      expect(totals.grandTotal, greaterThan(totals.totalInstallmentPayment));
+    });
+  });
+
+  group('kprQualifyingRatePercent', () {
+    test('a promo rate that expires qualifies the borrower at the floating rate', () {
+      final rate = kprQualifyingRatePercent(
+        fixedRatePercent: 5.25,
+        floatingRatePercent: 11,
+        fixedYears: 3,
+        totalTenorYears: 15,
+      );
+      expect(rate, 11);
+    });
+
+    test('a rate fixed for the whole tenor qualifies at that rate', () {
+      final rate = kprQualifyingRatePercent(
+        fixedRatePercent: 7,
+        floatingRatePercent: 11,
+        fixedYears: 15,
+        totalTenorYears: 15,
+      );
+      expect(rate, 7);
+    });
+
+    test('qualifying at the floating rate lowers the affordable price', () {
+      KprAffordabilityResult at(double rate) => estimateKprAffordability(
+            monthlyIncome: 15000000,
+            otherInstallments: 0,
+            annualRatePercent: rate,
+            tenorMonths: 180,
+            method: LoanInterestMethod.annuity,
+            downPaymentPercent: 20,
+          );
+
+      expect(at(11).maxPropertyPrice, lessThan(at(6).maxPropertyPrice));
+    });
+  });
+
   group('calculateKprStaged', () {
     test('no fixed period means the whole tenor is floating', () {
       final result = calculateKprStaged(

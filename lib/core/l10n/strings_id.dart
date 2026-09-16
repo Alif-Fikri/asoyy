@@ -385,6 +385,10 @@ class StringsId extends AppStrings {
   @override String get loan_calc_estimated_rate => 'Estimasi Bunga per Tahun';
   @override String get loan_calc_rate_not_found => 'Cicilan terlalu kecil untuk melunasi pinjaman ini dalam tenor tersebut.';
   @override String get loan_calc_mode_kpr => 'Simulasi KPR';
+  @override String loan_calc_year_range(int from, int to) =>
+      from == to ? 'Tahun $from' : 'Tahun $from-$to';
+  @override String get loan_calc_total_installments => 'Total Angsuran (Seluruh Tenor)';
+  @override String get loan_calc_grand_total => 'Total Keseluruhan (Angsuran + Dana Tunai)';
   @override String get loan_calc_property_price => 'Harga Rumah';
   @override String get loan_calc_down_payment_percent => 'Uang Muka (%)';
   @override String get loan_calc_down_payment_amount => 'Uang Muka';

@@ -76,6 +76,21 @@ void main() {
       await bloc.close();
     });
 
+    test('tapping the display while an operator is pending still starts a new operand', () async {
+      final bloc = CalculatorBloc();
+      bloc.add(DigitPressed('1'));
+      bloc.add(DigitPressed('2'));
+      bloc.add(OperatorPressed('+'));
+      await _settle();
+      bloc.add(CursorMoved(1));
+      bloc.add(DigitPressed('3'));
+      bloc.add(EqualsPressed());
+      await _settle();
+
+      expect(bloc.state.display, '15');
+      await bloc.close();
+    });
+
     test('starting a fresh number after clear resets the cursor to the end', () async {
       final bloc = CalculatorBloc();
       bloc.add(DigitPressed('5'));

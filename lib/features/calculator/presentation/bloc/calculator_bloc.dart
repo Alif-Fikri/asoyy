@@ -125,6 +125,7 @@ class CalculatorBloc extends Bloc<CalculatorBlocEvent, CalculatorState> {
   }
 
   void _onCursorMoved(CursorMoved event, Emitter<CalculatorState> emit) {
+    if (state.justEvaluated && _pendingOperator != null) return;
     emit(state.copyWith(
       cursorPosition: event.rawIndex.clamp(0, state.display.length),
       justEvaluated: false,

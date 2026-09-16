@@ -479,19 +479,31 @@ class _KprResultCard extends StatelessWidget {
       method: method,
     );
 
+    final totals = kprTotals(staged: staged, costs: costs);
+
+    final qualifyingRatePercent = kprQualifyingRatePercent(
+      fixedRatePercent: fixedRatePercent,
+      floatingRatePercent: floatingRatePercent,
+      fixedYears: fixedYears,
+      totalTenorYears: tenorYears,
+    );
+    final heaviestInstallment = staged.floatingMonthlyInstallment > staged.fixedMonthlyInstallment
+        ? staged.floatingMonthlyInstallment
+        : staged.fixedMonthlyInstallment;
+
     final hasIncome = monthlyIncome > 0;
     final affordability = hasIncome
         ? estimateKprAffordability(
             monthlyIncome: monthlyIncome,
             otherInstallments: otherInstallments,
-            annualRatePercent: fixedRatePercent,
+            annualRatePercent: qualifyingRatePercent,
             tenorMonths: tenorYears * 12,
             method: method,
             downPaymentPercent: dpPercent,
           )
         : null;
     final incomeIsEnough =
-        affordability != null && staged.fixedMonthlyInstallment <= affordability.maxMonthlyInstallment;
+        affordability != null && heaviestInstallment <= affordability.maxMonthlyInstallment;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -511,6 +523,11 @@ class _KprResultCard extends StatelessWidget {
                 s.loan_calc_installment_fixed_period.toUpperCase(),
                 style: AppType.label.copyWith(color: c.textSecondary),
               ),
+              if (staged.fixedMonths > 0)
+                Text(
+                  s.loan_calc_year_range(1, (staged.fixedMonths / 12).ceil()),
+                  style: AppType.caption.copyWith(color: c.textSecondary),
+                ),
               const SizedBox(height: Insets.xs),
               Text(
                 fmt.format(staged.fixedMonthlyInstallment),
@@ -522,6 +539,13 @@ class _KprResultCard extends StatelessWidget {
                   s.loan_calc_installment_floating_period.toUpperCase(),
                   style: AppType.label.copyWith(color: c.textSecondary),
                 ),
+                Text(
+                  s.loan_calc_year_range(
+                    (staged.fixedMonths / 12).floor() + 1,
+                    ((staged.fixedMonths + staged.floatingMonths) / 12).ceil(),
+                  ),
+                  style: AppType.caption.copyWith(color: c.textSecondary),
+                ),
                 const SizedBox(height: Insets.xs),
                 Text(
                   fmt.format(staged.floatingMonthlyInstallment),
@@ -532,6 +556,16 @@ class _KprResultCard extends StatelessWidget {
               _ResultRow(label: s.loan_calc_down_payment_amount, value: fmt.format(costs.downPayment)),
               const SizedBox(height: Insets.sm),
               _ResultRow(label: s.loan_calc_principal, value: fmt.format(costs.loanPrincipal)),
+              const SizedBox(height: Insets.sm),
+              _ResultRow(
+                label: s.loan_calc_total_installments,
+                value: fmt.format(totals.totalInstallmentPayment),
+              ),
+              const SizedBox(height: Insets.sm),
+              _ResultRow(
+                label: s.loan_calc_total_interest,
+                value: fmt.format(totals.totalInterest),
+              ),
             ],
           ),
         ),
@@ -563,6 +597,11 @@ class _KprResultCard extends StatelessWidget {
               _ResultRow(
                 label: s.loan_calc_cost_total,
                 value: fmt.format(costs.totalUpfrontCost),
+              ),
+              const SizedBox(height: Insets.sm),
+              _ResultRow(
+                label: s.loan_calc_grand_total,
+                value: fmt.format(totals.grandTotal),
               ),
             ],
           ),
