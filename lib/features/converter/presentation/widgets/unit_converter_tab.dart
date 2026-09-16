@@ -5,9 +5,9 @@ import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/l10n/app_strings.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
-import '../../../../core/widgets/app_chip.dart';
 import '../../../../core/utils/unit_conversion.dart';
 import '../../../../core/widgets/app_text_field.dart';
+import '../../../../core/widgets/segmented_tab_bar.dart';
 
 class UnitConverterTab extends StatefulWidget {
   const UnitConverterTab({super.key});
@@ -103,17 +103,13 @@ class _UnitConverterTabState extends State<UnitConverterTab> {
             style: AppType.label.copyWith(color: c.textSecondary),
           ),
           const SizedBox(height: Insets.md),
-          Wrap(
-            spacing: Insets.sm,
-            runSpacing: Insets.sm,
-            children: UnitCategory.values.map((cat) {
-              return AppChip(
-                label: _categoryLabel(cat, s),
-                isSelected: cat == _category,
-                color: AppColors.converterColor,
-                onTap: () => _onCategoryChanged(cat),
-              );
-            }).toList(),
+          SegmentedTabBar<UnitCategory>(
+            selected: _category,
+            color: AppColors.converterColor,
+            onChanged: _onCategoryChanged,
+            tabs: UnitCategory.values
+                .map((cat) => SegmentedTab(value: cat, label: _categoryLabel(cat, s)))
+                .toList(),
           ),
           const SizedBox(height: Insets.xl),
           AppTextField(
