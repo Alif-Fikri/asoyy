@@ -463,15 +463,17 @@ class _FeatureMenu extends StatelessWidget {
               style: AppType.label.copyWith(color: c.textSecondary),
             ),
           ),
-          GridView.count(
-            crossAxisCount: 3,
+          GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: Insets.md,
-            crossAxisSpacing: Insets.md,
-            childAspectRatio: 1.12,
-            children:
-                group.items.map((item) => _MenuTile(item: item)).toList(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: Insets.md,
+              crossAxisSpacing: Insets.md,
+              mainAxisExtent: 108,
+            ),
+            itemCount: group.items.length,
+            itemBuilder: (context, index) => _MenuTile(item: group.items[index]),
           ),
               ],
             ),
