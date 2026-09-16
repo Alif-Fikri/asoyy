@@ -30,3 +30,10 @@ class DecimalPressed extends CalculatorBlocEvent {}
 class PlusMinusPressed extends CalculatorBlocEvent {}
 
 class PercentPressed extends CalculatorBlocEvent {}
+
+class CursorMoved extends CalculatorBlocEvent {
+  final int rawIndex;
+  CursorMoved(this.rawIndex);
+  @override
+  List<Object?> get props => [rawIndex];
+}
