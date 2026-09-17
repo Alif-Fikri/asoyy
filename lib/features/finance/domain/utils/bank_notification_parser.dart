@@ -2,12 +2,16 @@ import '../entities/transaction_entity.dart';
 import 'finance_csv_import.dart';
 
 const List<String> knownBankPackages = [
-  'com.bca.mybca',
-  'com.bca.mbanking',
+  'com.bca',
+  'com.bca.mybca.omni.android',
   'id.co.bri.brimo',
   'com.gojek.app',
-  'com.seabank.mobile',
-  'seabank',
+  'id.co.bankbkemobile.digitalbank',
+  'id.bmri.livin',
+  'src.com.bni',
+  'id.dana',
+  'ovo.id',
+  'com.shopeepay.id',
 ];
 
 const List<String> _incomeKeywords = [

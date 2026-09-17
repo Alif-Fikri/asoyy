@@ -8,8 +8,12 @@ void main() {
       expect(isKnownBankPackage('id.co.bri.brimo'), isTrue);
     });
 
-    test('matches SeaBank by its generic substring', () {
-      expect(isKnownBankPackage('com.seabank.mobile.id'), isTrue);
+    test('matches SeaBank exact package', () {
+      expect(isKnownBankPackage('id.co.bankbkemobile.digitalbank'), isTrue);
+    });
+
+    test('matches DANA exact package', () {
+      expect(isKnownBankPackage('id.dana'), isTrue);
     });
 
     test('matches a package that contains a known one as a substring', () {

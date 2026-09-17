@@ -14,12 +14,16 @@ class TransactionNotificationListenerService : NotificationListenerService() {
         const val MAX_QUEUE_SIZE = 200
 
         val WATCHED_PACKAGES = setOf(
-            "com.bca.mybca",
-            "com.bca.mbanking",
+            "com.bca",
+            "com.bca.mybca.omni.android",
             "id.co.bri.brimo",
             "com.gojek.app",
-            "com.seabank.mobile",
-            "seabank",
+            "id.co.bankbkemobile.digitalbank",
+            "id.bmri.livin",
+            "src.com.bni",
+            "id.dana",
+            "ovo.id",
+            "com.shopeepay.id",
         )
     }
 
