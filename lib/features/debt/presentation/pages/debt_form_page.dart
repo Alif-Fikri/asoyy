@@ -7,6 +7,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/utils/contact_picker.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -54,6 +55,11 @@ class _DebtFormPageState extends State<DebtFormPage> {
 
     context.read<DebtBloc>().add(AddDebtRequested(debt));
     Navigator.pop(context);
+  }
+
+  Future<void> _pickContact() async {
+    final name = await pickContactName(context);
+    if (name != null && name.isNotEmpty) setState(() => _nameCtrl.text = name);
   }
 
   Future<void> _pickDueDate() async {
@@ -112,6 +118,10 @@ class _DebtFormPageState extends State<DebtFormPage> {
                 label: s.debt_person_name,
                 controller: _nameCtrl,
                 prefixIcon: CupertinoIcons.person,
+                suffix: IconButton(
+                  icon: Icon(CupertinoIcons.person_crop_circle_badge_plus, color: c.textSecondary),
+                  onPressed: _pickContact,
+                ),
                 validator: (v) => (v == null || v.trim().isEmpty) ? s.required_field : null,
               ),
               const SizedBox(height: Insets.md),

@@ -6,6 +6,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
 import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
+import '../../../../core/utils/contact_picker.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
@@ -64,6 +65,13 @@ class _SplitBillFormPageState extends State<SplitBillFormPage> {
       _participants[index].dispose();
       _participants.removeAt(index);
     });
+  }
+
+  Future<void> _pickContactFor(int index) async {
+    final name = await pickContactName(context);
+    if (name != null && name.isNotEmpty) {
+      setState(() => _participants[index]._nameCtrl.text = name);
+    }
   }
 
   void _submit() {
@@ -187,6 +195,13 @@ class _SplitBillFormPageState extends State<SplitBillFormPage> {
                           label: '${s.splitbill_participant_name} ${i + 1}',
                           controller: p._nameCtrl,
                           prefixIcon: CupertinoIcons.person,
+                          suffix: IconButton(
+                            icon: Icon(
+                              CupertinoIcons.person_crop_circle_badge_plus,
+                              color: c.textSecondary,
+                            ),
+                            onPressed: () => _pickContactFor(i),
+                          ),
                           validator: (v) =>
                               (v == null || v.trim().isEmpty) ? s.required_field : null,
                         ),

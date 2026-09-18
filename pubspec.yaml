@@ -59,6 +59,7 @@ dependencies:
   # Converter (currency API)
   http: ^1.2.0
   image_picker: ^1.2.3
+  flutter_contacts: ^2.1.0
 
 dev_dependencies:
   flutter_test:

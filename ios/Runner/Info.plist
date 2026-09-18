@@ -79,5 +79,7 @@
 	<string>Kamera dipakai untuk memotret struk belanja agar transaksi terisi otomatis.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Galeri dipakai untuk memilih foto struk agar transaksi terisi otomatis.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Kontak dipakai untuk mengisi nama secara otomatis saat menambahkan utang, piutang, atau tagihan.</string>
 </dict>
 </plist>
