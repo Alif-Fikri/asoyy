@@ -13,6 +13,7 @@ import '../../../finance/data/recurring_transaction_repository.dart';
 import '../../../finance/domain/entities/transaction_entity.dart';
 import '../../../finance/domain/repositories/finance_repository.dart';
 import '../../../finance/presentation/widgets/recurring_day_picker_sheet.dart';
+import '../../domain/popular_services.dart';
 
 class SubscriptionFormPage extends StatefulWidget {
   const SubscriptionFormPage({super.key});
@@ -31,11 +32,26 @@ class _SubscriptionFormPageState extends State<SubscriptionFormPage> {
   bool _saving = false;
 
   @override
+  void initState() {
+    super.initState();
+    _nameCtrl.addListener(() => setState(() {}));
+  }
+
+  @override
   void dispose() {
     _nameCtrl.dispose();
     _amountCtrl.dispose();
     _notesCtrl.dispose();
     super.dispose();
+  }
+
+  List<String> get _suggestedServices {
+    final query = _nameCtrl.text.trim();
+    if (popularSubscriptionServices.contains(query)) return const [];
+    return popularSubscriptionServices
+        .where((service) => service.toLowerCase().contains(query.toLowerCase()))
+        .take(6)
+        .toList();
   }
 
   Future<void> _submit() async {
@@ -81,6 +97,22 @@ class _SubscriptionFormPageState extends State<SubscriptionFormPage> {
                 prefixIcon: CupertinoIcons.arrow_2_circlepath,
                 validator: (v) => (v == null || v.trim().isEmpty) ? s.required_field : null,
               ),
+              if (_suggestedServices.isNotEmpty) ...[
+                const SizedBox(height: Insets.sm),
+                Wrap(
+                  spacing: Insets.sm,
+                  runSpacing: Insets.sm,
+                  children: _suggestedServices.map((name) {
+                    return ActionChip(
+                      label: Text(name),
+                      onPressed: () {
+                        _nameCtrl.text = name;
+                        _nameCtrl.selection = TextSelection.collapsed(offset: name.length);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ],
               const SizedBox(height: Insets.md),
               AppTextField(
                 label: s.subscription_amount,

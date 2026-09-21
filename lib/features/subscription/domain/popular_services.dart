@@ -1,0 +1,16 @@
+const List<String> popularSubscriptionServices = [
+  'Netflix',
+  'Spotify',
+  'YouTube Premium',
+  'Disney+ Hotstar',
+  'Amazon Prime Video',
+  'Apple Music',
+  'iCloud+',
+  'Google One',
+  'Microsoft 365',
+  'Adobe Creative Cloud',
+  'Canva Pro',
+  'WeTV',
+  'Vidio',
+  'Vision+',
+];
