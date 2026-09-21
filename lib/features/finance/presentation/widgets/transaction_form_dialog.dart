@@ -22,12 +22,14 @@ import 'account_picker.dart';
 class TransactionFormDialog extends StatefulWidget {
   final void Function(TransactionEntity) onSave;
   final int Function(String category) categoryUsageCount;
+  final List<String> titleSuggestions;
   final TransactionEntity? existing;
 
   const TransactionFormDialog({
     super.key,
     required this.onSave,
     required this.categoryUsageCount,
+    this.titleSuggestions = const [],
     this.existing,
   });
 
@@ -110,6 +112,7 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
   void initState() {
     super.initState();
     _accounts = _accountRepo.getAll();
+    _titleCtrl.addListener(() => setState(() {}));
 
     final existing = widget.existing;
     if (existing == null) {
@@ -129,6 +132,15 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
       _category = existing.category;
       _categoryInitialized = true;
     }
+  }
+
+  List<String> get _matchingTitleSuggestions {
+    final query = _titleCtrl.text.trim();
+    if (query.isEmpty || widget.titleSuggestions.contains(query)) return const [];
+    return widget.titleSuggestions
+        .where((title) => title.toLowerCase().contains(query.toLowerCase()))
+        .take(5)
+        .toList();
   }
 
   AccountEntity? _accountById(String? id) {
@@ -342,6 +354,22 @@ class _TransactionFormDialogState extends State<TransactionFormDialog> {
                 prefixIcon: CupertinoIcons.doc_text,
                 validator: (v) => (v == null || v.trim().isEmpty) ? s.required_field : null,
               ),
+              if (_matchingTitleSuggestions.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _matchingTitleSuggestions.map((title) {
+                    return ActionChip(
+                      label: Text(title),
+                      onPressed: () {
+                        _titleCtrl.text = title;
+                        _titleCtrl.selection = TextSelection.collapsed(offset: title.length);
+                      },
+                    );
+                  }).toList(),
+                ),
+              ],
               const SizedBox(height: 12),
               AppTextField(
                 label: s.fin_amount,

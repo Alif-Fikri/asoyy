@@ -20,6 +20,7 @@ import '../../data/budget_repository.dart';
 import '../../domain/entities/transaction_entity.dart';
 import '../../domain/utils/account_balance.dart';
 import '../../domain/utils/finance_insights.dart';
+import '../../domain/utils/title_suggestions.dart';
 import '../bloc/finance_bloc.dart';
 import '../bloc/finance_event.dart';
 import '../bloc/finance_state.dart';
@@ -68,8 +69,15 @@ class FinancePage extends StatelessWidget {
           }
         },
         categoryUsageCount: (category) => _categoryUsageCount(context, category),
+        titleSuggestions: _titleSuggestions(context),
       ),
     );
+  }
+
+  List<String> _titleSuggestions(BuildContext context) {
+    final state = context.read<FinanceBloc>().state;
+    if (state is! FinanceLoaded) return const [];
+    return distinctTitles(state.all);
   }
 
   int _categoryUsageCount(BuildContext context, String category) {
