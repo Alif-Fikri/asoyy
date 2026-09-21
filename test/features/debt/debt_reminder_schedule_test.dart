@@ -42,6 +42,35 @@ void main() {
     });
   });
 
+  group('dueSoonReminderTime', () {
+    test('is 09:00 the day before the due date', () {
+      final t = dueSoonReminderTime(DateTime(2026, 3, 10, 23, 59));
+      expect(t, DateTime(2026, 3, 9, 9));
+    });
+
+    test('rolls over the month boundary', () {
+      final t = dueSoonReminderTime(DateTime(2026, 3, 1, 0));
+      expect(t, DateTime(2026, 2, 28, 9));
+    });
+  });
+
+  group('shouldNotifyDueSoon', () {
+    test('true when the day-before reminder time is still ahead', () {
+      final due = DateTime(2026, 3, 10);
+      expect(shouldNotifyDueSoon(due, DateTime(2026, 3, 8)), isTrue);
+    });
+
+    test('false once the reminder time has already passed', () {
+      final due = DateTime(2026, 3, 10);
+      expect(shouldNotifyDueSoon(due, DateTime(2026, 3, 9, 10)), isFalse);
+    });
+
+    test('false when the due date itself is already here', () {
+      final due = DateTime(2026, 3, 10);
+      expect(shouldNotifyDueSoon(due, DateTime(2026, 3, 10)), isFalse);
+    });
+  });
+
   group('daysSince', () {
     test('counts whole elapsed days', () {
       expect(daysSince(DateTime(2026, 3, 1, 9), DateTime(2026, 3, 10, 9)), 9);

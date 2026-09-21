@@ -11,6 +11,9 @@ import '../domain/utils/debt_reminder_schedule.dart';
 
 int notificationIdForDebt(String sourceId) => sourceId.hashCode.abs() % 100000;
 
+int notificationIdForDueSoon(String sourceId) =>
+    (sourceId.hashCode.abs() % 100000) + 500000;
+
 class DebtReminderService {
   final _muteRepo = NotificationMuteRepository();
 
@@ -48,6 +51,34 @@ class DebtReminderService {
 
   Future<void> cancelReminder(String sourceId) async {
     await NotificationService.fln.cancel(notificationIdForDebt(sourceId));
+    await NotificationService.fln.cancel(notificationIdForDueSoon(sourceId));
+  }
+
+  Future<void> _scheduleDueSoon(String sourceId, DateTime dueDate, String body) async {
+    final id = notificationIdForDueSoon(sourceId);
+    await NotificationService.fln.cancel(id);
+
+    if (_muteRepo.isMuted(sourceId)) return;
+    if (!shouldNotifyDueSoon(dueDate, DateTime.now())) return;
+
+    await NotificationService.fln.zonedSchedule(
+      id,
+      'Jatuh Tempo Besok',
+      body,
+      tz.TZDateTime.from(dueSoonReminderTime(dueDate), tz.local),
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          'debt_due_soon',
+          'Jatuh Tempo Besok',
+          channelDescription: 'Peringatan sehari sebelum utang/piutang jatuh tempo',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
+      ),
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
 
   Future<void> rescheduleAll() async {
@@ -68,6 +99,15 @@ class DebtReminderService {
           ? '${debt.personName} belum bayar ${_fmt.format(debt.amount)} ($suffix)'
           : 'Kamu belum bayar ${debt.personName} ${_fmt.format(debt.amount)} ($suffix)';
       await _schedule(sourceId, anchor, body);
+
+      if (debt.dueDate != null) {
+        final dueSoonBody = debt.direction == DebtDirection.theyOweMe
+            ? '${debt.personName} jatuh tempo besok, ${_fmt.format(debt.amount)}'
+            : 'Utangmu ke ${debt.personName} jatuh tempo besok, ${_fmt.format(debt.amount)}';
+        await _scheduleDueSoon(sourceId, debt.dueDate!, dueSoonBody);
+      } else {
+        await NotificationService.fln.cancel(notificationIdForDueSoon(sourceId));
+      }
     }
 
     final billRepo = di.sl<SplitBillRepository>();

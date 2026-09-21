@@ -9,3 +9,11 @@ DateTime nextDebtReminderTime(DateTime since, DateTime now) {
 }
 
 int daysSince(DateTime since, DateTime now) => now.difference(since).inDays;
+
+DateTime dueSoonReminderTime(DateTime dueDate) {
+  final dayBefore = dueDate.subtract(const Duration(days: 1));
+  return DateTime(dayBefore.year, dayBefore.month, dayBefore.day, 9);
+}
+
+bool shouldNotifyDueSoon(DateTime dueDate, DateTime now) =>
+    dueSoonReminderTime(dueDate).isAfter(now);
