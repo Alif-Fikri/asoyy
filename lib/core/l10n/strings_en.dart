@@ -52,6 +52,8 @@ class StringsEn extends AppStrings {
   @override String get debt_person_name => 'Person Name';
   @override String get contact_permission_denied =>
       'Contacts permission is needed to pick a name';
+  @override String get amount_calc_hint => 'Type an expression, e.g. 1000 + 2500 * 3';
+  @override String get amount_calc_use_result => 'Use Result';
   @override String get debt_amount => 'Amount (Rp)';
   @override String get debt_i_owe => 'I Owe';
   @override String get debt_owed_to_me => 'Owed To Me';

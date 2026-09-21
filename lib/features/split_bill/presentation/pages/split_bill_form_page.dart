@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/l10n/app_localizations.dart';
@@ -8,6 +9,7 @@ import '../../../../core/theme/app_color_theme.dart';
 import '../../../../core/theme/design_tokens.dart';
 import '../../../../core/utils/contact_picker.dart';
 import '../../../../core/utils/thousand_separator_formatter.dart';
+import '../../../../core/widgets/amount_calculator_sheet.dart';
 import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_text_field.dart';
 import '../../../../core/widgets/nexus_app_bar.dart';
@@ -156,6 +158,16 @@ class _SplitBillFormPageState extends State<SplitBillFormPage> {
                 prefixIcon: CupertinoIcons.money_dollar,
                 keyboardType: TextInputType.number,
                 inputFormatters: [ThousandSeparatorFormatter()],
+                suffix: IconButton(
+                  icon: Icon(CupertinoIcons.function, color: c.textSecondary),
+                  onPressed: () async {
+                    final result = await showAmountCalculatorSheet(context);
+                    if (result != null) {
+                      _totalCtrl.text =
+                          NumberFormat.decimalPattern('id_ID').format(result);
+                    }
+                  },
+                ),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return s.required_field;
                   if (double.tryParse(v.replaceAll('.', '')) == null) return s.invalid_number;

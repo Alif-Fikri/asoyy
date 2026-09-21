@@ -52,6 +52,8 @@ class StringsId extends AppStrings {
   @override String get debt_person_name => 'Nama Orang';
   @override String get contact_permission_denied =>
       'Izin akses kontak diperlukan untuk memilih nama';
+  @override String get amount_calc_hint => 'Ketik ekspresi, mis. 1000 + 2500 * 3';
+  @override String get amount_calc_use_result => 'Gunakan Hasil';
   @override String get debt_amount => 'Jumlah (Rp)';
   @override String get debt_i_owe => 'Aku Berutang';
   @override String get debt_owed_to_me => 'Berutang ke Aku';

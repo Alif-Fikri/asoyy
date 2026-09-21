@@ -50,6 +50,8 @@ abstract class AppStrings {
   String get debt_new;
   String get debt_person_name;
   String get contact_permission_denied;
+  String get amount_calc_hint;
+  String get amount_calc_use_result;
   String get debt_amount;
   String get debt_i_owe;
   String get debt_owed_to_me;
